@@ -1,8 +1,4 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const User=require('./User')
-const { boolean } = require('joi')
 require('dotenv').config()
 
 const EventSchema = new mongoose.Schema({
@@ -25,7 +21,7 @@ const EventSchema = new mongoose.Schema({
   time:{
     type:String,
     required:[true,'Please provide Time']
-  },
+  },//24h format 
   price:{
     type:Number,
     required:[true,'Please provide Event Price']
@@ -39,7 +35,7 @@ const EventSchema = new mongoose.Schema({
     required:[true,'Please provide Venue']
   },
   event_coordinator:{
-    type:[Object],
+    type:[Object],//{name and phone number}
     required:[true,'Please provide Event Coordinator details']
   },
   totalwinners:{

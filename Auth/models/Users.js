@@ -33,7 +33,7 @@ const UsersSchema = new mongoose.Schema({
   },
   qrlink:{
     type:String,
-    default:""
+    default:""//remove qr link
   },
   otp:{
     type:Number,
