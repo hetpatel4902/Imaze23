@@ -25,7 +25,8 @@ const LeadsRegisterRouter = require('./routes/LeadsRegisterRouter')
 const UsersForgotPasswordRouter = require('./routes/UsersForgotPasswordRouter')
 const UsersLoginRouter = require('./routes/UsersLoginRouter')
 const UsersRegisterRouter = require('./routes/UsersRegisterRouter')
-
+const CoordinatorLoginRouter = require('./routes/CoordinatorLoginRouter')
+const CoordinatorRegisterRouter = require('./routes/CoordinatorRegisterRouter')
 
 
 app.use(express.json());
@@ -57,6 +58,10 @@ app.use('/api/v1/user/forgotpassword',UsersForgotPasswordRouter)
 //routes Leads
 app.use('/api/v1/lead/login',LeadsLoginRouter)
 app.use('/api/v1/lead/register',LeadsRegisterRouter)
+
+//routes coordinator
+app.use('/api/v1/coordinator/login',CoordinatorLoginRouter)
+app.use('/api/v1/coordinator/register',CoordinatorRegisterRouter)
 
 
 
