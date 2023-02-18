@@ -1,15 +1,15 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 //combos history and static combos needed
-const CombosSchema = new mongoose.Schema({
+const UserEventSchema = new mongoose.Schema({
   userId:{
     type:mongoose.Types.ObjectId,
     ref:"Users"
   },
-  event:{
-    type:[mongoose.Types.ObjectId],//[event ids]
-    required:[true,'Please provide event details'],
-    ref:"Event"
+  eventid:{
+    type:mongoose.Types.ObjectId,
+    ref:'Event',
+    required:[true,'Please provide event details']
   },
   price:{
     type:Number,
@@ -25,11 +25,6 @@ const CombosSchema = new mongoose.Schema({
     enum:['COMPLETED','INCOMPLETE'],
     required:[true,'Please provide payment status']
   },
-  combotype:{
-    type:String,
-    enum:['DYNAMIC','STATIC'],
-    required:[true,'Please provide combotype']
-  },
   cashotp:{
     type:Number,
     default:0
@@ -39,4 +34,4 @@ const CombosSchema = new mongoose.Schema({
 
 
 
-module.exports = mongoose.model('Combo',CombosSchema)
+module.exports = mongoose.model('UserEvent',UserEventSchema)
