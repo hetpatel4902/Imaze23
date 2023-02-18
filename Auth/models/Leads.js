@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { boolean } = require('joi')
 require('dotenv').config()
 
 const LeadsSchema = new mongoose.Schema({
