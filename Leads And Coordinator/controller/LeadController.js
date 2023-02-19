@@ -240,6 +240,7 @@ const eventParticipantExcel = async (req,res) => {
     "Name",
     "Email",
     "College",
+    "Phone Number",
     "Purchase_Type",
     "Payment_Mode"
   ];
@@ -249,6 +250,7 @@ const eventParticipantExcel = async (req,res) => {
     obj.name = user.name;
     obj.email=user.email;
     obj.college = user.college;
+    obj.phonenumber = user.phonenumber;
     const userevent = await UserEvent.findOne({userId:even,eventid:eid})
       if(userevent){
         obj.purchasetype = 'EVENT'
@@ -311,6 +313,7 @@ const eventAttendedExcel = async (req,res) => {
     "Name",
     "Email",
     "College",
+    "Phone Number",
     "Purchase_Type",
     "Payment_Mode"
   ];
@@ -320,6 +323,7 @@ const eventAttendedExcel = async (req,res) => {
     obj.name = user.name;
     obj.email=user.email;
     obj.college = user.college;
+    obj.phonenumber = user.phonenumber;
     const userevent = await UserEvent.findOne({userId:even,eventid:eid})
       if(userevent){
         obj.purchasetype = 'EVENT'
