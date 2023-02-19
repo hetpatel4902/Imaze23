@@ -15,7 +15,8 @@ const app = express();
 const connectDB = require('./db/connect')
 
 //middleware
-const authmiddleware = require('../middleware/authmiddleware')
+const authmiddleware = require('./middleware/authmiddleware')
+app.use(express.static(`${__dirname}/public`));
 
 
 // routers
