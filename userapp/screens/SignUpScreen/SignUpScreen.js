@@ -12,24 +12,25 @@ import {
   Linking,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import {useForm} from 'react-hook-form';
+// import {useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import AppLoader from '../../components/AppLoader';
-import {PAYMENT_IP} from '@env';
+// import AppLoader from '../../components/AppLoader';
+// import {PAYMENT_IP} from '@env';
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SignUpScreen = () => {
   const {height} = useWindowDimensions();
-  const {control, handleSubmit, watch} = useForm();
-  const pwd = watch('password');
+  // const {control, handleSubmit, watch} = useForm();
+  // const pwd = watch('password');
   const navigation = useNavigation();
   const [loadingPending, setLoadingPending] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
+  const [collegeName, setCollegeName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [passwordWrong, setPasswordWrong] = useState(false);
@@ -40,7 +41,7 @@ const SignUpScreen = () => {
     setPasswordMin(false);
     setEmailWrong(false);
     setPasswordWrong(false);
-    if (!name || !address || !email || !password) {
+    if (!name || !phoneNumber || !email || !password || !collegeName) {
       Alert.alert('Enter all required details.');
     } else {
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -52,11 +53,12 @@ const SignUpScreen = () => {
             try {
               setLoadingPending(true);
               const response = await axios.post(
-                `http://${PAYMENT_IP}:6990/api/v1/user/register`,
+                `http://10.0.2.2:3000/api/v1/user/register`,
                 {
                   name: name,
                   email: email,
-                  address: address,
+                  phonenumber: phoneNumber,
+                  college: collegeName,
                   password: password,
                 },
               );
@@ -172,11 +174,35 @@ const SignUpScreen = () => {
               fontSize: 14,
               fontFamily: 'Fredoka-Regular',
             }}>
-            Address:
+            Phone Number:
           </Text>
           <TextInput
-            onChangeText={setAddress}
-            value={address}
+            onChangeText={setPhoneNumber}
+            value={phoneNumber}
+            style={{
+              height: 36,
+              borderWidth: 0.5,
+              borderColor: '#d1cfcf',
+              marginTop: 5,
+              borderRadius: 8,
+              paddingHorizontal: 10,
+              fontSize: 13,
+              fontFamily: 'Fredoka-Regular',
+              color: 'black',
+              marginBottom: 10,
+            }}
+          />
+          <Text
+            style={{
+              color: 'black',
+              fontSize: 14,
+              fontFamily: 'Fredoka-Regular',
+            }}>
+            College Name:
+          </Text>
+          <TextInput
+            onChangeText={setCollegeName}
+            value={collegeName}
             style={{
               height: 36,
               borderWidth: 0.5,
@@ -314,7 +340,7 @@ const SignUpScreen = () => {
           </Pressable>
         </View>
       </ScrollView>
-      {loadingPending ? <AppLoader /> : null}
+      {/* {loadingPending ? <AppLoader /> : null} */}
     </>
   );
 };

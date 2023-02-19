@@ -10,19 +10,19 @@ import {
   Pressable,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import {useForm} from 'react-hook-form';
+// import {useForm} from 'react-hook-form';
 import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import AppLoader from '../../components/AppLoader';
+// import AppLoader from '../../components/AppLoader';
 // import {PAYMENT_IP} from '@env';x
 
 const ConfirmEmailScreen = () => {
   const route = useRoute();
-  const {control, handleSubmit, watch} = useForm({
-    defaultValues: {username: route?.params?.username},
-  });
+  // const {control, handleSubmit, watch} = useForm({
+  //   defaultValues: {username: route?.params?.username},
+  // });
   const email = route?.params.email;
-  const username = watch('username');
+  // const username = watch('username');
   const [check, setCheck] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
@@ -35,7 +35,7 @@ const ConfirmEmailScreen = () => {
       console.log('email', email);
       setLoading(true);
       const response = await axios.post(
-        `http://${PAYMENT_IP}:6990/api/v1/user/${email}/validateOtp`,
+        `http://10.0.2.2:3000/api/v1/user/${email}/validateOtp`,
         {otp: otp},
       );
       console.log(response);
@@ -158,7 +158,7 @@ const ConfirmEmailScreen = () => {
           </Pressable>
         </View>
       </ScrollView>
-      {loading ? <AppLoader /> : null}
+      {/* {loading ? <AppLoader /> : null} */}
     </>
   );
 };

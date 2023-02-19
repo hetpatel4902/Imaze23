@@ -30,13 +30,12 @@ const participantList = async (req,res) => {
   }
   const event = await Event.findOne({_id:eid})
   const arr=[]
-  event?.participants.forEach(async(participant)=>{
-    const user = await User.findOne({_id:participant})
+  for(var i=0;i<event?.participants.length;++i){
+    const user = await User.findOne({_id:event?.participants[i]})
     arr.push(user)
-  })
-  setTimeout(()=>{
-    res.status(StatusCodes.OK).json({res:"Success",data:arr})
-  },1500)
+  }
+  res.status(StatusCodes.OK).json({res:"Success",data:arr})
+
 }
 
 const alreadyAttendedUser = async (req,res) => {
@@ -46,13 +45,12 @@ const alreadyAttendedUser = async (req,res) => {
   }
   const event = await Event.findOne({_id:eid})
   const arr=[]
-  event?.attendance.forEach(async(participant)=>{
-    const user = await User.findOne({_id:participant})
+  for(var i=0;i<event?.attendance.length;++i){
+    const user = await User.findOne({_id:event?.attendance[i]})
     arr.push(user)
-  })
-  setTimeout(()=>{
-    res.status(StatusCodes.OK).json({res:"Success",data:arr})
-  },1000)
+  }
+  res.status(StatusCodes.OK).json({res:"Success",data:arr})
+
 }
 
 const updateAttendance = async (req,res) => {
@@ -93,13 +91,11 @@ const fetchWinners = async (req,res) => {
   }
   const event = await Event.findOne({_id:eid})
   const arr=[]
-  event?.winner.forEach(async(participant)=>{
-    const user = await User.findOne({_id:participant})
+  for(var i=0;i<event?.winner.length;++i){
+    const user = await User.findOne({_id:event?.winner[i]})
     arr.push(user)
-  })
-  setTimeout(()=>{
-    res.status(StatusCodes.OK).json({res:"Success",data:arr})
-  },1500)
+  }
+  res.status(StatusCodes.OK).json({res:"Success",data:arr})
 }
 
 const updateWinners = async (req,res) => {
@@ -114,9 +110,9 @@ const updateWinners = async (req,res) => {
   const event = await Event.findOneAndUpdate({_id:eid},req.body,{ new: true, runValidators: true })
   let winning=[]
   let flag=0
-  winner.forEach(async(win)=>{
+  for(let i=0;i<winner.length;++i){
     flag=0
-    const user = await User.findOne({_id:win})
+    const user = await User.findOne({_id:winner[i]})
     user.winning.forEach((win)=>{
       if(String(win) === String(eid)){
         flag=1
@@ -128,11 +124,9 @@ const updateWinners = async (req,res) => {
     else{
       winning = [...user.winning]
     }
-    const user1 = await User.findOneAndUpdate({_id:win},{winning},{ new: true, runValidators: true })
-  })
-  setTimeout(()=>{
-    res.status(StatusCodes.OK).json({res:"Success"})
-  },2000)
+    const user1 = await User.findOneAndUpdate({_id:winner[i]},{winning},{ new: true, runValidators: true })
+  }
+  res.status(StatusCodes.OK).json({res:"Success"})
 
 }
 
@@ -216,13 +210,14 @@ const verifyComboOfflineOTP = async (req,res) => {
     throw new BadRequestError('Please provide Valid Details')
   }
   combo.event.forEach(async(cb)=>{
-    const EventDetails = await Event.findOne({_id:cb})
-    const participants = [...EventDetails.participants,user._id]
-    const eventUpdate = await Event.findOneAndUpdate({_id:cb},{participants},{ new: true, runValidators: true })
+    
   })
-  setTimeout(()=>{
-    res.status(StatusCodes.OK).json({res:"Success"})
-  },1000)
+  for(var i=0;i<combo.event.length;++i){
+    const EventDetails = await Event.findOne({_id:combo.event[i]})
+    const participants = [...EventDetails.participants,user._id]
+    const eventUpdate = await Event.findOneAndUpdate({_id:combo.event[i]},{participants},{ new: true, runValidators: true })
+  }
+  res.status(StatusCodes.OK).json({res:"Success"})
 }
 
 const eventParticipantExcel = async (req,res) => {
@@ -230,7 +225,6 @@ const eventParticipantExcel = async (req,res) => {
   if(!eid){
     throw new BadRequestError('Please provide Event id')
   }
-  let i = 0;
   const event = await Event.findOne({ _id:eid });
   if(!event){
     throw new BadRequestError('Please provide Valid event id')
@@ -244,22 +238,22 @@ const eventParticipantExcel = async (req,res) => {
     "Purchase_Type",
     "Payment_Mode"
   ];
-  event.participants.forEach(async (even) => {
+  for(var i=0;i<event.participants.length;++i){
     let obj={}
-    const user = await User.findOne({_id:even})
+    const user = await User.findOne({_id:event.participants[i]})
     obj.name = user.name;
     obj.email=user.email;
     obj.college = user.college;
     obj.phonenumber = user.phonenumber;
-    const userevent = await UserEvent.findOne({userId:even,eventid:eid})
+    const userevent = await UserEvent.findOne({userId:event.participants[i],eventid:eid})
       if(userevent){
         obj.purchasetype = 'EVENT'
         obj.paymentmode = userevent.payment_mode
       }
       else{
-        const combos = await Combos.find({userId:even})
-        combos.forEach(async(combo)=>{
-          combo.event.forEach(async(comb)=>{
+        const combos = await Combos.find({userId:event.participants[i]})
+        combos.forEach((combo)=>{
+          combo.event.forEach((comb)=>{
             if(String(comb) === String(eid)){
               obj.purchasetype = combo.combotype+'_COMBO'
               obj.paymentmode = combo.payment_mode
@@ -267,11 +261,9 @@ const eventParticipantExcel = async (req,res) => {
           })
         })
       }
-    arr[i] = obj
-    ++i
-  });
+    arr.push(obj)
+  }
   
-  setTimeout(() => {
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet(event.name+"_participants");
     let colIndex = 1;
@@ -295,7 +287,6 @@ const eventParticipantExcel = async (req,res) => {
     setTimeout(() => {
       res.download(file);
     }, 2000);
-  }, 2000);
 }
 
 const eventAttendedExcel = async (req,res) => {
@@ -303,7 +294,6 @@ const eventAttendedExcel = async (req,res) => {
   if(!eid){
     throw new BadRequestError('Please provide Event id')
   }
-  let i = 0;
   const event = await Event.findOne({ _id:eid });
   if(!event){
     throw new BadRequestError('Please provide Valid event id')
@@ -317,22 +307,22 @@ const eventAttendedExcel = async (req,res) => {
     "Purchase_Type",
     "Payment_Mode"
   ];
-  event.attendance.forEach(async (even) => {
+  for(var i=0;i<event.attendance.length;++i){
     let obj={}
-    const user = await User.findOne({_id:even})
+    const user = await User.findOne({_id:event.attendance[i]})
     obj.name = user.name;
     obj.email=user.email;
     obj.college = user.college;
     obj.phonenumber = user.phonenumber;
-    const userevent = await UserEvent.findOne({userId:even,eventid:eid})
+    const userevent = await UserEvent.findOne({userId:event.attendance[i],eventid:eid})
       if(userevent){
         obj.purchasetype = 'EVENT'
         obj.paymentmode = userevent.payment_mode
       }
       else{
-        const combos = await Combos.find({userId:even})
-        combos.forEach(async(combo)=>{
-          combo.event.forEach(async(comb)=>{
+        const combos = await Combos.find({userId:event.attendance[i]})
+        combos.forEach((combo)=>{
+          combo.event.forEach((comb)=>{
             if(String(comb) === String(eid)){
               obj.purchasetype = combo.combotype+'_COMBO'
               obj.paymentmode = combo.payment_mode
@@ -340,11 +330,9 @@ const eventAttendedExcel = async (req,res) => {
           })
         })
       }
-    arr[i] = obj
-    ++i
-  });
-  
-  setTimeout(() => {
+    arr.push(obj)
+  };
+
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet(event.name+"_attendees");
     let colIndex = 1;
@@ -368,7 +356,6 @@ const eventAttendedExcel = async (req,res) => {
     setTimeout(() => {
       res.download(file);
     }, 2000);
-  }, 2000);
 }
 module.exports = {
   eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,verifyEventOfflineOTP,showEventOfflineOTP,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel

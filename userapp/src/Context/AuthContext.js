@@ -80,7 +80,7 @@ const AuthContextProvider = ({children}) => {
         userId,
       }}>
       {children}
-      {loginPending ? <AppLoader /> : null}
+      {/* {loginPending ? <AppLoader /> : null} */}
     </AuthContext.Provider>
   );
 };
