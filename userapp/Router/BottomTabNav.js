@@ -19,6 +19,15 @@ const BottomTabNav = () => {
         headerShown: false,
         tabBarInactiveTintColor: '#f5c3bf',
         tabBarActiveTintColor: '#f7442d',
+        tabBarStyle: {
+          height: 54,
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+          left: 16,
+          borderRadius: 13,
+          paddingBottom: 6,
+        },
       }}>
       <Tab.Screen
         component={HomeStack}
