@@ -27,6 +27,10 @@ const UsersSchema = new mongoose.Schema({
     type:Number,
     default:0
   },
+  phonenumber: {
+    type: String,
+    required: [true, "Please provide valid Number"],
+  },
   otp:{
     type:Number,
     default:0
