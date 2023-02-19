@@ -31,22 +31,22 @@ const getCertificate = async (req, res) => {
   const event = await Event.findOne({ _id: eid });
   // Create a document
   const doc = new pdfkit();
-  // const doc = new PDFDocument();
   // Saving the pdf file in root directory.
   doc.pipe(fs.createWriteStream(`./certificates/certificate-${user.name}-${event.name}.pdf`));
   doc.image("./certificate.jpg", 0, 0, { width: 620, height: 800 });
+  // doc.registerFont('montserrat','','Montserrat')
   const angle = Math.PI * 28.6;
-  doc.rotate(angle, { origin: [300, 240] });
-  doc.fontSize(17).text(user.name, 300, 240, {
+  doc.rotate(angle, { origin: [300, 248] });
+  doc.fontSize(17).font('./Montserrat/static/Montserrat-BoldItalic.ttf').text(user.name, 300, 244, {
     width: 300,
     align: "center",
   });
-  doc.fontSize(17).text(event.name, 360, 299, {
-    width: 210,
+  doc.fontSize(17).text(event.name, 360, 302, {
+    width: 200,
     align: "center",
   });
-  doc.fontSize(15).text("18", 420, 381, {
-    width: 40,
+  doc.fontSize(15).text("18", 422, 385, {
+    width: 24,
     align: "center",
   });
   doc.end();
