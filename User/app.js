@@ -35,7 +35,7 @@ app.use(xss())
 
 
 //routes user
-app.use('/api/v1/user',userRouter);
+app.use('/api/v1/user',authmiddleware,userRouter);
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');

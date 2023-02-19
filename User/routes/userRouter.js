@@ -16,8 +16,8 @@ const {
 
 //events
 router.route("/events").get(getAllEvents); //1.all the events 2.search filter 3.specific fields
-router.route("/events/:id").get(getOneEvent); //get event details [:id = event id]
 router.route("/events/category").get(getEventsCategorized); //get categorized events
+router.route("/events/:id").get(getOneEvent); //get event details [:id = event id]
 router.route("/events/:uid").get(getUserEvents); //get events bought by the user [:uid = user id]
 
 //combos

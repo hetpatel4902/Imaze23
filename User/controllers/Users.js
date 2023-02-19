@@ -21,7 +21,18 @@ const getAllEvents = async (req, res) => {
   }
   res.status(StatusCodes.OK).json({ res: "success", data: events });
 };
-const getEventsCategorized = async (req, res) => {};
+const getEventsCategorized = async (req, res) => {
+  var findEl = "category";
+  var resp = await Event.find({});
+  var groupby = function (xs, key) {
+    return xs.reduce(function (rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
+  const result = groupby(resp, findEl);
+  res.status(StatusCodes.OK).json({ res: "success", data: result });
+};
 const getStaticCombos = async (req, res) => {};
 const getUserEvents = async (req, res) => {};
 
