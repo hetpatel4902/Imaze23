@@ -15,7 +15,7 @@ const {
 } = require("../controllers/Users");
 
 //events
-router.route("/events").get(getAllEvents); //1.all the events 2.search filter 3.specific fields
+router.route("/events").get(getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.specific fields[?fields=name,venue...]
 router.route("/events/category").get(getEventsCategorized); //get categorized events
 router.route("/events/:id").get(getOneEvent); //get event details [:id = event id]
 router.route("/events/:uid").get(getUserEvents); //get events bought by the user [:uid = user id]
@@ -29,7 +29,7 @@ router.route("/certificates/:uid/visibility").get(buttonVisibility); //visible o
 router.route("/certificates/:uid/:eid").get(getCertificate); //download certificate [:eid = event id]
 
 //user
-router.route("/:uid").get(getUserDetails); // url-> /api/v1/user
-router.route("/:uid/validateOTP").post(validateUserOtp); //req.body = { otp }
+router.route("/:uid").get(getUserDetails); // url-> /api/v1/user/${userid}
+router.route("/:uid/validateOTP").post(validateUserOtp); //req.body = { otp:otp }
 
 module.exports = router;

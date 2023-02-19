@@ -7,8 +7,18 @@ const fs = require("fs");
 const path = require("path");
 // Importing modules
 const pdfkit = require("pdfkit");
+const StaticCombo = require("../models/StaticCombo");
 
-const getOneEvent = async (req, res) => {};
+const getOneEvent = async (req, res) => {
+  const { eid } = req.params;
+  const event = await Event.findOne({ _id: eid });
+  if (!event) {
+    throw new NotFoundError(
+      "there is no event corresponding to provided event id"
+    );
+  }
+  res.status(StatusCodes.OK).json({ res: "success", data: event });
+};
 const getAllEvents = async (req, res) => {
   const { search, fields } = req.query;
   var events;
@@ -33,7 +43,25 @@ const getEventsCategorized = async (req, res) => {
   const result = groupby(resp, findEl);
   res.status(StatusCodes.OK).json({ res: "success", data: result });
 };
-const getStaticCombos = async (req, res) => {};
+const getStaticCombos = async (req, res) => {
+  var static_combos = await StaticCombo.find({});
+  var resp = []
+  for (let i = 0; i < static_combos.length; i++) {
+    const event_array = static_combos[i].events;
+    const obj = {}
+    let arr = [];
+    for (let j = 0; j < event_array.length; j++) {
+      const event = await Event.findOne({ _id: event_array[j] });
+      arr.push(event);
+    }
+    obj.events = arr;
+    obj._id = static_combos[i]._id;
+    obj.price = static_combos[i].price;
+    resp.push(obj);
+  }
+
+  res.status(StatusCodes.OK).json({ res: "success", data: resp });
+};
 const getUserEvents = async (req, res) => {};
 
 const getCertificate = async (req, res) => {
@@ -43,15 +71,22 @@ const getCertificate = async (req, res) => {
   // Create a document
   const doc = new pdfkit();
   // Saving the pdf file in root directory.
-  doc.pipe(fs.createWriteStream(`./certificates/certificate-${user.name}-${event.name}.pdf`));
+  doc.pipe(
+    fs.createWriteStream(
+      `./certificates/certificate-${user.name}-${event.name}.pdf`
+    )
+  );
   doc.image("./certificate.jpg", 0, 0, { width: 620, height: 800 });
   // doc.registerFont('montserrat','','Montserrat')
   const angle = Math.PI * 28.6;
   doc.rotate(angle, { origin: [300, 248] });
-  doc.fontSize(17).font('./Montserrat/static/Montserrat-BoldItalic.ttf').text(user.name, 300, 244, {
-    width: 300,
-    align: "center",
-  });
+  doc
+    .fontSize(17)
+    .font("./Montserrat/static/Montserrat-BoldItalic.ttf")
+    .text(user.name, 300, 244, {
+      width: 300,
+      align: "center",
+    });
   doc.fontSize(17).text(event.name, 360, 302, {
     width: 200,
     align: "center",
@@ -65,7 +100,9 @@ const getCertificate = async (req, res) => {
     var file = fs.createReadStream(
       `./certificates/certificate-${user.name}-${event.name}.pdf`
     );
-    var stat = fs.statSync(`./certificates/certificate-${user.name}-${event.name}.pdf`);
+    var stat = fs.statSync(
+      `./certificates/certificate-${user.name}-${event.name}.pdf`
+    );
     res.setHeader("Content-Length", stat.size);
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
