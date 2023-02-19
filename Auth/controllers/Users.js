@@ -7,8 +7,8 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
 const registerUsers = async (req, res) => {
-  const { name, email, password, college, enrno, qrlink } = req.body;
-  if (!email || !name || !password || !college || !enrno) {
+  const { name, email, password, college, phonenumber } = req.body;
+  if (!email || !name || !password || !college || !phonenumber) {
     throw new BadRequestError("Please provide necessary credentials");
   }
   const user = await User.create(req.body);
