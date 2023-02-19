@@ -230,7 +230,6 @@ const eventParticipantExcel = async (req,res) => {
   if(!eid){
     throw new BadRequestError('Please provide Event id')
   }
-  let i = 0;
   const event = await Event.findOne({ _id:eid });
   if(!event){
     throw new BadRequestError('Please provide Valid event id')
@@ -244,22 +243,22 @@ const eventParticipantExcel = async (req,res) => {
     "Purchase_Type",
     "Payment_Mode"
   ];
-  event.participants.forEach(async (even) => {
+  for(var i=0;i<event.participants.length;++i){
     let obj={}
-    const user = await User.findOne({_id:even})
+    const user = await User.findOne({_id:event.participants[i]})
     obj.name = user.name;
     obj.email=user.email;
     obj.college = user.college;
     obj.phonenumber = user.phonenumber;
-    const userevent = await UserEvent.findOne({userId:even,eventid:eid})
+    const userevent = await UserEvent.findOne({userId:event.participants[i],eventid:eid})
       if(userevent){
         obj.purchasetype = 'EVENT'
         obj.paymentmode = userevent.payment_mode
       }
       else{
-        const combos = await Combos.find({userId:even})
-        combos.forEach(async(combo)=>{
-          combo.event.forEach(async(comb)=>{
+        const combos = await Combos.find({userId:event.participants[i]})
+        combos.forEach((combo)=>{
+          combo.event.forEach((comb)=>{
             if(String(comb) === String(eid)){
               obj.purchasetype = combo.combotype+'_COMBO'
               obj.paymentmode = combo.payment_mode
@@ -267,11 +266,9 @@ const eventParticipantExcel = async (req,res) => {
           })
         })
       }
-    arr[i] = obj
-    ++i
-  });
+    arr.push(obj)
+  }
   
-  setTimeout(() => {
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet(event.name+"_participants");
     let colIndex = 1;
@@ -295,7 +292,6 @@ const eventParticipantExcel = async (req,res) => {
     setTimeout(() => {
       res.download(file);
     }, 2000);
-  }, 2000);
 }
 
 const eventAttendedExcel = async (req,res) => {
@@ -303,7 +299,6 @@ const eventAttendedExcel = async (req,res) => {
   if(!eid){
     throw new BadRequestError('Please provide Event id')
   }
-  let i = 0;
   const event = await Event.findOne({ _id:eid });
   if(!event){
     throw new BadRequestError('Please provide Valid event id')
@@ -317,22 +312,22 @@ const eventAttendedExcel = async (req,res) => {
     "Purchase_Type",
     "Payment_Mode"
   ];
-  event.attendance.forEach(async (even) => {
+  for(var i=0;i<event.attendance.length;++i){
     let obj={}
-    const user = await User.findOne({_id:even})
+    const user = await User.findOne({_id:event.attendance[i]})
     obj.name = user.name;
     obj.email=user.email;
     obj.college = user.college;
     obj.phonenumber = user.phonenumber;
-    const userevent = await UserEvent.findOne({userId:even,eventid:eid})
+    const userevent = await UserEvent.findOne({userId:event.attendance[i],eventid:eid})
       if(userevent){
         obj.purchasetype = 'EVENT'
         obj.paymentmode = userevent.payment_mode
       }
       else{
-        const combos = await Combos.find({userId:even})
-        combos.forEach(async(combo)=>{
-          combo.event.forEach(async(comb)=>{
+        const combos = await Combos.find({userId:event.attendance[i]})
+        combos.forEach((combo)=>{
+          combo.event.forEach((comb)=>{
             if(String(comb) === String(eid)){
               obj.purchasetype = combo.combotype+'_COMBO'
               obj.paymentmode = combo.payment_mode
@@ -340,11 +335,9 @@ const eventAttendedExcel = async (req,res) => {
           })
         })
       }
-    arr[i] = obj
-    ++i
-  });
-  
-  setTimeout(() => {
+    arr.push(obj)
+  };
+
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet(event.name+"_attendees");
     let colIndex = 1;
@@ -368,7 +361,6 @@ const eventAttendedExcel = async (req,res) => {
     setTimeout(() => {
       res.download(file);
     }, 2000);
-  }, 2000);
 }
 module.exports = {
   eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,verifyEventOfflineOTP,showEventOfflineOTP,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel
