@@ -33,7 +33,7 @@ const getCertificate = async (req, res) => {
   const doc = new pdfkit();
   // const doc = new PDFDocument();
   // Saving the pdf file in root directory.
-  doc.pipe(fs.createWriteStream(`certificate-${user.name}-${event.name}.pdf`));
+  doc.pipe(fs.createWriteStream(`./certificates/certificate-${user.name}-${event.name}.pdf`));
   doc.image("./certificate.jpg", 0, 0, { width: 620, height: 800 });
   const angle = Math.PI * 28.6;
   doc.rotate(angle, { origin: [300, 240] });
@@ -52,9 +52,9 @@ const getCertificate = async (req, res) => {
   doc.end();
   setTimeout(() => {
     var file = fs.createReadStream(
-      `./certificate-${user.name}-${event.name}.pdf`
+      `./certificates/certificate-${user.name}-${event.name}.pdf`
     );
-    var stat = fs.statSync(`./certificate-${user.name}-${event.name}.pdf`);
+    var stat = fs.statSync(`./certificates/certificate-${user.name}-${event.name}.pdf`);
     res.setHeader("Content-Length", stat.size);
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
