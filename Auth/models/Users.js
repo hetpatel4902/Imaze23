@@ -27,7 +27,7 @@ const UsersSchema = new mongoose.Schema({
     minlength: 8,
   },
   phonenumber: {
-    type: Number,
+    type: String,
     required: [true, "Please provide valid Number"],
   },
   points: {
