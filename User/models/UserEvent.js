@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
-//combos history and static combos needed
 const UserEventSchema = new mongoose.Schema({
   userId:{
     type:mongoose.Types.ObjectId,
@@ -29,7 +28,6 @@ const UserEventSchema = new mongoose.Schema({
     type:Number,
     default:0
   }
-  //add price , payment_mode
 })
 
 
