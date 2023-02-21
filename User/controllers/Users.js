@@ -5,6 +5,7 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors/index");
 const fs = require("fs");
 const pdfkit = require("pdfkit");
+const UserEvent = require("../models/UserEvent");
 
 //events
 const getAllEvents = async (req, res) => {
@@ -41,7 +42,11 @@ const getOneEvent = async (req, res) => {
   }
   res.status(StatusCodes.OK).json({ res: "success", data: event });
 };
-const getUserEvents = async (req, res) => {};
+const getUserEvents = async (req, res) => {
+  const {uid} = req.params;
+  const userEvents = UserEvent.find({userId:uid});
+  res.status(StatusCodes.OK).json({res:"success",data:userEvents})
+};
 
 //combos
 const getStaticCombos = async (req, res) => {
@@ -64,70 +69,60 @@ const getStaticCombos = async (req, res) => {
   res.status(StatusCodes.OK).json({ res: "success", data: resp });
 };
 const checkDynamicCombo = async (req, res) => {
-  // var {events} = req.body;
-
-  // var clashing = [];
-  // for(let i=0;i<events.length;i++)
-  // {
-  //   const event = await Event.findOne({_id:events[i]._id});
-  //   events.push(event);
-
-  // }
-
-  // for(let i=0;i<events.length;i++)
-  // {
-  //   for(let j=i+1;j<events.length;j++)
-  //   {
-  //     if(events[i].day.substring(0,2))
-  //   }
-  // }
-  // let time_div = {};
-  // for(let i =8;i<=19;i++){
-  //   time_div[i] = [];
-  // }
-  // var data = [];
-  // let flag = false;
-  // var res = {};
-  // for(let i=0;i<events.length;i++){
-  //   const event = await Event.findOne({_id:events[i]._id});
-  //   const event_day = event.date.substring(0,2);
-  //   const event_time = event.time;
-  //   const event_name = event.name;
-  //   if(event_day in res){
-  //     res[event_day][event_time].push(event_name);
-  //   }
-  //   else{
-  //     res[event_day] = time_div;
-  //     res[event_day][event_time].push(event_name);
-  //   }
-
-  //   for(let day in res){
-  //     let time = res[day];
-  //     for(let t in time){
-  //       if(time[t].length !==0){
-  //         data.push(time[t]);
-  //         flag = true;
-  //       }
-  //     }
-  //   }
-  //   res.status(StatusCodes.OK).json({res:"success",data:{flag,clashing_events:data}});
-
-
+  var { events } = req.body;
+  let time_div = {};
+  for (let i = 8; i <= 19; i++) {
+    time_div[i] = [];
   }
-
-
-
+  var data = [];
+  let flag = false;
+  var result = {};
+  for (let i = 0; i < events.length; i++) {
+    const event = await Event.findOne({ _id: events[i] });
+    const event_day = event.date.substring(0, 2);
+    const event_time = event.time;
+    const event_name = event.name;
+    if (event_day in res) {
+      if (event_time.substring(2, 4) === "00") {
+        result[event_day][Number(event_time.substring(0, 2)) - 1].push(
+          event_name
+        );
+      } else {
+        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
+      }
+    } else {
+      result[event_day] = time_div;
+      if (event_time.substring(2, 4) === "00") {
+        result[event_day][Number(event_time.substring(0, 2)) - 1].push(
+          event_name
+        );
+      } else {
+        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
+      }
+    }
+  }
+  for (var day in result) {
+    let time = result[day]
+    for (let t in time) {
+      if (time[t].length !=0) {
+        data.push(time[t]);
+        flag = true;
+      }
+    }
+    }
+  
+  res.status(StatusCodes.OK).json({res:"success",data:{flag,data}});
+};
 
 //certificates
 const buttonVisibility = async (req, res) => {
   const { uid, eid } = req.params;
-  const event = await Event.findOne({_id:eid});
+  const event = await Event.findOne({ _id: eid });
   const participants = event.participants;
-  if(uid in participants){
-    res.status(StatusCodes.OK).json({res:"success",data:true});
-  }
-  else{
-    res.status(StatusCodes.OK).json({res:"failed",data:false});
+  if (uid in participants) {
+    res.status(StatusCodes.OK).json({ res: "success", data: true });
+  } else {
+    res.status(StatusCodes.OK).json({ res: "failed", data: false });
   }
 };
 const getCertificate = async (req, res) => {
@@ -202,17 +197,20 @@ const validateUserOtp = async (req, res) => {
     }
   }
 };
-const updatepassword = async(req,res)=>{
-  const {uid} = req.params;
-  const {password} = req.body;
-  const user = await User.findOneAndUpdate({_id:uid},{password},{new:true})
-  if(!user){
+const updatepassword = async (req, res) => {
+  const { uid } = req.params;
+  const { password } = req.body;
+  const user = await User.findOneAndUpdate(
+    { _id: uid },
+    { password },
+    { new: true }
+  );
+  if (!user) {
     throw new NotFoundError("user not found");
+  } else {
+    res.status(StatusCodes.OK).json({ res: "success", data: user });
   }
-  else{
-    res.status(StatusCodes.OK).json({res:"success",data:user})
-  }
-}
+};
 
 module.exports = {
   getAllEvents,
@@ -225,5 +223,5 @@ module.exports = {
   getCertificate,
   getUserDetails,
   validateUserOtp,
-  updatepassword
+  updatepassword,
 };
