@@ -118,8 +118,8 @@ const checkDynamicCombo = async (req, res) => {
 const buttonVisibility = async (req, res) => {
   const { uid, eid } = req.params;
   const event = await Event.findOne({ _id: eid });
-  const participants = event.participants;
-  if (uid in participants) {
+  const attendees = event.attendance;
+  if (uid in attendees) {
     res.status(StatusCodes.OK).json({ res: "success", data: true });
   } else {
     res.status(StatusCodes.OK).json({ res: "failed", data: false });
