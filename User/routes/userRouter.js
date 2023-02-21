@@ -26,7 +26,7 @@ router.route("/combos/dynamic").post(checkDynamicCombo); //check if the dynamic 
 
 //certificates
 router.route("/certificates/:uid/visibility").get(buttonVisibility); //visible only if the user has attended that event
-router.route("/certificates/:uid/:eid").get(getCertificate); //download certificate [:eid = event id]
+router.route("/certificates/:uid/:eid").get(getCertificate); //download certificate [:eid = event id] [:uid = user id]
 
 //user
 router.route("/:uid").get(getUserDetails); // url-> /api/v1/user/${userid}

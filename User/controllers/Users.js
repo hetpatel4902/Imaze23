@@ -1,24 +1,12 @@
 const User = require("../models/Users");
 const Event = require("../models/Event");
+const StaticCombo = require("../models/StaticCombo");
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors/index");
-const nodemailer = require("nodemailer");
 const fs = require("fs");
-const path = require("path");
-// Importing modules
 const pdfkit = require("pdfkit");
-const StaticCombo = require("../models/StaticCombo");
 
-const getOneEvent = async (req, res) => {
-  const { eid } = req.params;
-  const event = await Event.findOne({ _id: eid });
-  if (!event) {
-    throw new NotFoundError(
-      "there is no event corresponding to provided event id"
-    );
-  }
-  res.status(StatusCodes.OK).json({ res: "success", data: event });
-};
+//events 
 const getAllEvents = async (req, res) => {
   const { search, fields } = req.query;
   var events;
@@ -43,6 +31,20 @@ const getEventsCategorized = async (req, res) => {
   const result = groupby(resp, findEl);
   res.status(StatusCodes.OK).json({ res: "success", data: result });
 };
+const getOneEvent = async (req, res) => {
+  const { eid } = req.params;
+  const event = await Event.findOne({ _id: eid });
+  if (!event) {
+    throw new NotFoundError(
+      "there is no event corresponding to provided event id"
+    );
+  }
+  res.status(StatusCodes.OK).json({ res: "success", data: event });
+};
+const getUserEvents = async (req, res) => {};
+
+
+//combos
 const getStaticCombos = async (req, res) => {
   var static_combos = await StaticCombo.find({});
   var resp = []
@@ -59,11 +61,14 @@ const getStaticCombos = async (req, res) => {
     obj.price = static_combos[i].price;
     resp.push(obj);
   }
-
+  
   res.status(StatusCodes.OK).json({ res: "success", data: resp });
 };
-const getUserEvents = async (req, res) => {};
+const checkDynamicCombo = async (req, res) => {};
 
+
+//certificates
+const buttonVisibility = async (req, res) => {};
 const getCertificate = async (req, res) => {
   const { uid, eid } = req.params;
   const user = await User.findOne({ _id: uid });
@@ -77,7 +82,6 @@ const getCertificate = async (req, res) => {
     )
   );
   doc.image("./certificate.jpg", 0, 0, { width: 620, height: 800 });
-  // doc.registerFont('montserrat','','Montserrat')
   const angle = Math.PI * 28.6;
   doc.rotate(angle, { origin: [300, 248] });
   doc
@@ -113,8 +117,8 @@ const getCertificate = async (req, res) => {
   }, 1000);
 };
 
-const checkDynamicCombo = async (req, res) => {};
-const buttonVisibility = async (req, res) => {};
+
+//user
 const getUserDetails = async (req, res) => {
   const { uid } = req.params;
   const user = await User.findOne({ _id: uid });
