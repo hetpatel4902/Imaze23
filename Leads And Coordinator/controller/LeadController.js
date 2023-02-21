@@ -176,6 +176,9 @@ const verifyEventOfflineOTP = async (req,res) => {
   const EventDetails = await Event.findOne({_id:event.eventid})
   const participants = [...EventDetails.participants,user._id]
   const eventUpdate = await Event.findOneAndUpdate({_id:event.eventid},{participants},{ new: true, runValidators: true })
+  if(eventUpdate.participants.length >= eventUpdate.maxparticipants){
+    const finalEventUpdate = await Event.findOneAndUpdate({_id:event.eventid},{isAvailable:false},{ new: true, runValidators: true })
+  }
   res.status(StatusCodes.OK).json({res:"Success"})
 }
 
@@ -209,14 +212,15 @@ const verifyComboOfflineOTP = async (req,res) => {
   if(!combo){
     throw new BadRequestError('Please provide Valid Details')
   }
-  combo.event.forEach(async(cb)=>{
-    
-  })
   for(var i=0;i<combo.event.length;++i){
     const EventDetails = await Event.findOne({_id:combo.event[i]})
     const participants = [...EventDetails.participants,user._id]
     const eventUpdate = await Event.findOneAndUpdate({_id:combo.event[i]},{participants},{ new: true, runValidators: true })
+    if(eventUpdate.participants.length >= eventUpdate.maxparticipants){
+      const finalEventUpdate = await Event.findOneAndUpdate({_id:combo.event[i]},{isAvailable:false},{ new: true, runValidators: true })
+    }
   }
+  
   res.status(StatusCodes.OK).json({res:"Success"})
 }
 

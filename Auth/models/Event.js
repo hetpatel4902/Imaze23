@@ -56,7 +56,16 @@ const EventSchema = new mongoose.Schema({
     type:[mongoose.Types.ObjectId],
     ref:"Users",
     default:[]
+  },
+  maxparticipants:{
+    type:Number,
+    required:[true,'Please provide number of participants']
+  },
+  isAvailable:{
+    type:Boolean,
+    default:true
   }
+  
   
 })
 
