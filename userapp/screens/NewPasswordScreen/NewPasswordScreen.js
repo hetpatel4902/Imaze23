@@ -13,12 +13,14 @@ import {useNavigation} from '@react-navigation/native';
 // import {useForm} from 'react-hook-form';
 import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
+import {useAuthContext} from '../../src/Context/AuthContext';
 // import AppLoader from '../../components/AppLoader';
 // import {PAYMENT_IP} from '@env';
 // import {Auth} from 'aws-amplify';
 
 const NewPasswordScreen = () => {
   // const {control, handleSubmit} = useForm();
+  const {users} = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordWrong, setPasswordWrong] = useState(false);
@@ -30,7 +32,7 @@ const NewPasswordScreen = () => {
       try {
         setLoading(true);
         const response = await axios.patch(
-          `http://10.0.2.2:3000/api/v1/user/${email}/updatePassword`,
+          `http://10.0.2.2:8000/api/v1/user/${users}/password`,
           {password: password},
         );
         navigation.navigate('SignIn');

@@ -13,11 +13,13 @@ import {useNavigation} from '@react-navigation/core';
 // import {useForm} from 'react-hook-form';
 import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
+import {useAuthContext} from '../../src/Context/AuthContext';
 // import AppLoader from '../../components/AppLoader';
 // import {PAYMENT_IP} from '@env';x
 
 const ConfirmEmailScreen = () => {
   const route = useRoute();
+  const {users} = useAuthContext();
   // const {control, handleSubmit, watch} = useForm({
   //   defaultValues: {username: route?.params?.username},
   // });
@@ -35,7 +37,7 @@ const ConfirmEmailScreen = () => {
       console.log('email', email);
       setLoading(true);
       const response = await axios.post(
-        `http://10.0.2.2:3000/api/v1/user/${email}/validateOtp`,
+        `http://10.0.2.2:8000/api/v1/user/${users}/validateOtp`,
         {otp: otp},
       );
       console.log(response);
