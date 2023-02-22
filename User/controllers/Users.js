@@ -185,11 +185,11 @@ const getUserDetails = async (req, res) => {
 };
 const validateUserOtp = async (req, res) => {
   const { otp } = req.body;
-  const { uid } = req.params;
+  const { email } = req.params;
   if (!otp) {
     throw new BadRequestError("Please provide otp in the body");
   } else {
-    const user = await User.findOne({ _id: uid });
+    const user = await User.findOne({ email: email });
     if (user.otp !== otp) {
       res.status(StatusCodes.OK).json({ res: "failed", data: "Invalid otp" });
     } else {
@@ -198,10 +198,10 @@ const validateUserOtp = async (req, res) => {
   }
 };
 const updatepassword = async (req, res) => {
-  const { uid } = req.params;
+  const { email } = req.params;
   const { password } = req.body;
   const user = await User.findOneAndUpdate(
-    { _id: uid },
+    { email: email },
     { password },
     { new: true }
   );

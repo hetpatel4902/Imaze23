@@ -31,7 +31,7 @@ router.route("/certificates/:uid/event/:eid").get(getCertificate); //download ce
 
 //user
 router.route("/:uid").get(getUserDetails); // url-> /api/v1/user/${userid}
-router.route("/:uid/validateOTP").post(validateUserOtp); //req.body = { otp:otp }
-router.route("/:uid/password").patch(updatepassword); //req.body = {password:password}
+router.route("/:email/validateOTP").post(validateUserOtp); //req.body = { otp:otp }
+router.route("/:email/password").patch(updatepassword); //req.body = {password:password}
 
 module.exports = router;
