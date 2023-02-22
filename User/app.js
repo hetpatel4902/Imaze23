@@ -44,6 +44,14 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
+//populating data...
+// const Event = require('./models/Event')
+// const data = require('./data.json');
+// const insertmany = async()=>{
+//   const events = await Event.create(data);
+//   console.log("success");
+// }
+// insertmany();
 
 const port = process.env.PORT || 8000;
 

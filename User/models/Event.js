@@ -65,8 +65,6 @@ const EventSchema = new mongoose.Schema({
     type:Boolean,
     default:true
   }
-  
-  
 })
 
 
