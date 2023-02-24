@@ -1,11 +1,12 @@
 const User = require("../models/Users");
 const Event = require("../models/Event");
 const StaticCombo = require("../models/StaticCombo");
+const UserEvent = require("../models/UserEvent");
+const Combo = require("../models/Combos");
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors/index");
 const fs = require("fs");
 const pdfkit = require("pdfkit");
-const UserEvent = require("../models/UserEvent");
 
 //events
 const getAllEvents = async (req, res) => {
@@ -44,8 +45,64 @@ const getOneEvent = async (req, res) => {
 };
 const getUserEvents = async (req, res) => {
   const {uid} = req.params;
-  const userEvents = UserEvent.find({userId:uid});
-  res.status(StatusCodes.OK).json({res:"success",data:userEvents})
+  const userEvents = await UserEvent.find({userId:uid,payment_status:"COMPLETED"});
+  const userCombos = await Combo.find({userId:uid,payment_status:"COMPLETED"});
+  const pendingCombos = await Combo.find({userId:uid,payment_status:"INCOMPLETE"});
+  const pendingEvents = await UserEvent.find({userId:uid,payment_status:"INCOMPLETE"});
+
+  //pending combos
+  var combos = []
+  for(let i=0;i<pendingCombos.length;i++)
+  {
+    var temp_combo_array = [];
+    const events = pendingCombos[i].event;
+    for(let j=0;j<events.length;j++)
+    {
+      const event = await Event.findOne({_id:events[j]});
+      temp_combo_array.push(event);
+    }
+    obj.events = temp_combo_array;
+    obj.price = userEvents[i].price;
+    obj.payment_mode = userEvents[i].payment_mode;
+    obj.cash_otp = userEvents[i].cashotp;
+    obj.combo_type = userEvents[i].combotype;
+    combos.push(obj);
+  }
+  //pending events
+  var individual = []
+  for(let i=0;i<pendingEvents.length;i++)
+  {
+    const event = await Event.findOne({_id:pendingEvents[i].eventid});
+    var obj = {};
+    obj.event_details = event;
+    obj.price = userEvents[i].price;
+    obj.payment_mode = userEvents[i].payment_mode;
+    obj.cash_otp = userEvents[i].cashotp;
+    individual.push(obj);
+
+  }
+
+  //purchased events 
+  var event_ids = [];
+  for(let i=0;i<userEvents.length;i++)
+  {
+    event_ids.push(userEvents[i].eventid);
+  }
+  for(let i=0;i<userCombos.length;i++)
+  {
+    let combo_events = userCombos[i].event;
+    for(let j=0;j<combo_events.length;j++)
+    {
+      event_ids.push(combo_events[j]);
+    }
+  }
+  var events = [];
+  for(let i=0;i<event_ids.length;i++)
+  {
+    const event = await Event.findOne({_id:event_ids[i]});
+    events.push(event);
+  }
+  res.status(StatusCodes.OK).json({res:"success",data:{purchased_events:events,pending:{combos,individual}}});
 };
 
 //combos
@@ -211,6 +268,43 @@ const updatepassword = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", data: user });
   }
 };
+const getPaymentHistory = async(req,res)=>{
+  const {uid} = req.params;
+  const userEvents = await UserEvent.find({userId:uid,payment_status:"COMPLETED"});
+  const userCombos = await Combo.find({userId:uid,payment_status:"COMPLETED"});
+
+  var individual_events = []
+  for(let i=0;i<userEvents.length;i++)
+  {
+    const event = await Event.findOne({_id:userEvents[i].eventid});
+    var obj = {};
+    obj.event_details = event;
+    obj.price = userEvents[i].price;
+    obj.payment_mode = userEvents[i].payment_mode;
+    individual_events.push(obj);
+  }
+
+  var combos = [];
+  for(let i=0;i<userCombos.length;i++)
+  {
+    let temp_array = [];
+    let events = userCombos.event;
+    for(let j=0;j<events.length;j++)
+    {
+      const event = await Event.findOne({_id:events[j]});
+      temp_array.push(event);
+    }
+    const obj = {};
+    obj.events = temp_array;
+    obj.price = userCombos[i].price;
+    obj.payment_mode = userCombos[i].payment_mode;
+    obj.combo_type = userCombos[i].combotype;
+
+    combos.push(obj);
+  }
+
+  res.status(StatusCodes.OK).json({res:"success",data:{individual_events,combos}});
+}
 
 module.exports = {
   getAllEvents,
@@ -224,4 +318,5 @@ module.exports = {
   getUserDetails,
   validateUserOtp,
   updatepassword,
+  getPaymentHistory
 };
