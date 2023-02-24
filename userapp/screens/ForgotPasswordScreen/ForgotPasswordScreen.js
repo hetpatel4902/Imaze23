@@ -259,6 +259,7 @@ import {
   Image,
   TextInput,
   Pressable,
+  Dimensions,
 } from 'react-native';
 // import CustomInput from '../../components/CustomInput';
 // import CustomButton from '../../components/CustomButton';
@@ -267,11 +268,16 @@ import {useNavigation} from '@react-navigation/core';
 // import {useForm} from 'react-hook-form';
 import axios from 'axios';
 import AppLoader from '../../components/AppLoader';
+import {USER_IP, AUTH_IP} from '@env';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SearchLoader from '../../components/SearchLoader';
+
 // import {PAYMENT_IP} from '@env';
 // import {Auth} from 'aws-amplify';
 
 const ForgotPasswordScreen = () => {
   // const {control, handleSubmit} = useForm();
+  const width = Dimensions.get('window').width;
   const navigation = useNavigation();
   const [check, setCheck] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -280,8 +286,9 @@ const ForgotPasswordScreen = () => {
     setCheck(false);
     try {
       setLoading(true);
+      // console.log('hello');
       const response = await axios.patch(
-        `http://10.0.2.2:3000/api/v1/user/forgotpassword`,
+        `http://${AUTH_IP}/api/v1/user/forgotpassword`,
         {email: email},
       );
       // console.log(response.data);
@@ -306,7 +313,7 @@ const ForgotPasswordScreen = () => {
         style={{backgroundColor: 'white'}}>
         <View style={styles.root}>
           <Image
-            source={require('../../data/forgotpass.jpg')}
+            source={require('../../data/loginunsuccessful.png')}
             style={{
               height: 230,
               width: 230,
@@ -315,17 +322,55 @@ const ForgotPasswordScreen = () => {
               alignSelf: 'center',
             }}
           />
-          <Text style={styles.title}>Reset your password</Text>
-
-          {/* <CustomInput
-            name="email"
-            control={control}
-            placeholder="Email"
-            rules={{
-              required: 'Email is required',
-            }}
-          /> */}
           <Text
+            style={{
+              marginTop: 30,
+              fontSize: 22,
+              fontFamily: 'Poppins-SemiBold',
+              color: '#242424',
+            }}>
+            Forgot Password?
+          </Text>
+          <Text
+            style={{
+              marginTop: 10,
+              fontSize: 12,
+              fontFamily: 'Poppins-Medium',
+              color: 'grey',
+            }}>
+            Don't worry! It happens. Please enter the address associated with
+            your account.
+          </Text>
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 50}}>
+            <MaterialIcons
+              name="alternate-email"
+              size={20}
+              color={'#757575'}
+              style={{marginRight: 3}}
+            />
+            <TextInput
+              onChangeText={setEmail}
+              placeholderTextColor="grey"
+              placeholder="Email ID"
+              value={email}
+              style={{
+                height: 40,
+                marginLeft: 4,
+                flex: 1,
+                borderBottomWidth: 1,
+                borderColor: '#d1cfcf',
+                marginTop: 5,
+                borderRadius: 8,
+                paddingHorizontal: 10,
+                paddingBottom: 9,
+                fontSize: 13,
+                fontFamily: 'Poppins-Medium',
+                color: '#212121',
+              }}
+            />
+          </View>
+          {/* <Text
             style={{
               color: 'black',
               fontSize: 14,
@@ -347,13 +392,13 @@ const ForgotPasswordScreen = () => {
               fontFamily: 'Fredoka-Regular',
               color: 'black',
             }}
-          />
+          /> */}
           <View style={{alignContent: 'flex-start'}}>
             <Text
               style={{
                 color: 'red',
                 fontFamily: 'Fredoka-Regular',
-                fontSize: 12,
+                fontSize: 11,
                 textAlign: 'left',
                 opacity: check ? 1 : 0,
               }}>
@@ -362,7 +407,51 @@ const ForgotPasswordScreen = () => {
           </View>
 
           {/* <CustomButton text="Send" onPress={handleSubmit(onSendPressed)} /> */}
-          <Pressable
+          <View style={{borderRadius: 9}}>
+            <Pressable
+              onPress={onSendPressed}
+              style={{
+                shadowColor: '#4b2be3',
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 14,
+                alignContent: 'center',
+                alignSelf: 'center',
+                marginTop: 40,
+                backgroundColor: '#6949ff',
+                paddingVertical: 10,
+                borderRadius: 13,
+                flex: 1,
+                maxWidth: width,
+                paddingHorizontal: width / 2 - 54,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  alignSelf: 'center',
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 15,
+                }}>
+                Send
+              </Text>
+            </Pressable>
+          </View>
+          {/* <View
+            style={{
+              alignContent: 'center',
+              justifyContent: 'center',
+              alignSelf: 'center',
+              marginTop: 20,
+            }}>
+            <Text style={{color: 'grey', alignSelf: 'center'}}>
+              ---------------OR---------------
+            </Text>
+          </View> */}
+          {/* <Pressable
             onPress={onSendPressed}
             style={{
               alignContent: 'center',
@@ -381,7 +470,7 @@ const ForgotPasswordScreen = () => {
               }}>
               Send
             </Text>
-          </Pressable>
+          </Pressable> */}
           {/* <CustomButton
             text="Back to Sign in"
             onPress={onSignInPress}
@@ -394,14 +483,14 @@ const ForgotPasswordScreen = () => {
               alignSelf: 'center',
               marginTop: 20,
             }}>
-            <Text style={{color: 'black', fontFamily: 'Fredoka-Regular'}}>
+            <Text style={{color: 'black', fontFamily: 'Poppins-Medium'}}>
               Back to Sign in
             </Text>
           </Pressable>
         </View>
       </ScrollView>
       {/* {AppLoader ? loading : null} */}
-      {loading ? <AppLoader /> : null}
+      {loading ? <SearchLoader /> : null}
     </>
   );
 };
@@ -409,6 +498,7 @@ const ForgotPasswordScreen = () => {
 const styles = StyleSheet.create({
   root: {
     // alignItems: 'center',
+    // marginTop: 20,
     padding: 20,
   },
   title: {

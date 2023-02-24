@@ -10,25 +10,34 @@ import {
   TextInput,
   Pressable,
   Linking,
+  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 // import {useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {USER_IP, AUTH_IP} from '@env';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 // import AppLoader from '../../components/AppLoader';
 // import {PAYMENT_IP} from '@env';
+import PartySprayLoader from '../../components/PartySprayLoader';
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SignUpScreen = () => {
   const {height} = useWindowDimensions();
+  const width = Dimensions.get('window').width;
   // const {control, handleSubmit, watch} = useForm();
   // const pwd = watch('password');
   const navigation = useNavigation();
   const [loadingPending, setLoadingPending] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [hidePass, setHidePass] = useState(true);
   const [collegeName, setCollegeName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
@@ -40,7 +49,7 @@ const SignUpScreen = () => {
   const onRegisterPressed = async data => {
     setPasswordMin(false);
     setEmailWrong(false);
-    setPasswordWrong(false);
+    // setPasswordWrong(false);
     if (!name || !phoneNumber || !email || !password || !collegeName) {
       Alert.alert('Enter all required details.');
     } else {
@@ -49,36 +58,38 @@ const SignUpScreen = () => {
         setEmailWrong(true);
       } else {
         if (password.length >= 8) {
-          if (password == passwordRepeat) {
-            try {
-              setLoadingPending(true);
-              const response = await axios.post(
-                `http://10.0.2.2:3000/api/v1/user/register`,
-                {
-                  name: name,
-                  email: email,
-                  phonenumber: phoneNumber,
-                  college: collegeName,
-                  password: password,
-                },
-              );
-              const obj = {
-                token: response.data.token,
-                userID: response.data.user.id,
-                name: response.data.user.name,
-              };
-              const jsonValue = JSON.stringify(obj);
-              await AsyncStorage.setItem('userDetail', jsonValue);
-              navigation.navigate('SignIn');
-              setLoadingPending(false);
-            } catch (err) {
-              // setCheck(true);
-              setLoadingPending(false);
-              Alert.alert('Already registered.');
-            }
-          } else {
-            setPasswordWrong(true);
+          // if (password == passwordRepeat) {
+          try {
+            setLoadingPending(true);
+            // setTimeout(() => {},1000)
+            const response = await axios.post(
+              `http://${AUTH_IP}/api/v1/user/register`,
+              {
+                name: name,
+                email: email,
+                phonenumber: phoneNumber,
+                college: collegeName,
+                password: password,
+              },
+            );
+            const obj = {
+              token: response.data.token,
+              userID: response.data.user.id,
+              name: response.data.user.name,
+            };
+            const jsonValue = JSON.stringify(obj);
+            // <PartySprayLoader />;
+            await AsyncStorage.setItem('userDetail', jsonValue);
+            navigation.navigate('SignIn');
+            setLoadingPending(false);
+          } catch (err) {
+            // setCheck(true);
+            setLoadingPending(false);
+            Alert.alert('Already registered.');
           }
+          // } else {
+          //   setPasswordWrong(true);
+          // }
         } else {
           setPasswordMin(true);
         }
@@ -90,14 +101,6 @@ const SignUpScreen = () => {
     navigation.navigate('SignIn');
   };
 
-  const onTermsOfUsePressed = () => {
-    console.warn('onTermsOfUsePressed');
-  };
-
-  const onPrivacyPressed = () => {
-    console.warn('onPrivacyPressed');
-  };
-
   return (
     <>
       <ScrollView
@@ -105,205 +108,220 @@ const SignUpScreen = () => {
         style={{backgroundColor: 'white'}}>
         <View style={styles.root}>
           <Image
-            source={require('../../data/logo.png')}
-            style={[styles.logo, {height: height * 0.25}]}
+            source={require('../../data/register.jpg')}
+            style={[styles.logo]}
             resizeMode="contain"
           />
           {/* </View> */}
-          <Text style={styles.title}>Create an account</Text>
-
+          {/* <Text style={styles.title}>Register</Text> */}
           <Text
             style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
+              fontSize: 22,
+              fontFamily: 'Poppins-SemiBold',
+              color: '#353535',
             }}>
-            Name:
+            Register
           </Text>
-          <TextInput
-            onChangeText={setName}
-            value={name}
-            style={{
-              height: 36,
-              borderWidth: 0.5,
-              borderColor: '#d1cfcf',
-              marginTop: 5,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
-              color: 'black',
-              marginBottom: 10,
-            }}
-          />
-          <Text
-            style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
-            }}>
-            Email:
-          </Text>
-          <TextInput
-            onChangeText={setEmail}
-            value={email}
-            style={{
-              height: 36,
-              borderWidth: 0.5,
-              borderColor: '#d1cfcf',
-              marginTop: 5,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
-              color: 'black',
-            }}
-          />
-          <Text
-            style={{
-              color: 'red',
-              fontFamily: 'Fredoka-Regular',
-              fontSize: 10,
-              opacity: emailWrong ? 1 : 0,
-            }}>
-            Email is invalid
-          </Text>
-          <Text
-            style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
-            }}>
-            Phone Number:
-          </Text>
-          <TextInput
-            onChangeText={setPhoneNumber}
-            value={phoneNumber}
-            style={{
-              height: 36,
-              borderWidth: 0.5,
-              borderColor: '#d1cfcf',
-              marginTop: 5,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
-              color: 'black',
-              marginBottom: 10,
-            }}
-          />
-          <Text
-            style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
-            }}>
-            College Name:
-          </Text>
-          <TextInput
-            onChangeText={setCollegeName}
-            value={collegeName}
-            style={{
-              height: 36,
-              borderWidth: 0.5,
-              borderColor: '#d1cfcf',
-              marginTop: 5,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
-              color: 'black',
-              marginBottom: 10,
-            }}
-          />
-          <Text
-            style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
-            }}>
-            Password:
-          </Text>
-          <TextInput
-            onChangeText={setPassword}
-            value={password}
-            secureTextEntry={true}
-            style={{
-              height: 36,
-              borderWidth: 0.5,
-              borderColor: '#d1cfcf',
-              marginTop: 5,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
-              color: 'black',
-              // marginBottom: 10,
-            }}
-          />
-          <Text
-            style={{
-              color: 'red',
-              fontSize: 10,
-              fontFamily: 'Fredoka-Regular',
-              opacity: passwordMin ? 1 : 0,
-            }}>
-            Password should be of minimum 8 characters
-          </Text>
-          <Text
-            style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
-            }}>
-            Repeat Password:
-          </Text>
-          <TextInput
-            onChangeText={setPasswordRepeat}
-            value={passwordRepeat}
-            secureTextEntry={true}
-            style={{
-              height: 36,
-              borderWidth: 0.5,
-              borderColor: '#d1cfcf',
-              marginTop: 5,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
-              color: 'black',
-              marginBottom: 10,
-            }}
-          />
-          <Text
-            style={{
-              color: 'red',
-              fontSize: 10,
-              fontFamily: 'Fredoka-Regular',
-              opacity: passwordWrong ? 1 : 0,
-            }}>
-            Password not matched
-          </Text>
-          <Pressable
-            onPress={onRegisterPressed}
-            style={{
-              alignContent: 'center',
-              alignSelf: 'center',
-              marginTop: 10,
-              backgroundColor: '#f35858',
-              paddingVertical: 12,
-              borderRadius: 9,
-            }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <FontAwesome
+              name="user-o"
+              size={20}
+              color={'#757575'}
+              style={{marginRight: 3}}
+            />
+            <TextInput
+              onChangeText={setName}
+              placeholderTextColor="grey"
+              placeholder="Name"
+              value={name}
+              style={{
+                height: 40,
+                marginLeft: 4,
+                flex: 1,
+                borderBottomWidth: 1,
+                borderColor: '#d1cfcf',
+                marginVertical: 5,
+                borderRadius: 8,
+                paddingHorizontal: 10,
+                paddingBottom: 9,
+                fontSize: 13,
+                fontFamily: 'Poppins-Medium',
+                color: '#212121',
+              }}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <MaterialIcons
+              name="alternate-email"
+              size={20}
+              color={'#757575'}
+              style={{marginRight: 3}}
+            />
+            <TextInput
+              onChangeText={setEmail}
+              placeholderTextColor="grey"
+              placeholder="Email ID"
+              value={email}
+              style={{
+                height: 40,
+                marginLeft: 4,
+                flex: 1,
+                borderBottomWidth: 1,
+                borderColor: '#d1cfcf',
+                marginVertical: 5,
+                borderRadius: 8,
+                paddingHorizontal: 10,
+                paddingBottom: 9,
+                fontSize: 13,
+                fontFamily: 'Poppins-Medium',
+                color: '#212121',
+              }}
+            />
+          </View>
+          {emailWrong && (
             <Text
               style={{
-                color: 'white',
-                fontFamily: 'Fredoka-Medium',
-                marginHorizontal: 120,
-                fontSize: 15,
+                color: 'red',
+                fontFamily: 'Fredoka-Regular',
+                fontSize: 9,
+                // opacity: emailWrong ? 1 : 0,
               }}>
-              Register
+              Email is invalid
             </Text>
-          </Pressable>
+          )}
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Feather
+              name="phone"
+              size={20}
+              color={'#757575'}
+              style={{marginRight: 3}}
+            />
+            <TextInput
+              onChangeText={setPhoneNumber}
+              placeholderTextColor="grey"
+              placeholder="Phone Number"
+              value={phoneNumber}
+              style={{
+                height: 40,
+                marginLeft: 4,
+                flex: 1,
+                borderBottomWidth: 1,
+                borderColor: '#d1cfcf',
+                marginVertical: 5,
+                borderRadius: 8,
+                paddingHorizontal: 10,
+                paddingBottom: 9,
+                fontSize: 13,
+                fontFamily: 'Poppins-Medium',
+                color: '#212121',
+              }}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <FontAwesome5
+              name="building"
+              size={20}
+              color={'#757575'}
+              style={{marginRight: 3}}
+            />
+            <TextInput
+              onChangeText={setCollegeName}
+              placeholderTextColor="grey"
+              placeholder="College Name"
+              value={collegeName}
+              style={{
+                height: 40,
+                marginLeft: 4,
+                flex: 1,
+                borderBottomWidth: 1,
+                borderColor: '#d1cfcf',
+                marginVertical: 5,
+                borderRadius: 8,
+                paddingHorizontal: 10,
+                paddingBottom: 9,
+                fontSize: 13,
+                fontFamily: 'Poppins-Medium',
+                color: '#212121',
+              }}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Feather
+              name="lock"
+              size={20}
+              color={'#757575'}
+              style={{marginRight: 3}}
+            />
+            <TextInput
+              secureTextEntry={hidePass ? true : false}
+              onChangeText={setPassword}
+              placeholderTextColor="grey"
+              placeholder="Password"
+              value={password}
+              style={{
+                height: 40,
+                marginLeft: 4,
+                flex: 1,
+                borderBottomWidth: 1,
+                borderColor: '#d1cfcf',
+                marginTop: 5,
+                borderRadius: 8,
+                paddingHorizontal: 10,
+                paddingBottom: 9,
+                fontSize: 13,
+                fontFamily: 'Poppins-Medium',
+                color: '#212121',
+              }}></TextInput>
+            <FontAwesome5
+              name={hidePass ? 'eye-slash' : 'eye'}
+              size={15}
+              onPress={() => setHidePass(!hidePass)}
+            />
+          </View>
+          {passwordMin && (
+            <Text
+              style={{
+                color: 'red',
+                fontSize: 10,
+                fontFamily: 'Fredoka-Regular',
+                // opacity: passwordMin ? 1 : 0,
+              }}>
+              Password should be of minimum 8 characters
+            </Text>
+          )}
+          <View style={{borderRadius: 9}}>
+            <Pressable
+              onPress={onRegisterPressed}
+              style={{
+                shadowColor: '#4b2be3',
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 14,
+                alignContent: 'center',
+                alignSelf: 'center',
+                marginTop: 25,
+                backgroundColor: '#6949ff',
+                paddingVertical: 10,
+                borderRadius: 13,
+                flex: 1,
+                maxWidth: width,
+                paddingHorizontal: width / 2 - 64,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  alignSelf: 'center',
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 15,
+                }}>
+                Register
+              </Text>
+            </Pressable>
+          </View>
 
           <Text style={styles.text}>
             By registering, you confirm that you accept our{' '}
@@ -327,6 +345,17 @@ const SignUpScreen = () => {
               Privacy Policy
             </Text>
           </Text>
+          {/* <Pressable
+            onPress={onSignInPress}
+            style={{
+              alignContent: 'center',
+              alignSelf: 'center',
+              marginTop: 20,
+            }}>
+            <Text style={{color: 'black', fontFamily: 'Poppins-Regular'}}>
+              Have an account? Sign in
+            </Text>
+          </Pressable> */}
           <Pressable
             onPress={onSignInPress}
             style={{
@@ -334,13 +363,23 @@ const SignUpScreen = () => {
               alignSelf: 'center',
               marginTop: 20,
             }}>
-            <Text style={{color: 'black', fontFamily: 'Fredoka-Regular'}}>
-              Have an account? Sign in
-            </Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={{color: 'grey', fontFamily: 'Poppins-Medium'}}>
+                Have an account?
+              </Text>
+              <Text
+                style={{
+                  color: '#6949ff',
+                  fontFamily: 'Poppins-SemiBold',
+                  marginLeft: 5,
+                }}>
+                Login
+              </Text>
+            </View>
           </Pressable>
         </View>
       </ScrollView>
-      {/* {loadingPending ? <AppLoader /> : null} */}
+      {loadingPending ? <PartySprayLoader /> : null}
     </>
   );
 };
@@ -352,23 +391,25 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     color: 'black',
-    fontFamily: 'Fredoka-Medium',
-    textAlign: 'center',
+    fontFamily: 'Poppins-Medium',
+    // textAlign: 'center',
+    textAlign: 'left',
     marginBottom: 10,
   },
   text: {
     color: 'gray',
     marginTop: 10,
-    fontFamily: 'Fredoka-Regular',
+    fontFamily: 'Poppins-Regular',
     fontSize: 12,
   },
   link: {
     color: '#FDB075',
   },
   logo: {
-    width: 260,
-    maxWidth: 260,
-    maxHeight: 260,
+    width: 230,
+    height: 230,
+    // maxWidth: 260,
+    // maxHeight: 260,
     alignSelf: 'center',
   },
 });

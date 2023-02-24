@@ -4,81 +4,75 @@ import {
   Text,
   Image,
   StyleSheet,
-  useWindowDimensions,
   ScrollView,
   Alert,
   Pressable,
   TextInput,
+  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-// import {useForm} from 'react-hook-form';
 import axios from 'axios';
-// import {AUTH_IP} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuthContext} from '../../src/Context/AuthContext';
-// import AppLoader from '../../components/AppLoader';
-// import {PAYMENT_IP} from '@env';
+import {USER_IP, AUTH_IP} from '@env';
+import SearchLoader from '../../components/SearchLoader';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+// import {UseTogglePasswordVisibility} from '../../components/LoginScreenComponent/UseTogglePasswordVisibility';
 
 const SignInScreen = () => {
-  const {height} = useWindowDimensions();
-  const {
-    user,
-    setUser,
-    setTokens,
-    tokens,
-    getData,
-    loginPending,
-    setLoginPending,
-    setName,
-    setUserId,
-  } = useAuthContext();
+  const {setTokens, tokens, getData, setLoginPending, setName, setUserId} =
+    useAuthContext();
+  const width = Dimensions.get('window').width;
+  // const {passwordVisibility, rightIcon, handlePasswordVisibility} =
+  // UseTogglePasswordVisibility();
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
   const [changeText, setChangeText] = useState('');
   const [password, setPassword] = useState('');
-
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   formState: {errors},
-  // } = useForm();
-
+  const [hidePass, setHidePass] = useState(true);
+  const [emailWrong, setEmailWrong] = useState(false);
   const onSignInPressed = async data => {
-    try {
-      setLoginPending(true);
-      const GitHubClient = axios.create({
-        baseURL: `http://10.0.2.2:3000`,
-        timeout: 1000,
-        headers: {
-          Accept: 'application/vnd.GitHub.v3+json',
-          //'Authorization': 'token <your-token-here> -- https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token'
-        },
-      });
-      // const response = await axios.post(
-      //   'http://3.109.165.137:3000/api/v1/user/login',
-      //   {email: changeText, password: password},
-      // );
-      const response = await GitHubClient.post('/api/v1/user/login', {
-        email: changeText,
-        password: password,
-      });
+    setEmailWrong(false);
+    if (!changeText || !password) {
+      Alert.alert('Enter all required details.');
+    } else {
+      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+      if (reg.test(changeText) === false) {
+        setEmailWrong(true);
+      } else {
+        try {
+          setLoginPending(true);
+          const GitHubClient = axios.create({
+            baseURL: `http://${AUTH_IP}`,
+            timeout: 1000,
+            headers: {
+              Accept: 'application/vnd.GitHub.v3+json',
+            },
+          });
+          const response = await GitHubClient.post('/api/v1/user/login', {
+            email: changeText,
+            password: password,
+          });
 
-      const obj = {
-        token: response.data.token,
-        userID: response.data.user.id,
-        name: response.data.user.name,
-      };
-      const jsonValue = JSON.stringify(obj);
-      await AsyncStorage.setItem('userDetail', jsonValue);
-      setTokens(response.data.token);
-      setName(response.data.user.name);
-      setUserId(response.data.user.id);
-      await getData();
-      setTimeout(() => console.log('a', tokens), 1000);
-      setLoginPending(false);
-    } catch (err) {
-      Alert.alert('Email or password is wrong');
-      setLoginPending(false);
+          const obj = {
+            token: response.data.token,
+            userID: response.data.user.id,
+            name: response.data.user.name,
+          };
+          const jsonValue = JSON.stringify(obj);
+          await AsyncStorage.setItem('userDetail', jsonValue);
+          setTokens(response.data.token);
+          setName(response.data.user.name);
+          setUserId(response.data.user.id);
+          await getData();
+          setTimeout(() => console.log('a', tokens), 1000);
+          setLoginPending(false);
+        } catch (err) {
+          Alert.alert('Email or password is wrong');
+          setLoginPending(false);
+        }
+      }
     }
   };
 
@@ -95,147 +89,180 @@ const SignInScreen = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{backgroundColor: 'white', padding: 20}}>
-        <View style={{alignItems: 'center'}}>
+        <View style={{}}>
           <Image
-            source={require('../../data/logo.png')}
-            style={{height: 200, width: 200, borderRadius: 20, marginTop: 30}}
+            source={require('../../data/login.jpg')}
+            style={{
+              height: 232,
+              width: 232,
+              borderRadius: 20,
+              marginTop: 30,
+              alignSelf: 'center',
+            }}
           />
           <View
             style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              alignContent: 'center',
-              marginVertical: 10,
-              marginBottom: 15,
+              marginVertical: 20,
+              marginBottom: 20,
             }}>
             <Text
               style={{
-                fontSize: 24,
-                fontFamily: 'Fredoka-Medium',
-                color: 'black',
+                fontSize: 22,
+                fontFamily: 'Poppins-SemiBold',
+                color: '#353535',
               }}>
-              Sign In
+              Login
             </Text>
           </View>
         </View>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <MaterialIcons
+            name="alternate-email"
+            size={20}
+            color={'#757575'}
+            style={{marginRight: 3}}
+          />
+          <TextInput
+            onChangeText={setChangeText}
+            placeholderTextColor="grey"
+            placeholder="Email ID"
+            value={changeText}
+            style={{
+              height: 40,
+              marginLeft: 4,
+              flex: 1,
+              borderBottomWidth: 1,
+              borderColor: '#d1cfcf',
+              marginTop: 5,
+              borderRadius: 8,
+              paddingHorizontal: 10,
+              paddingBottom: 9,
+              fontSize: 13,
+              fontFamily: 'Poppins-Medium',
+              color: '#212121',
+            }}
+          />
+        </View>
         <Text
           style={{
-            color: 'black',
-            fontSize: 14,
+            color: 'red',
             fontFamily: 'Fredoka-Regular',
+            fontSize: 10,
+            opacity: emailWrong ? 1 : 0,
           }}>
-          Email:
+          Email is invalid
         </Text>
-        <TextInput
-          onChangeText={setChangeText}
-          value={changeText}
-          style={{
-            height: 36,
-            borderWidth: 0.5,
-            borderColor: '#d1cfcf',
-            marginTop: 5,
-            borderRadius: 8,
-            paddingHorizontal: 10,
-            fontSize: 13,
-            fontFamily: 'Fredoka-Regular',
-            color: 'black',
-          }}
-        />
-        {/* <CustomInput
-          name="email"
-          placeholder="Email"
-          control={control}
-          rules={{required: 'Email is required'}}
-        /> */}
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 14,
-            fontFamily: 'Fredoka-Regular',
-            marginTop: 10,
-          }}>
-          Password:
-        </Text>
-        {/* <CustomInput
-          name="password"
-          placeholder="Password"
-          secureTextEntry
-          control={control}
-          rules={{
-            required: 'Password is required',
-            minLength: {
-              value: 3,
-              message: 'Password should be minimum 3 characters long',
-            },
-          }}
-        /> */}
-        <TextInput
-          secureTextEntry={true}
-          onChangeText={setPassword}
-          value={password}
-          style={{
-            height: 36,
-            borderWidth: 0.5,
-            borderColor: '#d1cfcf',
-            marginVertical: 7,
-            borderRadius: 8,
-            paddingHorizontal: 10,
-            fontSize: 13,
-            fontFamily: 'Fredoka-Regular',
-            color: 'black',
-          }}
-        />
-        {/* <CustomButton
-          text={loading ? 'Loading...' : 'Sign In'}
-          onPress={onSignInPressed}
-        /> */}
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Feather
+            name="lock"
+            size={20}
+            color={'#757575'}
+            style={{marginRight: 3}}
+          />
+          <TextInput
+            secureTextEntry={hidePass ? true : false}
+            onChangeText={setPassword}
+            placeholderTextColor="grey"
+            placeholder="Password"
+            value={password}
+            style={{
+              height: 40,
+              marginLeft: 4,
+              flex: 1,
+              borderBottomWidth: 1,
+              borderColor: '#d1cfcf',
+              marginTop: 5,
+              borderRadius: 8,
+              paddingHorizontal: 10,
+              paddingBottom: 9,
+              fontSize: 13,
+              fontFamily: 'Poppins-Medium',
+              color: '#212121',
+            }}></TextInput>
+          <FontAwesome5
+            name={hidePass ? 'eye-slash' : 'eye'}
+            size={15}
+            onPress={() => setHidePass(!hidePass)}
+          />
+        </View>
         <Pressable
-          onPress={onSignInPressed}
+          onPress={onForgotPasswordPressed}
           style={{
-            alignContent: 'center',
-            alignSelf: 'center',
-            marginTop: 20,
-            backgroundColor: '#f35858',
-            paddingVertical: 12,
-            borderRadius: 9,
+            alignContent: 'flex-end',
+            alignSelf: 'flex-end',
+            marginTop: 24,
           }}>
           <Text
             style={{
-              color: 'white',
-              fontFamily: 'Fredoka-Medium',
-              paddingHorizontal: 127,
-              fontSize: 15,
+              color: '#6949ff',
+              fontFamily: 'Poppins-Medium',
+              fontSize: 13,
             }}>
-            Sign In
-          </Text>
-        </Pressable>
-        {/* <CustomButton
-          text="Forgot password?"
-          onPress={onForgotPasswordPressed}
-          type="TERTIARY"
-        /> */}
-        <Pressable
-          onPress={onForgotPasswordPressed}
-          style={{alignContent: 'center', alignSelf: 'center', marginTop: 20}}>
-          <Text style={{color: '#735dde', fontFamily: 'Fredoka-Medium'}}>
             Forgot Password?
           </Text>
         </Pressable>
-        {/* <SocialSignInButtons /> */}
-        {/* <CustomButton
-          text="Don't have an account? Create one"
-          onPress={onSignUpPress}
-          type="TERTIARY"
-        /> */}
+        <View style={{borderRadius: 9}}>
+          <Pressable
+            onPress={onSignInPressed}
+            style={{
+              shadowColor: '#4b2be3',
+              shadowOffset: {
+                width: 0,
+                height: 7,
+              },
+              shadowOpacity: 0.41,
+              shadowRadius: 9.11,
+              elevation: 14,
+              alignContent: 'center',
+              alignSelf: 'center',
+              marginTop: 25,
+              backgroundColor: '#6949ff',
+              paddingVertical: 10,
+              borderRadius: 13,
+              flex: 1,
+              maxWidth: width,
+              paddingHorizontal: width / 2 - 54,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                alignSelf: 'center',
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: 15,
+              }}>
+              Login
+            </Text>
+          </Pressable>
+        </View>
+        <View
+          style={{
+            alignContent: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            marginTop: 20,
+          }}>
+          <Text style={{color: 'grey', alignSelf: 'center'}}>
+            ---------------OR---------------
+          </Text>
+        </View>
         <Pressable
           onPress={onSignUpPress}
           style={{alignContent: 'center', alignSelf: 'center', marginTop: 20}}>
-          <Text style={{color: 'black', fontFamily: 'Fredoka-Regular'}}>
-            Don't have an account? Create one
-          </Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{color: 'grey', fontFamily: 'Poppins-Medium'}}>
+              New to Imaze?
+            </Text>
+            <Text
+              style={{
+                color: '#6949ff',
+                fontFamily: 'Poppins-SemiBold',
+                marginLeft: 5,
+              }}>
+              Register
+            </Text>
+          </View>
         </Pressable>
       </ScrollView>
-      {/* {loginPending ? <AppLoader /> : null} */}
     </>
   );
 };
