@@ -13,36 +13,28 @@ const xss = require('xss-clean')
 const connectDB = require('./db/connect')
 
 //middleware
-const authmiddleware = require('./middleware/authmiddleware')
 
-// routers
-const userRouter =  require('./routes/userRouter')
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
-app.use(express.static(`${__dirname}/public`));
 app.use(express.json());
 app.use(helmet())
 app.use(cors())
 app.use(xss())
-
-//routes user
-app.use('/api/v1/user',userRouter);
+app.use(express.static('./public'));
+const {getTransactionToken,buyEvent} = require('./controllers/Payments')
+//this api will return a token , pass this token to paytm's sdk to load paytm's UI
+app.post("/api/v1/payment/initiate-transaction",getTransactionToken)//[req.body = {custId:userId,orderId:orderId,amount}
+//this api will be called when the transaction is completed
+app.post("/api/v1/payment/:uid/transaction-complete",buyEvent);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-//populating data...
-// const Event = require('./models/Event')
-// const data = require('./data.json');
-// const insertmany = async()=>{
-//   const events = await Event.create(data);
-//   console.log("success");
-// }
-// insertmany();
 
-const port = process.env.PORT || 8000;
+
+const port = process.env.PORT || 6900;
 
 const start = async () => {
   try {

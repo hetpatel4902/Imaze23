@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>payment</title>
+</head>
+<body>
+    <div class="container">
+        <button id="pay">Proceed to pay</button>
+    </div>
+    <script type="application/javascript" src="{HOST}/merchantpgpui/checkoutjs/merchants/${MID}.js" onload="onScriptLoad();" crossorigin="anonymous"></script>
+    <script>
+    function onScriptLoad(){
+    var config = {
+    "root": "",
+    "flow": "DEFAULT",
+    "data": {
+    "orderId": "ORDER_1999", /* update order id */
+    "token": "0133d06c193d4adf90af6bf83a38543a1677184270584", /* update token value */
+    "tokenType": "TXN_TOKEN",
+    "amount": "1" /* update amount */
+    },
+    "handler": {
+    "notifyMerchant": function(eventName,data){
+    console.log("notifyMerchant handler function called");
+    console.log("eventName => ",eventName);
+    console.log("data => ",data);
+    }
+    }
+    };
+    if(window.Paytm && window.Paytm.CheckoutJS){
+    window.Paytm.CheckoutJS.onLoad(function excecuteAfterCompleteLoad() {
+    // initialze configuration using init method
+    window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+    // after successfully updating configuration, invoke JS Checkout
+    window.Paytm.CheckoutJS.invoke();
+    }).catch(function onError(error){
+    console.log("error => ",error);
+    });
+    });
+    }
+    }
+    </script>    
+</body>
+</html>
