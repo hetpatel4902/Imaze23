@@ -2,7 +2,8 @@ import {View, Text} from 'react-native';
 import React, {useEffect, useState, createContext, useContext} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-// import AppLoader from '../../components/AppLoader';
+import AppLoader from '../../components/AppLoader';
+import SearchLoader from '../../components/SearchLoader';
 // import {PAYMENT_IP} from '@env';
 
 const AuthContext = createContext({});
@@ -12,9 +13,11 @@ const AuthContextProvider = ({children}) => {
   const [user, setUser] = useState(false);
   const [tokens, setTokens] = useState(null);
   const [users, setUsers] = useState(null);
-  //   const [dish, setDish] = useState([]);
-  //   const [price, setPrice] = useState(null);
-  //   const [items, setItems] = useState([]);
+  const [choice1, setChoice1] = useState(false);
+  const [choice2, setChoice2] = useState(false);
+  const [nonTechArr, setNonTechArr] = useState([]);
+  const [techArr, setTechArr] = useState([]);
+  const [workshopArr, setWorkshopArr] = useState([]);
   const [name, setName] = useState(null);
   const [userId, setUserId] = useState(null);
   const [loginPending, setLoginPending] = useState(false);
@@ -22,14 +25,9 @@ const AuthContextProvider = ({children}) => {
   let favourite;
   useEffect(() => {
     getData();
-    // console.log('in context');
-    // // getItem();
-    // setTimeout(() => console.log('h'), 1000);
-    // setTimeout(() => console.log(jsonValue?.token), 1);
   }, []);
 
   const getData = async () => {
-    // console.log('inside get auth');
     setLoginPending(true);
     const value = await AsyncStorage.getItem('userDetail');
     jsonValue = JSON.parse(value);
@@ -41,25 +39,9 @@ const AuthContextProvider = ({children}) => {
       setDbUser(jsonValue);
     } else {
       setUser(false);
-      // jsonValue = '';
     }
     setLoginPending(false);
   };
-
-  //   const onCreateOrder = async () => {
-  //     setLoginPending(true);
-  //     const response = await axios.get(
-  //       `http://${PAYMENT_IP}:6990/api/v1/user/${users}/cart`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${tokens}`,
-  //         },
-  //       },
-  //     );
-  //     setDish(response.data.data.data);
-  //     setPrice(response.data.data.price);
-  //     setLoginPending(false);
-  //   };
 
   return (
     <AuthContext.Provider
@@ -78,9 +60,19 @@ const AuthContextProvider = ({children}) => {
         setName,
         setUserId,
         userId,
+        choice1,
+        setChoice1,
+        choice2,
+        setChoice2,
+        techArr,
+        setTechArr,
+        nonTechArr,
+        setNonTechArr,
+        workshopArr,
+        setWorkshopArr,
       }}>
       {children}
-      {/* {loginPending ? <AppLoader /> : null} */}
+      {loginPending ? <SearchLoader /> : null}
     </AuthContext.Provider>
   );
 };

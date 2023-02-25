@@ -4,11 +4,24 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {createStackNavigator} from '@react-navigation/stack';
-import HistoryScreen from '../screens/HistoryScreen';
+// import HistoryScreen from '../screens/MyEvents';
 import ProfileScreen from '../screens/ProfileScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
-import BasketScreen from '../screens/BasketScreen';
+// import BasketScreen from '../screens/BasketScreen';
+import TechEvents from '../screens/HomeScreen/TechEvents';
+import NonTechEvents from '../screens/HomeScreen/NonTechEvents';
+import CulturalEvents from '../screens/HomeScreen/CulturalEvents';
+import Workshop from '../screens/HomeScreen/Workshop';
+import EventDetailScreen from '../screens/HomeScreen/EventDetailScreen';
+import SearchScreen from '../screens/HomeScreen/SearchScreen';
+import ComboScreen from '../screens/ComboScreen';
+import MyEvents from '../screens/MyEvents';
+import StaticComboScreen from '../screens/ComboScreen/StaticComboScreen';
+import DynamicComboScreen from '../screens/ComboScreen/DynamicComboScreen';
+import DynamicTechSelectScreen from '../screens/ComboScreen/DynamicTechSelectScreen';
+import DynamicNonTechSelectScreen from '../screens/ComboScreen/DynamicNonTechSelectScreen';
+import DynamicWorkshopSelectScreen from '../screens/ComboScreen/DynamicWorkshopSelectScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -42,8 +55,8 @@ const BottomTabNav = () => {
         }}
       />
       <Tab.Screen
-        component={BasketStack}
-        name="Basket"
+        component={ComboStack}
+        name="Combos"
         options={{
           unmountOnBlur: true,
           headerShown: false,
@@ -54,8 +67,8 @@ const BottomTabNav = () => {
         }}
       />
       <Tab.Screen
-        component={HistoryStack}
-        name="History"
+        component={MyEventStack}
+        name="MyEvents"
         options={{
           unmountOnBlur: true,
           headerShown: false,
@@ -83,18 +96,32 @@ const BottomTabNav = () => {
 
 export default BottomTabNav;
 
-const HistoryStack = () => {
+const MyEventStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen component={HistoryScreen} name="HistoryScreen" />
+      <Stack.Screen component={MyEvents} name="MyEvents" />
     </Stack.Navigator>
   );
 };
 
-const BasketStack = () => {
+const ComboStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen component={BasketScreen} name="BasketScreen" />
+      <Stack.Screen component={ComboScreen} name="ComboScreen" />
+      <Stack.Screen component={StaticComboScreen} name="StaticComboScreen" />
+      <Stack.Screen component={DynamicComboScreen} name="DynamicComboScreen" />
+      <Stack.Screen
+        component={DynamicTechSelectScreen}
+        name="DynamicTechSelectScreen"
+      />
+      <Stack.Screen
+        component={DynamicNonTechSelectScreen}
+        name="DynamicNonTechSelectScreen"
+      />
+      <Stack.Screen
+        component={DynamicWorkshopSelectScreen}
+        name="DynamicWorkshopSelectScreen"
+      />
     </Stack.Navigator>
   );
 };
@@ -110,6 +137,12 @@ const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={HomeScreen} name="HomeScreen" />
+      <Stack.Screen component={TechEvents} name="TechEvents" />
+      <Stack.Screen component={NonTechEvents} name="NonTechEvents" />
+      <Stack.Screen component={CulturalEvents} name="CulturalEvents" />
+      <Stack.Screen component={Workshop} name="Workshop" />
+      <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
+      <Stack.Screen component={SearchScreen} name="SearchScreen" />
     </Stack.Navigator>
   );
 };

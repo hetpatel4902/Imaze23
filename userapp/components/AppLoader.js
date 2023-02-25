@@ -6,7 +6,7 @@ const AppLoader = () => {
   return (
     <View style={[StyleSheet.absoluteFillObject, styles.container]}>
       <LottieView
-        source={require('../data/99276-loading-utensils.json')}
+        source={require('../data/61417-animated-emojis-party-emoji.json')}
         autoPlay
         loop
       />
@@ -23,3 +23,8 @@ const styles = StyleSheet.create({
   },
 });
 export default AppLoader;
+// kycc search type : login,history
+// party celebration: on registration,on winning, on certifications
+// dance party , 3 people doing party : general loading
+// jumping gift boxes : on winning
+// animated emoji: general loading
