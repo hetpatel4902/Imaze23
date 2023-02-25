@@ -22,7 +22,6 @@ const isClashing = async (events) => {
     const event_day = event.date.substring(0, 2);
     const event_time = event.time;
     const event_name = event.name;
-    price += event.price;
     if (event_day in result) {
       if (event_time.substring(2, 4) === "00") {
         result[event_day][Number(event_time.substring(0, 2)) - 1].push(
@@ -272,15 +271,19 @@ const checkUserEvent = async(req,res)=>{
   var events = [];
   const userEvents = await UserEvent.find({
     userId: uid,
+    payment_status:["COMPLETED","INCOMPLETE"]
   });
-  var event_ids = [];
+  const userCombos = await Combo.find({
+    userId:uid,
+    payment_status:["COMPLETED","INCOMPLETE"]
+  })
   for (let i = 0; i < userEvents.length; i++) {
-    event_ids.push(userEvents[i].eventid);
+    events.push(userEvents[i].eventid);
   }
   for (let i = 0; i < userCombos.length; i++) {
     let combo_events = userCombos[i].event;
     for (let j = 0; j < combo_events.length; j++) {
-      event_ids.push(combo_events[j]);
+      events.push(combo_events[j]);
     }
   }
 
@@ -455,7 +458,7 @@ const payOffline = async (req, res) => {
       { new: true }
     );
   }
-  res.status(StatusCodes.OK).json({ res: "success", data: otp });
+  res.status(StatusCodes.OK).json({ res: "success", otp});
 };
 
 module.exports = {
