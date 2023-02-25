@@ -21,7 +21,7 @@ const UserEventSchema = new mongoose.Schema({
   },
   payment_status:{
     type:String,
-    enum:['COMPLETED','INCOMPLETE'],
+    enum:['COMPLETED','INCOMPLETE','NEW'],//new : if otp is not yet generated
     required:[true,'Please provide payment status']
   },
   cashotp:{
