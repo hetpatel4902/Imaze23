@@ -22,7 +22,7 @@ const CombosSchema = new mongoose.Schema({
   },
   payment_status:{
     type:String,
-    enum:['COMPLETED','INCOMPLETE'],
+    enum:['COMPLETED','INCOMPLETE','NEW'],
     required:[true,'Please provide payment status']
   },
   combotype:{
@@ -34,7 +34,6 @@ const CombosSchema = new mongoose.Schema({
     type:Number,
     default:0
   }
-  //add price , payment_mode
 })
 
 

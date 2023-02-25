@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
-//combos history and static combos needed
 const UserEventSchema = new mongoose.Schema({
   userId:{
     type:mongoose.Types.ObjectId,
@@ -22,14 +21,13 @@ const UserEventSchema = new mongoose.Schema({
   },
   payment_status:{
     type:String,
-    enum:['COMPLETED','INCOMPLETE'],
+    enum:['COMPLETED','INCOMPLETE','NEW'],//new : if otp is not yet generated
     required:[true,'Please provide payment status']
   },
   cashotp:{
     type:Number,
     default:0
   }
-  //add price , payment_mode
 })
 
 
