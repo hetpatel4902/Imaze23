@@ -10,10 +10,6 @@ const pdfkit = require("pdfkit");
 
 //utility functions
 const isClashing = async (events) => {
-  let time_div = {};
-  for (let i = 8; i <= 19; i++) {
-    time_div[i] = [];
-  }
   var data = [];
   let flag = false;
   var result = {};
@@ -32,6 +28,20 @@ const isClashing = async (events) => {
         result[event_day][Number(event_time.substring(0, 2))].push(event_name);
       }
     } else {
+      const time_div = {
+        8: [],
+        9: [],
+        10: [],
+        11: [],
+        12: [],
+        13: [],
+        14: [],
+        15: [],
+        16: [],
+        17: [],
+        18: [],
+        19: [],
+      };
       result[event_day] = time_div;
       if (event_time.substring(2, 4) === "00") {
         result[event_day][Number(event_time.substring(0, 2)) - 1].push(
@@ -46,7 +56,7 @@ const isClashing = async (events) => {
   for (var day in result) {
     let time = result[day];
     for (let t in time) {
-      if (time[t].length != 0) {
+      if (time[t].length > 1) {
         data.push(time[t]);
         flag = true;
       }
@@ -60,19 +70,19 @@ const getAllEvents = async (req, res) => {
   const { search, fields, sort } = req.query;
   var events = Event.find({});
   if (search) {
-    events =  Event.find({
+    events = Event.find({
       name: { $regex: search, $options: "i" },
-    })
+    });
   }
-  if(sort){
-    const sortList = sort.split(',').join(' ');
+  if (sort) {
+    const sortList = sort.split(",").join(" ");
     events = events.sort(sortList);
   }
-  if(fields) {
+  if (fields) {
     const fieldsList = fields.split(",").join(" ");
-    events = events.select(fieldsList)
+    events = events.select(fieldsList);
   }
-  events = events.limit(10);//top 10
+  events = events.limit(10); //top 10
   events = await events;
   res.status(StatusCodes.OK).json({ res: "success", data: events });
 };
@@ -128,22 +138,24 @@ const getUserEvents = async (req, res) => {
       const event = await Event.findOne({ _id: events[j] });
       temp_combo_array.push(event);
     }
+    let obj={};
     obj.events = temp_combo_array;
-    obj.price = userEvents[i].price;
-    obj.payment_mode = userEvents[i].payment_mode;
-    obj.cash_otp = userEvents[i].cashotp;
-    obj.combo_type = userEvents[i].combotype;
+    obj.price = pendingCombos[i].price;
+    obj.payment_mode = pendingCombos[i].payment_mode;
+    obj.cash_otp = pendingCombos[i].cashotp;
+    obj.combo_type = pendingCombos[i].combotype;
     combos.push(obj);
   }
   //pending events
   var individual = [];
   for (let i = 0; i < pendingEvents.length; i++) {
     const event = await Event.findOne({ _id: pendingEvents[i].eventid });
-    var obj = {};
+    let obj = {};
     obj.event_details = event;
-    obj.price = userEvents[i].price;
-    obj.payment_mode = userEvents[i].payment_mode;
-    obj.cash_otp = userEvents[i].cashotp;
+    obj.price = pendingEvents[i].price;
+    obj.payment_mode = pendingEvents[i].payment_mode;
+    obj.cash_otp = pendingEvents[i].cashotp;
+    obj.payment_status= pendingEvents[i].payment_status;
     individual.push(obj);
   }
 
@@ -190,10 +202,10 @@ const getStaticCombos = async (req, res) => {
   res.status(StatusCodes.OK).json({ res: "success", data: resp });
 };
 const checkCombo = async (req, res) => {
-  var { events, combotype } = req.body;
+  const { events, combotype,price } = req.body;
   const { uid } = req.params;
-  var price = 0;
 
+  var event_ids = [...events]
   //purchased events + incomplete
   const userEvents = await UserEvent.find({
     userId: uid,
@@ -204,29 +216,24 @@ const checkCombo = async (req, res) => {
     payment_status: ["COMPLETED", "INCOMPLETE"],
   });
   for (let i = 0; i < userEvents.length; i++) {
-    events.push(userEvents[i].eventid);
+    event_ids.push(userEvents[i].eventid);
   }
   for (let i = 0; i < userCombos.length; i++) {
     let combo_events = userCombos[i].event;
     for (let j = 0; j < combo_events.length; j++) {
-      events.push(combo_events[j]);
+      event_ids.push(combo_events[j]);
     }
   }
 
   //checking for time clashes
-  let time_div = {};
-  for (let i = 8; i <= 19; i++) {
-    time_div[i] = [];
-  }
   var data = [];
   let flag = false;
   var result = {};
-  for (let i = 0; i < events.length; i++) {
-    const event = await Event.findOne({ _id: events[i] });
+  for (let i = 0; i < event_ids.length; i++) {
+    const event = await Event.findOne({ _id: event_ids[i] });
     const event_day = event.date.substring(0, 2);
     const event_time = event.time;
     const event_name = event.name;
-    price += event.price;
     if (event_day in result) {
       if (event_time.substring(2, 4) === "00") {
         result[event_day][Number(event_time.substring(0, 2)) - 1].push(
@@ -237,6 +244,20 @@ const checkCombo = async (req, res) => {
         result[event_day][Number(event_time.substring(0, 2))].push(event_name);
       }
     } else {
+      const time_div = {
+        8: [],
+        9: [],
+        10: [],
+        11: [],
+        12: [],
+        13: [],
+        14: [],
+        15: [],
+        16: [],
+        17: [],
+        18: [],
+        19: [],
+      };
       result[event_day] = time_div;
       if (event_time.substring(2, 4) === "00") {
         result[event_day][Number(event_time.substring(0, 2)) - 1].push(
@@ -251,7 +272,7 @@ const checkCombo = async (req, res) => {
   for (var day in result) {
     let time = result[day];
     for (let t in time) {
-      if (time[t].length != 0) {
+      if (time[t].length > 1) {
         data.push(time[t]);
         flag = true;
       }
@@ -295,8 +316,8 @@ const checkUserEvent = async (req, res) => {
       events.push(combo_events[j]);
     }
   }
-
-  const { flag, data } = isClashing(events);
+  events.push(eid);
+  const { flag, data } = await isClashing(events);
   if (flag) {
     res.status(StatusCodes.OK).json({ res: "success", data });
   } else {
@@ -434,7 +455,7 @@ const getPaymentHistory = async (req, res) => {
   var combos = [];
   for (let i = 0; i < userCombos.length; i++) {
     let temp_array = [];
-    let events = userCombos.event;
+    let events = userCombos[i].event;
     for (let j = 0; j < events.length; j++) {
       const event = await Event.findOne({ _id: events[j] });
       temp_array.push(event);
@@ -461,13 +482,13 @@ const payOffline = async (req, res) => {
   if (isCombo) {
     const combo = await Combo.findOneAndUpdate(
       { userId: uid, _id: orderId },
-      { cashotp: otp, payment_mode: "OFFLINE" },
+      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
       { new: true }
     );
   } else {
     const event = await UserEvent.findOneAndUpdate(
       { userId: uid, _id: orderId },
-      { cashotp: otp, payment_mode: "OFFLINE" },
+      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
       { new: true }
     );
   }

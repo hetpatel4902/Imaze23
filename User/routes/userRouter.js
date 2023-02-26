@@ -29,7 +29,7 @@ router.route("/events/user/:uid").get(authmiddleware,getUserEvents); //get event
 router.route("/combos").get(authmiddleware,getStaticCombos); //get all the static combos
 
 //checking validity
-router.route("/combos/:uid/check").post(authmiddleware,checkCombo); //[req.body={events = [event_id1,event_id2,.....],combotype:STATIC/DYNAMIC} check if the combo is valid and if valid then create the combo [for time clashes] 
+router.route("/combos/:uid/check").post(authmiddleware,checkCombo); //[req.body={events = [event_id1,event_id2,.....],combotype:STATIC/DYNAMIC,price} check if the combo is valid and if valid then create the combo [for time clashes] 
 router.route("/events/:uid/check").post(authmiddleware,checkUserEvent);//[req.body = {price,eid:event_Id}] call this api when proceed to pay button is clicked , this will return clashing events if the events are clashing with previously bought events else will create the order
 
 //certificates

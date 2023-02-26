@@ -175,7 +175,7 @@ const verifyEventOfflineOTP = async (req,res) => {
   }
   const EventDetails = await Event.findOne({_id:event.eventid})
   const participants = [...EventDetails.participants,user._id]
-  const eventUpdate = await Event.findOneAndUpdate({_id:event.eventid},{participants},{ new: true, runValidators: true })
+  const eventUpdate = await Event.findOneAndUpdate({_id:event.eventid},{participants,noOfParticipants:participants.length},{ new: true, runValidators: true })
   if(eventUpdate.participants.length >= eventUpdate.maxparticipants){
     const finalEventUpdate = await Event.findOneAndUpdate({_id:event.eventid},{isAvailable:false},{ new: true, runValidators: true })
   }
@@ -215,7 +215,7 @@ const verifyComboOfflineOTP = async (req,res) => {
   for(var i=0;i<combo.event.length;++i){
     const EventDetails = await Event.findOne({_id:combo.event[i]})
     const participants = [...EventDetails.participants,user._id]
-    const eventUpdate = await Event.findOneAndUpdate({_id:combo.event[i]},{participants},{ new: true, runValidators: true })
+    const eventUpdate = await Event.findOneAndUpdate({_id:combo.event[i]},{participants,noOfParticipants:participants.length},{ new: true, runValidators: true })
     if(eventUpdate.participants.length >= eventUpdate.maxparticipants){
       const finalEventUpdate = await Event.findOneAndUpdate({_id:combo.event[i]},{isAvailable:false},{ new: true, runValidators: true })
     }

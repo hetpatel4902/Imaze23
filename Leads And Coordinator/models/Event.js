@@ -72,6 +72,7 @@ const EventSchema = new mongoose.Schema({
 })
 
 EventSchema.pre("save",async function(){
+  console.log(this.participants)
   this.noOfParticipants = this.participants.length;
 })
 
