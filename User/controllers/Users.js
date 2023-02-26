@@ -72,6 +72,7 @@ const getAllEvents = async (req, res) => {
     const fieldsList = fields.split(",").join(" ");
     events = events.select(fieldsList)
   }
+  events = events.limit(10);//top 10
   events = await events;
   res.status(StatusCodes.OK).json({ res: "success", data: events });
 };
