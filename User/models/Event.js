@@ -64,6 +64,10 @@ const EventSchema = new mongoose.Schema({
   isAvailable:{
     type:Boolean,
     default:true
+  },
+  noOfParticipants:{
+    type:Number,
+    default:0
   }
 })
 
