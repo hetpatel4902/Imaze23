@@ -57,15 +57,22 @@ const isClashing = async (events) => {
 
 //events
 const getAllEvents = async (req, res) => {
-  const { search, fields } = req.query;
-  var events;
-  if (!search) {
-    events = await Event.find({}).select(fields);
-  } else {
-    events = await Event.find({
+  const { search, fields, sort } = req.query;
+  var events = Event.find({});
+  if (search) {
+    events =  Event.find({
       name: { $regex: search, $options: "i" },
-    }).select(fields);
+    })
   }
+  if(sort){
+    const sortList = sort.split(',').join(' ');
+    events = events.sort(sortList);
+  }
+  if(fields) {
+    const fieldsList = fields.split(",").join(" ");
+    events = events.select(fieldsList)
+  }
+  events = await events;
   res.status(StatusCodes.OK).json({ res: "success", data: events });
 };
 const getEventsCategorized = async (req, res) => {
@@ -189,12 +196,12 @@ const checkCombo = async (req, res) => {
   //purchased events + incomplete
   const userEvents = await UserEvent.find({
     userId: uid,
-    payment_status:["COMPLETED","INCOMPLETE"]
+    payment_status: ["COMPLETED", "INCOMPLETE"],
   });
   const userCombos = await Combo.find({
-    userId:uid,
-    payment_status:["COMPLETED","INCOMPLETE"]
-  })
+    userId: uid,
+    payment_status: ["COMPLETED", "INCOMPLETE"],
+  });
   for (let i = 0; i < userEvents.length; i++) {
     events.push(userEvents[i].eventid);
   }
@@ -204,7 +211,7 @@ const checkCombo = async (req, res) => {
       events.push(combo_events[j]);
     }
   }
-  
+
   //checking for time clashes
   let time_div = {};
   for (let i = 8; i <= 19; i++) {
@@ -257,27 +264,27 @@ const checkCombo = async (req, res) => {
       combotype,
       userId: uid,
       payment_mode: "OFFLINE",
-      payment_status:"NEW"
+      payment_status: "NEW",
     });
     res.status(StatusCodes.OK).json({ res: "success", data: create_combo });
   } else {
     res.status(StatusCodes.OK).json({ res: "success", data: { flag, data } });
   }
 };
-const checkUserEvent = async(req,res)=>{
-  const {uid} = req.params;
-  const {price,eid} = req.body;
+const checkUserEvent = async (req, res) => {
+  const { uid } = req.params;
+  const { price, eid } = req.body;
 
   //purchased events + incomplete status wale events
   var events = [];
   const userEvents = await UserEvent.find({
     userId: uid,
-    payment_status:["COMPLETED","INCOMPLETE"]
+    payment_status: ["COMPLETED", "INCOMPLETE"],
   });
   const userCombos = await Combo.find({
-    userId:uid,
-    payment_status:["COMPLETED","INCOMPLETE"]
-  })
+    userId: uid,
+    payment_status: ["COMPLETED", "INCOMPLETE"],
+  });
   for (let i = 0; i < userEvents.length; i++) {
     events.push(userEvents[i].eventid);
   }
@@ -288,16 +295,20 @@ const checkUserEvent = async(req,res)=>{
     }
   }
 
-  const {flag,data} = isClashing(events);
-  if(flag){
-    res.status(StatusCodes.OK).json({res:"success",data});
+  const { flag, data } = isClashing(events);
+  if (flag) {
+    res.status(StatusCodes.OK).json({ res: "success", data });
+  } else {
+    const create_event = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      price,
+      payment_mode: "OFFLINE",
+      payment_status: "NEW",
+    });
+    res.status(StatusCodes.OK).json({ res: "success", data: create_event });
   }
-  else{
-    const create_event = await UserEvent.create({userId:uid,eventid:eid,price,payment_mode:"OFFLINE",payment_status:"NEW"});
-    res.status(StatusCodes.OK).json({res:"success",data:create_event});
-  }
-
-}
+};
 
 //certificates
 const buttonVisibility = async (req, res) => {
@@ -459,7 +470,7 @@ const payOffline = async (req, res) => {
       { new: true }
     );
   }
-  res.status(StatusCodes.OK).json({ res: "success", otp});
+  res.status(StatusCodes.OK).json({ res: "success", otp });
 };
 
 module.exports = {
