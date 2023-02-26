@@ -71,5 +71,9 @@ const EventSchema = new mongoose.Schema({
   }
 })
 
+EventSchema.pre("save",async function(){
+  this.noOfParticipants = this.participants.length;
+})
+
 
 module.exports = mongoose.model('Event',EventSchema)

@@ -257,6 +257,7 @@ const checkCombo = async (req, res) => {
       combotype,
       userId: uid,
       payment_mode: "OFFLINE",
+      payment_status:"NEW"
     });
     res.status(StatusCodes.OK).json({ res: "success", data: create_combo });
   } else {
