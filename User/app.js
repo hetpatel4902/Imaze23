@@ -29,6 +29,14 @@ app.use(cors())
 app.use(xss())
 
 //routes user
+// app.get('/participants',async(req,res)=>{
+//   const events = await Event.find({});
+//   for(let i =0;i<events.length;i++)
+//   {
+//     const update = await Event.findOneAndUpdate({_id:events[i]._id},{noOfParticipants:events[i].participants.length})
+//   }
+//   res.status(200).json("success")
+// })
 app.use('/api/v1/user',userRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
