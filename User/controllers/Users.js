@@ -7,6 +7,7 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors/index");
 const fs = require("fs");
 const pdfkit = require("pdfkit");
+const bcrypt = require('bcrypt')
 
 //utility functions
 const isClashing = async (events) => {
@@ -417,11 +418,13 @@ const validateUserOtp = async (req, res) => {
 };
 const updatepassword = async (req, res) => {
   const { email } = req.params;
-  const { password } = req.body;
+  var { password } = req.body;
+  const salt = await bcrypt.genSalt(10);
+  password = await bcrypt.hash(password, salt);
   const user = await User.findOneAndUpdate(
     { email: email },
     { password },
-    { new: true }
+    { new: true,runValidators:true,setDefaultsOnInsert:true }
   );
   if (!user) {
     throw new NotFoundError("user not found");
