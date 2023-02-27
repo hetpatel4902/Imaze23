@@ -1,4 +1,4 @@
-import {View, Text, FlatList} from 'react-native';
+import {View, Text, FlatList, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useAuthContext} from '../../src/Context/AuthContext';
 import axios from 'axios';
@@ -19,8 +19,11 @@ const TechEvents = () => {
     setEvent(response.data.data.Tech);
   };
   return (
-    <View>
-      <Text>TechEvents</Text>
+    <ScrollView showsVerticalScrollIndicator={false} style={{padding: 15}}>
+      <Text
+        style={{color: '#191919', fontFamily: 'Poppins-Medium', fontSize: 17}}>
+        Tech Events 🎉
+      </Text>
       <FlatList
         style={{marginBottom: 30, marginTop: 5}}
         data={event}
@@ -28,7 +31,7 @@ const TechEvents = () => {
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </ScrollView>
   );
 };
 

@@ -13,14 +13,18 @@ const SearchComponent = ({searchResult}) => {
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
         backgroundColor: 'white',
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 10,
+        borderRadius: 15,
+        marginBottom: 4,
       }}>
+      <View>
+        <Image
+          source={{uri: `http://10.0.2.2:8000/${searchResult?.image}`}}
+          style={{height: 70, width: 70}}
+        />
+      </View>
       <Text
-        style={{color: 'black', fontFamily: 'Fredoka-Regular', fontSize: 12}}>
+        style={{color: 'black', fontFamily: 'Poppins-Regular', fontSize: 13}}>
         {searchResult.name}
       </Text>
       {/* <Image

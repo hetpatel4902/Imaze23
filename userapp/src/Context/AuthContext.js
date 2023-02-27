@@ -21,6 +21,7 @@ const AuthContextProvider = ({children}) => {
   const [name, setName] = useState(null);
   const [userId, setUserId] = useState(null);
   const [loginPending, setLoginPending] = useState(false);
+  // const [name,setName] = useState()
   let jsonValue;
   let favourite;
   useEffect(() => {
@@ -36,6 +37,7 @@ const AuthContextProvider = ({children}) => {
       setUser(true);
       setUsers(jsonValue?.userID);
       setTokens(jsonValue?.token);
+      setName(jsonValue?.name);
       setDbUser(jsonValue);
     } else {
       setUser(false);

@@ -1,4 +1,4 @@
-import {View, Text, FlatList} from 'react-native';
+import {View, Text, FlatList, ScrollView} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import EventComponent from '../../components/HomeScreenComponent/EventComponent';
@@ -20,8 +20,11 @@ const CulturalEvents = () => {
     setEvent(response.data.data.Cultural);
   };
   return (
-    <View>
-      <Text>Cultural Events</Text>
+    <ScrollView showsVerticalScrollIndicator={false} style={{padding: 15}}>
+      <Text
+        style={{color: '#191919', fontFamily: 'Poppins-Medium', fontSize: 17}}>
+        Cultural Events 🎉
+      </Text>
       <FlatList
         style={{marginBottom: 30, marginTop: 5}}
         data={event}
@@ -29,7 +32,7 @@ const CulturalEvents = () => {
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </ScrollView>
   );
 };
 

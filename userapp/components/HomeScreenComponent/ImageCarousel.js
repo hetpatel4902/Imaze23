@@ -21,62 +21,75 @@ const ImageCarousel = props => {
   const [entries, setEntries] = useState([]);
   const carouselRef = useRef(null);
   return (
-    <View style={{backgroundColor: 'white'}}>
+    <View style={{height: 210}}>
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          paddingHorizontal: 15,
+          paddingHorizontal: 20,
         }}>
         <Text
           style={{
-            color: 'black',
-            fontSize: 17,
-            fontFamily: 'Fredoka-Medium',
+            color: '#191919',
+            fontSize: 15,
+            fontFamily: 'Poppins-Medium',
           }}>
-          Today's Special Deals 🎉
+          Our Sponsers
         </Text>
       </View>
       <View style={styles.container}>
         <ScrollView
-          style={{marginBottom: 8, paddingHorizontal: 7}}
+          style={{paddingHorizontal: 7}}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={true}>
-          {/* <FlatList
-            data={ImageCarouselData}
-            renderItem={({item}) => {
-              <Image
-                style={{width: 100, height: 100}}
-                source={{uri: item.illustration}}
-              />;
-            }}
-          /> */}
+          <View style={{}}>
+            <Image
+              source={require('../../data/design2.jpg')}
+              style={{
+                width: 260,
+                height: 160,
+                borderRadius: 10,
+                marginHorizontal: 10,
+                borderWidth: 1,
+                borderColor: '#c2c2c2',
+              }}
+            />
+          </View>
           <Image
-            source={{
-              uri: 'https://fabfoodies.in/wp-content/uploads/2019/01/Potato-Samosa.jpg',
+            source={require('../../data/design3.jpg')}
+            style={{
+              width: 260,
+              height: 160,
+              borderRadius: 10,
+              marginHorizontal: 10,
+              borderWidth: 1,
+              borderColor: '#c2c2c2',
             }}
-            style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
           />
           <Image
-            source={{
-              uri: 'https://foodhistoria.com/wp-content/uploads/2020/09/099000895e9a53b62d85c46c4d0d62e4_thumb_1200-1200x900.jpg',
+            source={require('../../data/design1.jpg')}
+            style={{
+              width: 260,
+              height: 160,
+              borderRadius: 10,
+              marginHorizontal: 10,
+              borderWidth: 1,
+              borderColor: '#c2c2c2',
             }}
-            style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
           />
           <Image
-            source={{
-              uri: 'https://www.dwarakaorganic.com/wp-content/uploads/2022/04/Upma.jpg',
+            source={require('../../data/design4.jpg')}
+            style={{
+              width: 260,
+              height: 160,
+              borderRadius: 10,
+              marginHorizontal: 10,
+              borderWidth: 1,
+              borderColor: '#c2c2c2',
             }}
-            style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
           />
-          <Image
-            source={{
-              uri: 'https://gumlet.assettype.com/swarajya%2F2016-03%2Fa1431a1b-fd5e-4ec8-ae83-95753bb4c2bd%2Fdosa.jpg?w=1200&auto=format%2Ccompress&ogImage=true',
-            }}
-            style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
-          />
-          <Image
+          {/* <Image
             source={{
               uri: 'https://www.jagannathskitchen.in/images/placeholder.jpg',
             }}
@@ -93,7 +106,7 @@ const ImageCarousel = props => {
               uri: 'https://cdn.pixabay.com/photo/2020/05/17/04/22/pizza-5179939_1280.jpg',
             }}
             style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
-          />
+          /> */}
           {/* <Image
             source={{
               uri: 'https://www.eatthis.com/wp-content/uploads/sites/4/2021/07/mcdonalds-burgers-fries.jpg?quality=82&strip=1&resize=640%2C360',
