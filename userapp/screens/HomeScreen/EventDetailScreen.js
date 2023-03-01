@@ -6,6 +6,7 @@ import {
   // Pressable,
   useWindowDimensions,
   Pressable,
+  Dimensions,
 } from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
 import {useRoute, useNavigation} from '@react-navigation/native';
@@ -22,10 +23,12 @@ const EventDetailScreen = () => {
   const {tokens} = useAuthContext();
   const navigation = useNavigation();
   const eventId = route?.params.eventId;
+  const selected = route?.params.selected;
   const [eventDetail, setEventDetail] = useState(null);
   const participant = eventDetail?.participants;
   const [textShown, setTextShown] = useState(false); //To show ur remaining Text
   const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
+  // const width = Dimensions.get('screen').width;
   const toggleNumberOfLines = () => {
     //To toggle the show text or hide it
     setTextShown(!textShown);
@@ -55,6 +58,10 @@ const EventDetailScreen = () => {
     <View style={{}}>
       {/* <Text>{eventDetail?.name}</Text> */}
       <View style={{backgroundColor: '#ededed'}}>
+        <Image
+          source={{uri: `http://10.0.2.2:8000/${eventDetail?.image}`}}
+          style={{height: 250, alignSelf: 'center', width: width}}
+        />
         <Pressable
           onPress={onBack}
           style={{
@@ -70,10 +77,6 @@ const EventDetailScreen = () => {
           }}>
           <AntDesign name="arrowleft" size={24} color={'#141414'} />
         </Pressable>
-        <Image
-          source={{uri: `http://10.0.2.2:8000/${eventDetail?.image}`}}
-          style={{height: 230, width: 230, alignSelf: 'center'}}
-        />
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -82,6 +85,9 @@ const EventDetailScreen = () => {
           borderTopLeftRadius: 40,
           backgroundColor: 'white',
           height: 1000,
+          width: width,
+          position: 'absolute',
+          top: 215,
         }}>
         <View style={{alignContent: 'center', alignSelf: 'center'}}>
           <Octicons name="dash" color={'grey'} size={45} />
@@ -271,6 +277,7 @@ const EventDetailScreen = () => {
             </Text>
           )}
         </View>
+        {/* {!selected && ( */}
         <Pressable
           onPress={onPress}
           style={{
@@ -292,6 +299,7 @@ const EventDetailScreen = () => {
             maxWidth: width,
             paddingHorizontal: width / 2 - 54,
             marginBottom: 630,
+            opacity: selected ? 0 : 1,
           }}>
           <Text
             style={{
@@ -303,6 +311,7 @@ const EventDetailScreen = () => {
             Buy
           </Text>
         </Pressable>
+        {/* // )} */}
       </ScrollView>
     </View>
   );

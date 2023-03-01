@@ -22,7 +22,7 @@ import DynamicComboScreen from '../screens/ComboScreen/DynamicComboScreen';
 import DynamicTechSelectScreen from '../screens/ComboScreen/DynamicTechSelectScreen';
 import DynamicNonTechSelectScreen from '../screens/ComboScreen/DynamicNonTechSelectScreen';
 import DynamicWorkshopSelectScreen from '../screens/ComboScreen/DynamicWorkshopSelectScreen';
-
+import AntDesign from 'react-native-vector-icons/AntDesign';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -62,19 +62,19 @@ const BottomTabNav = () => {
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <Entypo name="shopping-cart" size={20} color={color} />
+            <AntDesign name="appstore1" size={20} color={color} />
           ),
         }}
       />
       <Tab.Screen
         component={MyEventStack}
-        name="MyEvents"
+        name="My Events"
         options={{
           unmountOnBlur: true,
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <Ionicons name="fast-food" size={20} color={color} />
+            <FontAwesome5 name="history" size={20} color={color} />
           ),
         }}
       />
@@ -122,6 +122,7 @@ const ComboStack = () => {
         component={DynamicWorkshopSelectScreen}
         name="DynamicWorkshopSelectScreen"
       />
+      <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
     </Stack.Navigator>
   );
 };

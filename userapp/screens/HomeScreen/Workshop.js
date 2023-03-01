@@ -20,7 +20,9 @@ const Workshop = () => {
     setEvent(response.data.data.Workshop);
   };
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{padding: 15}}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{padding: 15, backgroundColor: 'white', flex: 1}}>
       <Text
         style={{color: '#191919', fontFamily: 'Poppins-Medium', fontSize: 17}}>
         Workshop 🎉

@@ -15,12 +15,12 @@ const CulturalEvents = () => {
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    // console.log(response.data.data.Tech);
-    // console.log(response.data.data);
     setEvent(response.data.data.Cultural);
   };
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{padding: 15}}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{padding: 15, backgroundColor: 'white', flex: 1}}>
       <Text
         style={{color: '#191919', fontFamily: 'Poppins-Medium', fontSize: 17}}>
         Cultural Events 🎉

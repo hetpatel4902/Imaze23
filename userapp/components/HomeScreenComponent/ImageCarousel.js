@@ -21,7 +21,7 @@ const ImageCarousel = props => {
   const [entries, setEntries] = useState([]);
   const carouselRef = useRef(null);
   return (
-    <View style={{height: 210}}>
+    <View style={{height: 200}}>
       <View
         style={{
           flexDirection: 'row',
@@ -45,48 +45,48 @@ const ImageCarousel = props => {
           pagingEnabled={true}>
           <View style={{}}>
             <Image
-              source={require('../../data/design2.jpg')}
+              source={require('../../data/carousel1.jpg')}
               style={{
-                width: 260,
-                height: 160,
+                width: 250,
+                height: 150,
                 borderRadius: 10,
                 marginHorizontal: 10,
                 borderWidth: 1,
-                borderColor: '#c2c2c2',
+                // borderColor: '#c2c2c2',
               }}
             />
           </View>
           <Image
-            source={require('../../data/design3.jpg')}
+            source={require('../../data/carousel3.jpg')}
             style={{
-              width: 260,
-              height: 160,
+              width: 250,
+              height: 150,
               borderRadius: 10,
               marginHorizontal: 10,
               borderWidth: 1,
-              borderColor: '#c2c2c2',
+              // borderColor: '#c2c2c2',
             }}
           />
           <Image
-            source={require('../../data/design1.jpg')}
+            source={require('../../data/carousel2.png')}
             style={{
-              width: 260,
-              height: 160,
+              width: 250,
+              height: 150,
               borderRadius: 10,
               marginHorizontal: 10,
               borderWidth: 1,
-              borderColor: '#c2c2c2',
+              // borderColor: '#c2c2c2',
             }}
           />
           <Image
-            source={require('../../data/design4.jpg')}
+            source={require('../../data/carousel4.png')}
             style={{
-              width: 260,
-              height: 160,
+              width: 250,
+              height: 150,
               borderRadius: 10,
               marginHorizontal: 10,
               borderWidth: 1,
-              borderColor: '#c2c2c2',
+              // borderColor: '#c2c2c2',
             }}
           />
           {/* <Image

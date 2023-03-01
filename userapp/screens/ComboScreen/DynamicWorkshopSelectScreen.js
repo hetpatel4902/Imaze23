@@ -1,9 +1,11 @@
-import {View, Text, FlatList, Pressable} from 'react-native';
+import {View, Text, FlatList, StyleSheet} from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {useAuthContext} from '../../src/Context/AuthContext';
 import axios from 'axios';
-import {USER_IP} from '@env';
+import {useNavigation} from '@react-navigation/native';
+import {useAuthContext} from '../../src/Context/AuthContext';
 import DynamicWorkshopComponent from '../../components/ComboScreenComponent/DynamicWorkshopComponent';
+import {USER_IP} from '@env';
+
 const DynamicWorkshopSelectScreen = () => {
   const {tokens} = useAuthContext();
   const [event, setEvent] = useState([]);
@@ -15,12 +17,12 @@ const DynamicWorkshopSelectScreen = () => {
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    // console.log(response.data.data.Tech);
     setEvent(response.data.data.Workshop);
   };
   return (
-    <View>
-      <Text>TechEvents</Text>
+    <View style={styles.mainView}>
+      <Text style={styles.mainTitle}>Workshops</Text>
+      <Text style={styles.subTitle}>Note: You can select only 1 Workshop</Text>
       <FlatList
         style={{marginBottom: 30, marginTop: 5}}
         data={event}
@@ -32,4 +34,21 @@ const DynamicWorkshopSelectScreen = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  mainView: {
+    backgroundColor: 'white',
+    padding: 15,
+    flex: 1,
+  },
+  mainTitle: {
+    fontFamily: 'Poppins-Medium',
+    color: '#101010',
+    fontSize: 16,
+  },
+  subTitle: {
+    fontFamily: 'Poppins-Regular',
+    color: '#393939 ',
+    fontSize: 14,
+  },
+});
 export default DynamicWorkshopSelectScreen;
