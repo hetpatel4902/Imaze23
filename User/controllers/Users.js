@@ -490,14 +490,16 @@ const payOffline = async (req, res) => {
       { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
       { new: true }
     );
+    res.status(StatusCodes.OK).json({ res: "success", otp });
+
   } else {
     const event = await UserEvent.findOneAndUpdate(
       { userId: uid, _id: orderId },
       { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
       { new: true }
     );
+    res.status(StatusCodes.OK).json({ res: "success", otp });
   }
-  res.status(StatusCodes.OK).json({ res: "success", otp });
 };
 
 module.exports = {
