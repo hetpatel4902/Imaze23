@@ -20,14 +20,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 const EventDetailScreen = () => {
   const width = useWindowDimensions().width;
   const route = useRoute();
-  const {tokens} = useAuthContext();
+  const {tokens, users} = useAuthContext();
   const navigation = useNavigation();
   const eventId = route?.params.eventId;
   const selected = route?.params.selected;
+  const bought = route?.params.bought;
   const [eventDetail, setEventDetail] = useState(null);
   const participant = eventDetail?.participants;
   const [textShown, setTextShown] = useState(false); //To show ur remaining Text
   const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
+  const [checkDetail, setCheckDetail] = useState(null);
   // const width = Dimensions.get('screen').width;
   const toggleNumberOfLines = () => {
     //To toggle the show text or hide it
@@ -42,7 +44,21 @@ const EventDetailScreen = () => {
   useEffect(() => {
     events();
   }, []);
-  const onPress = () => {};
+  const onPress = () => {
+    check();
+  };
+  const check = async () => {
+    const checkEvent = async () => {
+      const response = await axios.post(
+        `http://${USER_IP}/api/v1/user/events/${users}/check`,
+        {price: eventDetail?.price, eid: eventDetail?._id},
+        {headers: {Authorization: `Bearer ${tokens}`}},
+      );
+      console.log(response.data);
+      setCheckDetail(response.data);
+    };
+    await checkEvent();
+  };
   const events = async () => {
     const response = await axios.get(
       `http://${USER_IP}/api/v1/user/events/${eventId}`,
@@ -121,13 +137,13 @@ const EventDetailScreen = () => {
           </View>
           <View
             style={{
-              backgroundColor: '#33e835',
+              backgroundColor: '#05fa9c',
               paddingHorizontal: 14,
               alignItems: 'center',
               justifyContent: 'center',
               paddingVertical: 3.5,
               borderRadius: 18,
-              shadowColor: '#33e835',
+              shadowColor: '#05fa9c',
               shadowOffset: {
                 width: 0,
                 height: 7,
@@ -190,7 +206,7 @@ const EventDetailScreen = () => {
               flex: 1,
               // alignItems: 'center',
             }}>
-            <FontAwesome5 name="map-marker-alt" size={16} color={'#33e835'} />
+            <FontAwesome5 name="map-marker-alt" size={16} color={'#05fa9c'} />
           </View>
           <View style={{flex: 7, marginHorizontal: 10}}>
             <Text
@@ -226,7 +242,7 @@ const EventDetailScreen = () => {
             <MaterialCommunityIcons
               name="calendar-week"
               size={16}
-              color={'#33e835'}
+              color={'#05fa9c'}
             />
           </View>
           <View style={{flex: 7, marginHorizontal: 10}}>
@@ -280,6 +296,7 @@ const EventDetailScreen = () => {
         {/* {!selected && ( */}
         <Pressable
           onPress={onPress}
+          disabled={bought}
           style={{
             shadowColor: '#4b2be3',
             shadowOffset: {
@@ -297,7 +314,7 @@ const EventDetailScreen = () => {
             borderRadius: 13,
             flex: 1,
             maxWidth: width,
-            paddingHorizontal: width / 2 - 54,
+            paddingHorizontal: bought ? width / 2 - 90 : width / 2 - 54,
             marginBottom: 630,
             opacity: selected ? 0 : 1,
           }}>
@@ -308,7 +325,7 @@ const EventDetailScreen = () => {
               fontFamily: 'Poppins-SemiBold',
               fontSize: 15,
             }}>
-            Buy
+            {bought ? 'Already Bought' : 'Buy'}
           </Text>
         </Pressable>
         {/* // )} */}

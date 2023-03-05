@@ -70,7 +70,7 @@ const DynamicWorkshopComponent = ({tech}) => {
         padding: 10,
         paddingHorizontal: selected ? 15 : 10,
         borderWidth: selected ? 1 : 0,
-        borderColor: selected ? '#33e835' : '#ffffff',
+        borderColor: selected ? '#05fa9c' : '#ffffff',
       }}>
       <View style={styles.imageView}>
         <Image
@@ -91,12 +91,12 @@ const DynamicWorkshopComponent = ({tech}) => {
       </View>
       <Pressable
         style={{
-          backgroundColor: selected ? 'red' : '#33e835',
+          backgroundColor: selected ? 'red' : '#05fa9c',
           alignItems: 'center',
           justifyContent: 'center',
           paddingVertical: 3.5,
           borderRadius: 18,
-          shadowColor: '#33e835',
+          shadowColor: '#05fa9c',
           shadowOffset: {
             width: 0,
             height: 7,
@@ -159,12 +159,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   selectContainer: {
-    backgroundColor: '#33e835',
+    backgroundColor: '#05fa9c',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 3.5,
     borderRadius: 18,
-    shadowColor: '#33e835',
+    shadowColor: '#05fa9c',
     shadowOffset: {
       width: 0,
       height: 7,

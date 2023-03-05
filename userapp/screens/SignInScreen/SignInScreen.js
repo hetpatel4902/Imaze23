@@ -195,6 +195,7 @@ const SignInScreen = () => {
           <Text
             style={{
               color: '#6949ff',
+              // color: '#19347d',
               fontFamily: 'Poppins-Medium',
               fontSize: 13,
             }}>
@@ -206,6 +207,7 @@ const SignInScreen = () => {
             onPress={onSignInPressed}
             style={{
               shadowColor: '#4b2be3',
+              // shadowColor: '#19347d',
               shadowOffset: {
                 width: 0,
                 height: 7,
@@ -217,6 +219,7 @@ const SignInScreen = () => {
               alignSelf: 'center',
               marginTop: 25,
               backgroundColor: '#6949ff',
+              // backgroundColor: '#19347d',
               paddingVertical: 10,
               borderRadius: 13,
               flex: 1,
@@ -255,6 +258,7 @@ const SignInScreen = () => {
             <Text
               style={{
                 color: '#6949ff',
+                // color: '#19347d',
                 fontFamily: 'Poppins-SemiBold',
                 marginLeft: 5,
               }}>

@@ -100,6 +100,7 @@ const MyEventStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={MyEvents} name="MyEvents" />
+      <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
     </Stack.Navigator>
   );
 };
