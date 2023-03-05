@@ -13,6 +13,7 @@ const {
   buttonVisibility,
   getCertificate,
   getUserDetails,
+  updateUserDetails,
   validateUserOtp,
   updatepassword,
   getPaymentHistory,
@@ -38,6 +39,7 @@ router.route("/certificates/:uid/event/:eid").get(authmiddleware,getCertificate)
 
 //user
 router.route("/:uid").get(authmiddleware,getUserDetails); // url-> /api/v1/user/${userid}
+router.route("/:uid").post(authmiddleware,updateUserDetails);//req.body= {email:,name:}
 router.route("/:email/validateOTP").post(validateUserOtp); //req.body = { otp:otp }
 router.route("/:email/password").patch(updatepassword); //req.body = {password:password}
 

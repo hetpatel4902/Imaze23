@@ -404,6 +404,11 @@ const getUserDetails = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", data: user });
   }
 };
+const updateUserDetails = async(req,res)=>{
+  const {uid} = req.params;
+  const user = await User.findOneAndUpdate({_id:uid},req.body,{new:true,runValidators:true});
+  res.status(StatusCodes.OK).json({res:"success",data:user})
+}
 const validateUserOtp = async (req, res) => {
   const { otp } = req.body;
   const { email } = req.params;
@@ -490,7 +495,7 @@ const payOffline = async (req, res) => {
       { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
       { new: true }
     );
-    res.status(StatusCodes.OK).json({ res: "success", otp });
+    res.status(StatusCodes.OK).json({ res: "success", otp:combo.cashotp });
 
   } else {
     const event = await UserEvent.findOneAndUpdate(
@@ -498,7 +503,7 @@ const payOffline = async (req, res) => {
       { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
       { new: true }
     );
-    res.status(StatusCodes.OK).json({ res: "success", otp });
+    res.status(StatusCodes.OK).json({ res: "success", otp:event.cashotp });
   }
 };
 
@@ -513,6 +518,7 @@ module.exports = {
   buttonVisibility,
   getCertificate,
   getUserDetails,
+  updateUserDetails,
   validateUserOtp,
   updatepassword,
   getPaymentHistory,
