@@ -22,7 +22,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {USER_IP} from '@env';
 
 const UpdateProfile = () => {
-  const {height} = useWindowDimensions();
+  const {height, width} = useWindowDimensions();
   const {users, tokens, loginPending, setLoginPending} = useAuthContext();
   // const {control, handleSubmit, watch} = useForm();
   // const pwd = watch('password');
@@ -30,7 +30,8 @@ const UpdateProfile = () => {
   const [details, setDetails] = useState(null);
   // const [loadingPending, setLoadingPending] = useState(false);
   const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
+  // const [address, setAddress] = useState('');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     getUserData();
@@ -48,6 +49,8 @@ const UpdateProfile = () => {
           },
         );
         console.log(response.data.data);
+        setName(response.data.data.name);
+        setEmail(response.data.data.email);
         setDetails(response.data.data);
         setLoginPending(false);
         // };
@@ -65,10 +68,10 @@ const UpdateProfile = () => {
       try {
         setLoginPending(true);
         const response = await axios.post(
-          `http://${U}:6990/api/v1/user/${users}`,
+          `http://${USER_IP}/api/v1/user/${users}`,
           {
             name: name,
-            address: address,
+            email: email,
           },
           {
             headers: {
@@ -84,9 +87,9 @@ const UpdateProfile = () => {
         const jsonValue = JSON.stringify(obj);
         await AsyncStorage.setItem('userDetail', jsonValue);
         navigation.navigate('ProfileScreen');
-        setLoadingPending(false);
+        setLoginPending(false);
       } catch (err) {
-        setLoadingPending(false);
+        setLoginPending(false);
         Alert.alert(err);
       }
     }
@@ -113,7 +116,7 @@ const UpdateProfile = () => {
               style={{
                 marginLeft: 3,
                 color: '#000000',
-                fontFamily: 'Fredoka-Regular',
+                fontFamily: 'Poppins-Regular',
                 fontSize: 16,
               }}>
               Update Your Profile
@@ -124,7 +127,7 @@ const UpdateProfile = () => {
             style={{
               color: 'black',
               fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
+              fontFamily: 'Poppins-Regular',
               marginTop: 15,
             }}>
             Name:
@@ -133,14 +136,14 @@ const UpdateProfile = () => {
             onChangeText={setName}
             value={name}
             style={{
-              height: 36,
+              height: 44,
               borderWidth: 0.5,
               borderColor: '#d1cfcf',
               marginTop: 5,
               borderRadius: 8,
               paddingHorizontal: 10,
               fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
+              fontFamily: 'Poppins-Regular',
               color: 'black',
               marginBottom: 10,
             }}
@@ -149,22 +152,22 @@ const UpdateProfile = () => {
             style={{
               color: 'black',
               fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
+              fontFamily: 'Poppins-Regular',
             }}>
-            Address:
+            Email:
           </Text>
           <TextInput
-            onChangeText={setAddress}
-            value={address}
+            onChangeText={setEmail}
+            value={email}
             style={{
-              height: 36,
+              height: 44,
               borderWidth: 0.5,
               borderColor: '#d1cfcf',
               marginTop: 5,
               borderRadius: 8,
               paddingHorizontal: 10,
               fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
+              fontFamily: 'Poppins-Regular',
               color: 'black',
               marginBottom: 10,
             }}
@@ -175,15 +178,17 @@ const UpdateProfile = () => {
               alignContent: 'center',
               alignSelf: 'center',
               marginTop: 10,
-              backgroundColor: '#f35858',
+              backgroundColor: '#6949ff',
               paddingVertical: 12,
-              borderRadius: 9,
+              borderRadius: 10,
+              width: width - 50,
             }}>
             <Text
               style={{
                 color: 'white',
-                fontFamily: 'Fredoka-Medium',
-                marginHorizontal: 120,
+                fontFamily: 'Poppins-Medium',
+                // marginHorizontal: 120,
+                textAlign: 'center',
                 fontSize: 15,
               }}>
               Update
@@ -191,7 +196,7 @@ const UpdateProfile = () => {
           </Pressable>
         </View>
       </ScrollView>
-      {loadingPending ? <AppLoader /> : null}
+      {/* {loadingPending ? <AppLoader /> : null} */}
     </>
   );
 };
