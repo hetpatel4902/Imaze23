@@ -1,23 +1,28 @@
-import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
+import {View, Text, Pressable, StyleSheet, Image} from 'react-native';
 import React from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
-const MyEventsComponent = ({tech}) => {
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const PendingEventComponent = ({tech}) => {
   const navigation = useNavigation();
   const onPress = () => {
-    navigation.navigate('EventDetailScreen', {eventId: tech._id, bought: true});
+    navigation.navigate('EventDetailScreen', {
+      eventId: tech.event_details._id,
+      pending: true,
+      otp: tech.cash_otp,
+    });
   };
   const participants = tech?.participants;
   return (
     <Pressable onPress={onPress} style={styles.mainView}>
       {/* <View style={styles.imageView}> */}
       <Image
-        source={{uri: `http://10.0.2.2:8000/${tech.image}`}}
+        source={{uri: `http://10.0.2.2:8000/${tech?.event_details.image}`}}
         style={styles.image}
       />
       {/* </View> */}
       <View style={styles.nameView}>
-        <Text style={styles.name}>{tech.name}</Text>
+        <Text style={styles.name}>{tech?.event_details.name}</Text>
         <View style={styles.container}>
           <MaterialCommunityIcons
             name="calendar-week"
@@ -25,14 +30,16 @@ const MyEventsComponent = ({tech}) => {
             color={'#05fa9c'}
           />
           <View style={styles.subContainer}>
-            <Text style={styles.subContainerDate}>{tech?.date} </Text>
-            <Text style={styles.subContainerTime}>({tech?.time})</Text>
+            <Text style={styles.subContainerDate}>
+              {tech?.event_details.date}{' '}
+            </Text>
+            <Text style={styles.subContainerTime}>
+              ({tech?.event_details.time})
+            </Text>
           </View>
         </View>
         <View>
-          <Text style={styles.participants}>
-            {participants?.length} participants
-          </Text>
+          <Text style={styles.participants}>Otp: {tech?.cash_otp}</Text>
         </View>
       </View>
     </Pressable>
@@ -110,4 +117,4 @@ const styles = StyleSheet.create({
   priceContainerText: {color: 'white', fontFamily: 'Poppins-Medium'},
 });
 
-export default MyEventsComponent;
+export default PendingEventComponent;

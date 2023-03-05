@@ -23,6 +23,7 @@ const AuthContextProvider = ({children}) => {
   const [loginPending, setLoginPending] = useState(false);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [price, setPrice] = useState(0);
   // const [name,setName] = useState()
   let jsonValue;
   let favourite;
@@ -98,6 +99,8 @@ const AuthContextProvider = ({children}) => {
         visible,
         setVisible,
         Arr,
+        price,
+        setPrice,
       }}>
       {children}
       {loginPending ? <SearchLoader /> : null}

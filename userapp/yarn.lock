@@ -5666,6 +5666,11 @@
   "resolved" "https://registry.npmjs.org/path-parse/-/path-parse-1.0.7.tgz"
   "version" "1.0.7"
 
+"paytm_allinone_react-native@^1.1.1":
+  "integrity" "sha512-d3Z34oFzdu7SkpJI/fTev7O9hncV/S4RxODV32m6xrdglk8Zr+DngfLMt5SgCp/ODHG3tA7jUSJRos1dt4+6Xw=="
+  "resolved" "https://registry.npmjs.org/paytm_allinone_react-native/-/paytm_allinone_react-native-1.1.1.tgz"
+  "version" "1.1.1"
+
 "picocolors@^1.0.0":
   "integrity" "sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ=="
   "resolved" "https://registry.npmjs.org/picocolors/-/picocolors-1.0.0.tgz"

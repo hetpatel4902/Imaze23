@@ -14,7 +14,8 @@ const DynamicWorkshopComponent = ({tech}) => {
     });
   };
   const participants = tech?.participants;
-  const {workshopArr, setWorkshopArr, check} = useAuthContext();
+  const {workshopArr, setWorkshopArr, check, price, setPrice} =
+    useAuthContext();
   const [selected, setSelected] = useState(false);
   const [done, setDone] = useState(false);
   let Arr = workshopArr;
@@ -42,6 +43,8 @@ const DynamicWorkshopComponent = ({tech}) => {
           // only splice array when item is found
           Arr.splice(i, 1); // 2nd parameter means remove one item only
         }
+        setPrice(price - tech.price);
+        setWorkshopArr(Arr);
         setSelected(false);
         flag = 1;
         break;
@@ -50,9 +53,10 @@ const DynamicWorkshopComponent = ({tech}) => {
     if (flag == 0) {
       if (Arr.length < 1) {
         Arr.push(tech._id);
+        setPrice(price + tech.price);
+        setWorkshopArr(Arr);
       }
     }
-    setWorkshopArr(Arr);
   };
   const onClick = () => {
     func();

@@ -1,4 +1,4 @@
-import {View, Text, FlatList, ScrollView} from 'react-native';
+import {View, Text, FlatList, ScrollView, ToastAndroid} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {useAuthContext} from '../../src/Context/AuthContext';
@@ -38,7 +38,7 @@ const StaticComboScreen = () => {
         <FlatList
           style={{marginBottom: 30, marginTop: 5}}
           data={combo}
-          renderItem={({item}) => <StaticCombo data={item} />}
+          renderItem={({item}) => <StaticCombo data={item} pending={false} />}
           keyExtractor={item => item._id}
           showsVerticalScrollIndicator={false}
         />

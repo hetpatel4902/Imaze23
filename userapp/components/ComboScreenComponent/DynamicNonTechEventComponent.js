@@ -14,7 +14,8 @@ const DynamicNonTechEventComponent = ({tech}) => {
     });
   };
   const participants = tech?.participants;
-  const {nonTechArr, setNonTechArr, check, techArr} = useAuthContext();
+  const {nonTechArr, setNonTechArr, check, techArr, price, setPrice} =
+    useAuthContext();
   const [selected, setSelected] = useState(false);
   const [done, setDone] = useState(false);
   let Arr = nonTechArr;
@@ -42,6 +43,7 @@ const DynamicNonTechEventComponent = ({tech}) => {
           // only splice array when item is found
           Arr.splice(i, 1); // 2nd parameter means remove one item only
         }
+        setPrice(price - tech.price);
         setNonTechArr(Arr);
         // console.log('techarr:', techArr);
         // console.log('nontecharr:', nonTechArr);
@@ -53,6 +55,7 @@ const DynamicNonTechEventComponent = ({tech}) => {
     if (flag == 0) {
       if (Arr.length < 1) {
         Arr.push(tech._id);
+        setPrice(price + tech.price);
         setNonTechArr(Arr);
       }
     }

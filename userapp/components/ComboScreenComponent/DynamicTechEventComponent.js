@@ -14,7 +14,7 @@ const DynamicTechEventComponent = ({tech}) => {
     });
   };
   const participants = tech?.participants;
-  const {techArr, setTechArr, check} = useAuthContext();
+  const {techArr, setTechArr, check, price, setPrice} = useAuthContext();
   const [selected, setSelected] = useState(false);
   const [done, setDone] = useState(false);
   let Arr = techArr;
@@ -50,13 +50,15 @@ const DynamicTechEventComponent = ({tech}) => {
           // only splice array when item is found
           Arr.splice(i, 1); // 2nd parameter means remove one item only
         }
+        console.log('current price:', price);
+        setPrice(price - tech.price);
         // Arr = Arr.filter(a => a != tech._id);
         setTechArr(Arr);
         // set(Arr);
         // change();
         // checking();
         // console.log('arr:', Arr);
-        console.log('techArr:', techArr);
+        // console.log('techArr:', techArr);
         setSelected(false);
         flag = 1;
         break;
@@ -65,6 +67,7 @@ const DynamicTechEventComponent = ({tech}) => {
     if (flag == 0) {
       if (Arr.length < 2) {
         Arr.push(tech._id);
+        setPrice(price + tech.price);
         setTechArr(Arr);
         console.log(techArr);
       }
