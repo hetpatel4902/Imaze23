@@ -14,7 +14,8 @@ const DynamicWorkshopComponent = ({tech}) => {
     });
   };
   const participants = tech?.participants;
-  const {workshopArr, setWorkshopArr, check} = useAuthContext();
+  const {workshopArr, setWorkshopArr, check, price, setPrice} =
+    useAuthContext();
   const [selected, setSelected] = useState(false);
   const [done, setDone] = useState(false);
   let Arr = workshopArr;
@@ -42,6 +43,8 @@ const DynamicWorkshopComponent = ({tech}) => {
           // only splice array when item is found
           Arr.splice(i, 1); // 2nd parameter means remove one item only
         }
+        setPrice(price - tech.price);
+        setWorkshopArr(Arr);
         setSelected(false);
         flag = 1;
         break;
@@ -50,9 +53,10 @@ const DynamicWorkshopComponent = ({tech}) => {
     if (flag == 0) {
       if (Arr.length < 1) {
         Arr.push(tech._id);
+        setPrice(price + tech.price);
+        setWorkshopArr(Arr);
       }
     }
-    setWorkshopArr(Arr);
   };
   const onClick = () => {
     func();
@@ -70,7 +74,7 @@ const DynamicWorkshopComponent = ({tech}) => {
         padding: 10,
         paddingHorizontal: selected ? 15 : 10,
         borderWidth: selected ? 1 : 0,
-        borderColor: selected ? '#33e835' : '#ffffff',
+        borderColor: selected ? '#05fa9c' : '#ffffff',
       }}>
       <View style={styles.imageView}>
         <Image
@@ -91,12 +95,12 @@ const DynamicWorkshopComponent = ({tech}) => {
       </View>
       <Pressable
         style={{
-          backgroundColor: selected ? 'red' : '#33e835',
+          backgroundColor: selected ? 'red' : '#05fa9c',
           alignItems: 'center',
           justifyContent: 'center',
           paddingVertical: 3.5,
           borderRadius: 18,
-          shadowColor: '#33e835',
+          shadowColor: '#05fa9c',
           shadowOffset: {
             width: 0,
             height: 7,
@@ -159,12 +163,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   selectContainer: {
-    backgroundColor: '#33e835',
+    backgroundColor: '#05fa9c',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 3.5,
     borderRadius: 18,
-    shadowColor: '#33e835',
+    shadowColor: '#05fa9c',
     shadowOffset: {
       width: 0,
       height: 7,

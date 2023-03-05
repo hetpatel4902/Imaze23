@@ -49,7 +49,7 @@ const FamousEventsComponent = ({tech}) => {
           top: 15,
           //   left: 110,
           right: -20,
-          backgroundColor: '#33e835',
+          backgroundColor: '#05fa9c',
           borderRadius: 6,
           padding: 3,
           paddingHorizontal: 5,
@@ -93,7 +93,7 @@ const FamousEventsComponent = ({tech}) => {
           <MaterialCommunityIcons
             name="calendar-week"
             size={16}
-            color={'#33e835'}
+            color={'#05fa9c'}
           />
         </View>
         <View

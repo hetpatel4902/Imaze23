@@ -205,7 +205,7 @@ const getStaticCombos = async (req, res) => {
 const checkCombo = async (req, res) => {
   const { events, combotype, price } = req.body;
   const { uid } = req.params;
-
+  console.log(events);
   var event_ids = [...events];
   //purchased events + incomplete
   const userEvents = await UserEvent.find({
@@ -322,7 +322,7 @@ const checkUserEvent = async (req, res) => {
   events.push(eid);
   const { flag, data } = await isClashing(events);
   if (flag) {
-    res.status(StatusCodes.OK).json({ res: "success",flag, data });
+    res.status(StatusCodes.OK).json({ res: "success", flag, data });
   } else {
     const create_event = await UserEvent.create({
       userId: uid,
@@ -331,7 +331,9 @@ const checkUserEvent = async (req, res) => {
       payment_mode: "OFFLINE",
       payment_status: "NEW",
     });
-    res.status(StatusCodes.OK).json({ res: "success",flag, data: create_event });
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag, data: create_event });
   }
 };
 
@@ -506,7 +508,6 @@ const payOffline = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", otp:event.cashotp });
   }
 };
-
 module.exports = {
   getAllEvents,
   getOneEvent,

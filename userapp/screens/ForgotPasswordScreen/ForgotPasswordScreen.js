@@ -412,6 +412,7 @@ const ForgotPasswordScreen = () => {
               onPress={onSendPressed}
               style={{
                 shadowColor: '#4b2be3',
+                // shadowColor: '#19347d',
                 shadowOffset: {
                   width: 0,
                   height: 7,
@@ -423,6 +424,7 @@ const ForgotPasswordScreen = () => {
                 alignSelf: 'center',
                 marginTop: 40,
                 backgroundColor: '#6949ff',
+                // backgroundColor: '#19347d',
                 paddingVertical: 10,
                 borderRadius: 13,
                 flex: 1,

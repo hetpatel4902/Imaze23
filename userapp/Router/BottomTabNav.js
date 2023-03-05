@@ -23,6 +23,9 @@ import DynamicTechSelectScreen from '../screens/ComboScreen/DynamicTechSelectScr
 import DynamicNonTechSelectScreen from '../screens/ComboScreen/DynamicNonTechSelectScreen';
 import DynamicWorkshopSelectScreen from '../screens/ComboScreen/DynamicWorkshopSelectScreen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import PaymentHistory from '../screens/ProfileScreen/PaymentHistory';
+import UpdateProfile from '../screens/ProfileScreen/UpdateProfile';
+import AboutUsScreen from '../screens/ProfileScreen/AboutUsScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -46,7 +49,7 @@ const BottomTabNav = () => {
         component={HomeStack}
         name="Home"
         options={{
-          unmountOnBlur: true,
+          // unmountOnBlur: true,
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
@@ -100,6 +103,7 @@ const MyEventStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={MyEvents} name="MyEvents" />
+      <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
     </Stack.Navigator>
   );
 };
@@ -123,6 +127,7 @@ const ComboStack = () => {
         name="DynamicWorkshopSelectScreen"
       />
       <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
+      <Stack.Screen component={MyEvents} name="MyEvents" />
     </Stack.Navigator>
   );
 };
@@ -130,6 +135,10 @@ const ProfileScreenStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={ProfileScreen} name="ProfileScreen" />
+      <Stack.Screen component={PaymentHistory} name="PaymentHistory" />
+      <Stack.Screen component={UpdateProfile} name="UpdateProfile" />
+      <Stack.Screen component={MyEvents} name="MyEvents" />
+      <Stack.Screen component={AboutUsScreen} name="AboutUsScreen" />
     </Stack.Navigator>
   );
 };
@@ -138,6 +147,7 @@ const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={HomeScreen} name="HomeScreen" />
+      <Stack.Screen component={MyEvents} name="MyEvents" />
       <Stack.Screen component={TechEvents} name="TechEvents" />
       <Stack.Screen component={NonTechEvents} name="NonTechEvents" />
       <Stack.Screen component={CulturalEvents} name="CulturalEvents" />

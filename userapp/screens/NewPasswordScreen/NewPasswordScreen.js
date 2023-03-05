@@ -37,8 +37,9 @@ const NewPasswordScreen = () => {
     if (password.length >= 8) {
       try {
         setLoading(true);
+        console.log(email);
         const response = await axios.patch(
-          `http://${USER_IP}/api/v1/user/${users}/updatePassword`,
+          `http://${USER_IP}/api/v1/user/${email}/password`,
           {password: password},
         );
         navigation.navigate('SignIn');
@@ -168,6 +169,7 @@ const NewPasswordScreen = () => {
               onPress={onSubmitPressed}
               style={{
                 shadowColor: '#4b2be3',
+                // shadowColor: '#19347d',
                 shadowOffset: {
                   width: 0,
                   height: 7,
@@ -179,6 +181,7 @@ const NewPasswordScreen = () => {
                 alignSelf: 'center',
                 marginTop: 25,
                 backgroundColor: '#6949ff',
+                // backgroundColor: '#19347d',
                 paddingVertical: 10,
                 borderRadius: 13,
                 flex: 1,

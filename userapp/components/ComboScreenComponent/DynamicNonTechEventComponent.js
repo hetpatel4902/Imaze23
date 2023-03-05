@@ -14,7 +14,8 @@ const DynamicNonTechEventComponent = ({tech}) => {
     });
   };
   const participants = tech?.participants;
-  const {nonTechArr, setNonTechArr, check, techArr} = useAuthContext();
+  const {nonTechArr, setNonTechArr, check, techArr, price, setPrice} =
+    useAuthContext();
   const [selected, setSelected] = useState(false);
   const [done, setDone] = useState(false);
   let Arr = nonTechArr;
@@ -42,6 +43,7 @@ const DynamicNonTechEventComponent = ({tech}) => {
           // only splice array when item is found
           Arr.splice(i, 1); // 2nd parameter means remove one item only
         }
+        setPrice(price - tech.price);
         setNonTechArr(Arr);
         // console.log('techarr:', techArr);
         // console.log('nontecharr:', nonTechArr);
@@ -53,6 +55,7 @@ const DynamicNonTechEventComponent = ({tech}) => {
     if (flag == 0) {
       if (Arr.length < 1) {
         Arr.push(tech._id);
+        setPrice(price + tech.price);
         setNonTechArr(Arr);
       }
     }
@@ -73,7 +76,7 @@ const DynamicNonTechEventComponent = ({tech}) => {
         padding: 10,
         paddingHorizontal: selected ? 15 : 10,
         borderWidth: selected ? 1 : 0,
-        borderColor: selected ? '#33e835' : '#ffffff',
+        borderColor: selected ? '#05fa9c' : '#ffffff',
       }}>
       <View style={styles.imageView}>
         <Image
@@ -94,12 +97,12 @@ const DynamicNonTechEventComponent = ({tech}) => {
       </View>
       <Pressable
         style={{
-          backgroundColor: selected ? 'red' : '#33e835',
+          backgroundColor: selected ? 'red' : '#05fa9c',
           alignItems: 'center',
           justifyContent: 'center',
           paddingVertical: 3.5,
           borderRadius: 18,
-          shadowColor: '#33e835',
+          shadowColor: '#05fa9c',
           shadowOffset: {
             width: 0,
             height: 7,
@@ -162,12 +165,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   selectContainer: {
-    backgroundColor: '#33e835',
+    backgroundColor: '#05fa9c',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 3.5,
     borderRadius: 18,
-    shadowColor: '#33e835',
+    shadowColor: '#05fa9c',
     shadowOffset: {
       width: 0,
       height: 7,
