@@ -7,7 +7,7 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors/index");
 const fs = require("fs");
 const pdfkit = require("pdfkit");
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 
 //utility functions
 const isClashing = async (events) => {
@@ -139,7 +139,7 @@ const getUserEvents = async (req, res) => {
       const event = await Event.findOne({ _id: events[j] });
       temp_combo_array.push(event);
     }
-    let obj={};
+    let obj = {};
     obj.events = temp_combo_array;
     obj.price = pendingCombos[i].price;
     obj.payment_mode = pendingCombos[i].payment_mode;
@@ -156,7 +156,7 @@ const getUserEvents = async (req, res) => {
     obj.price = pendingEvents[i].price;
     obj.payment_mode = pendingEvents[i].payment_mode;
     obj.cash_otp = pendingEvents[i].cashotp;
-    obj.payment_status= pendingEvents[i].payment_status;
+    obj.payment_status = pendingEvents[i].payment_status;
     individual.push(obj);
   }
 
@@ -203,10 +203,10 @@ const getStaticCombos = async (req, res) => {
   res.status(StatusCodes.OK).json({ res: "success", data: resp });
 };
 const checkCombo = async (req, res) => {
-  const { events, combotype,price } = req.body;
+  const { events, combotype, price } = req.body;
   const { uid } = req.params;
 
-  var event_ids = [...events]
+  var event_ids = [...events];
   //purchased events + incomplete
   const userEvents = await UserEvent.find({
     userId: uid,
@@ -289,9 +289,11 @@ const checkCombo = async (req, res) => {
       payment_mode: "OFFLINE",
       payment_status: "NEW",
     });
-    res.status(StatusCodes.OK).json({ res: "success", data: create_combo });
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag, data: create_combo });
   } else {
-    res.status(StatusCodes.OK).json({ res: "success", data: { flag, data } });
+    res.status(StatusCodes.OK).json({ res: "success", flag, data });
   }
 };
 const checkUserEvent = async (req, res) => {
@@ -320,7 +322,7 @@ const checkUserEvent = async (req, res) => {
   events.push(eid);
   const { flag, data } = await isClashing(events);
   if (flag) {
-    res.status(StatusCodes.OK).json({ res: "success", data });
+    res.status(StatusCodes.OK).json({ res: "success",flag, data });
   } else {
     const create_event = await UserEvent.create({
       userId: uid,
@@ -329,7 +331,7 @@ const checkUserEvent = async (req, res) => {
       payment_mode: "OFFLINE",
       payment_status: "NEW",
     });
-    res.status(StatusCodes.OK).json({ res: "success", data: create_event });
+    res.status(StatusCodes.OK).json({ res: "success",flag, data: create_event });
   }
 };
 
@@ -424,7 +426,7 @@ const updatepassword = async (req, res) => {
   const user = await User.findOneAndUpdate(
     { email: email },
     { password },
-    { new: true,runValidators:true,setDefaultsOnInsert:true }
+    { new: true, runValidators: true, setDefaultsOnInsert: true }
   );
   if (!user) {
     throw new NotFoundError("user not found");
