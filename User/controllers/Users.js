@@ -289,9 +289,11 @@ const checkCombo = async (req, res) => {
       payment_mode: "OFFLINE",
       payment_status: "NEW",
     });
-    res.status(StatusCodes.OK).json({ res: "success", data: create_combo });
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag, data: create_combo });
   } else {
-    res.status(StatusCodes.OK).json({ res: "success", data: { flag, data } });
+    res.status(StatusCodes.OK).json({ res: "success", flag, data });
   }
 };
 const checkUserEvent = async (req, res) => {
@@ -320,7 +322,7 @@ const checkUserEvent = async (req, res) => {
   events.push(eid);
   const { flag, data } = await isClashing(events);
   if (flag) {
-    res.status(StatusCodes.OK).json({ res: "success", data });
+    res.status(StatusCodes.OK).json({ res: "success",flag, data });
   } else {
     const create_event = await UserEvent.create({
       userId: uid,
@@ -329,7 +331,7 @@ const checkUserEvent = async (req, res) => {
       payment_mode: "OFFLINE",
       payment_status: "NEW",
     });
-    res.status(StatusCodes.OK).json({ res: "success", data: create_event });
+    res.status(StatusCodes.OK).json({ res: "success",flag, data: create_event });
   }
 };
 
