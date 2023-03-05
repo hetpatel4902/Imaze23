@@ -1,6 +1,7 @@
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, Image, StyleSheet} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const EventComponent = ({tech}) => {
   const navigation = useNavigation();
@@ -8,15 +9,109 @@ const EventComponent = ({tech}) => {
   const onPress = () => {
     navigation.navigate('EventDetailScreen', {eventId: tech._id});
   };
+
+  const participants = tech?.participants;
   return (
-    <View>
-      <Pressable onPress={onPress}>
-        <Text>{tech.name}</Text>
-      </Pressable>
-    </View>
+    <Pressable onPress={onPress} style={styles.mainView}>
+      <View style={styles.imageView}>
+        <Image
+          source={{uri: `http://10.0.2.2:8000/${tech.image}`}}
+          style={styles.image}
+        />
+      </View>
+      <View style={styles.nameView}>
+        <Text style={styles.name}>{tech.name}</Text>
+        <View style={styles.container}>
+          <MaterialCommunityIcons
+            name="calendar-week"
+            size={16}
+            color={'#33e835'}
+          />
+          <View style={styles.subContainer}>
+            <Text style={styles.subContainerDate}>{tech?.date} </Text>
+            <Text style={styles.subContainerTime}>({tech?.time})</Text>
+          </View>
+        </View>
+        <View>
+          <Text style={styles.participants}>
+            {participants.length} participants
+          </Text>
+        </View>
+      </View>
+      <View style={styles.priceContainer}>
+        <Text style={styles.priceContainerText}>Rs.{tech?.price}</Text>
+      </View>
+    </Pressable>
   );
 };
 
+const styles = StyleSheet.create({
+  mainView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  imageView: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  image: {
+    height: 66,
+    width: 66,
+    borderRadius: 33,
+  },
+  nameView: {flex: 3, paddingHorizontal: 5},
+  name: {
+    color: 'black',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 14,
+  },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subContainer: {
+    flex: 7,
+    marginHorizontal: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subContainerDate: {
+    fontFamily: 'Poppins-Medium',
+    color: '#242424',
+    fontSize: 13,
+  },
+  subContainerTime: {
+    fontFamily: 'Poppins-Regular',
+    color: '#242424',
+    fontSize: 12,
+  },
+  participants: {
+    color: '#191919',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 13,
+  },
+  priceContainer: {
+    backgroundColor: '#33e835',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    paddingVertical: 3.5,
+    borderRadius: 18,
+    shadowColor: '#33e835',
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+    elevation: 14,
+  },
+  priceContainerText: {color: 'white', fontFamily: 'Poppins-Medium'},
+});
 export default EventComponent;
 
 // [

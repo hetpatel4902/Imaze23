@@ -5,6 +5,7 @@ import {
   TextInput,
   StyleSheet,
   FlatList,
+  Image,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -35,70 +36,27 @@ const SearchScreen = () => {
       setSearchResult(null);
     }
   };
-  const today = new Date();
-  const greeting = () => {
-    if (today.getHours() < 12 && today.getHours() > 6) {
-      return 'Good Morning';
-    } else if (today.getHours() > 12 && today.getHours() < 16) {
-      return 'Good Afternoon!';
-    } else if (today.getHours() > 16 && today.getHours() < 23) {
-      return 'Good Evening!';
-    } else {
-      return 'Good Night!';
-    }
-  };
+  // const today = new Date();
+  // const greeting = () => {
+  //   if (today.getHours() < 12 && today.getHours() > 6) {
+  //     return 'Good Morning';
+  //   } else if (today.getHours() > 12 && today.getHours() < 16) {
+  //     return 'Good Afternoon!';
+  //   } else if (today.getHours() > 16 && today.getHours() < 23) {
+  //     return 'Good Evening!';
+  //   } else {
+  //     return 'Good Night!';
+  //   }
+  // };
   return (
     <View style={{padding: 15, backgroundColor: 'white', flex: 1}}>
-      <View
+      {/* <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-        }}>
-        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <MaterialIcons name="location-pin" size={22} color={'#927ff0'} />
-          <View style={{marginHorizontal: 5}}>
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  color: '#927ff0',
-                  fontSize: 15,
-                  fontFamily: 'Fredoka-SemiBold',
-                }}>
-                Sachivalay
-              </Text>
-
-              <AntDesign
-                name="caretdown"
-                size={15}
-                style={{marginHorizontal: 4}}
-                color={'#927ff0'}
-              />
-            </TouchableOpacity>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 11,
-                fontFamily: 'Fredoka-Regular',
-              }}>
-              Gandhinagar
-            </Text>
-          </View>
-        </View> */}
-        {/* <TouchableOpacity>
-          <Ionicons
-            name="ios-notifications-outline"
-            size={26}
-            color={'black'}
-          />
-        </TouchableOpacity> */}
-      </View>
-      <View style={{flexDirection: 'row', marginTop: 14}}>
+        }}></View> */}
+      {/* <View style={{flexDirection: 'row', marginTop: 14}}>
         <Text
           style={{
             color: 'black',
@@ -115,7 +73,11 @@ const SearchScreen = () => {
           }}>
           {greeting()}
         </Text>
-      </View>
+      </View> */}
+      <Image
+        source={require('../../data/imazelogo.png')}
+        style={{width: 250, height: 60, alignSelf: 'center'}}
+      />
       <View style={styles.searchSection}>
         <Ionicons
           style={styles.searchIcon}
@@ -128,7 +90,7 @@ const SearchScreen = () => {
           value={search}
           onChangeText={setSearch}
           onTextInput={onPress}
-          placeholder="Search dishes..."
+          placeholder="Search Events..."
           placeholderTextColor={'grey'}
           underlineColorAndroid="transparent"
         />
@@ -153,6 +115,7 @@ const styles = StyleSheet.create({
     // height: 200,
     backgroundColor: '#fff',
     marginTop: 14,
+    marginBottom: 10,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
@@ -169,7 +132,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-
+    // marginBottom: 10,
     paddingLeft: 0,
     borderRadius: 10,
     backgroundColor: '#fff',
