@@ -150,7 +150,7 @@ export default function ProfileScreen() {
               <Text
                 style={{
                   fontSize: 25,
-                  fontFamily: 'Fredoka-Medium',
+                  fontFamily: 'Poppins-Medium',
                   color: 'black',
                 }}>
                 {details?.name}
@@ -159,7 +159,7 @@ export default function ProfileScreen() {
                 style={{
                   marginRight: 10,
                   fontSize: 14,
-                  fontFamily: 'Fredoka-Regular',
+                  fontFamily: 'Poppins-Regular',
                   color: 'grey',
                 }}>
                 {details?.college}
@@ -169,7 +169,7 @@ export default function ProfileScreen() {
           <View style={{padding: 7, marginTop: 10}}>
             <Text
               style={{
-                fontFamily: 'Fredoka-Regular',
+                fontFamily: 'Poppins-Regular',
                 color: 'black',
                 fontSize: 16,
               }}>
@@ -181,7 +181,7 @@ export default function ProfileScreen() {
           <View style={{marginHorizontal: 18, marginTop: 5}}>
             {/* <Text
               style={{
-                fontFamily: 'Fredoka-Medium',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 17,
                 marginBottom: 5,
                 color: 'black',
@@ -329,7 +329,7 @@ export default function ProfileScreen() {
                   color: 'white',
                   fontWeight: '500',
                   fontSize: 17,
-                  fontFamily: 'Fredoka-Medium',
+                  fontFamily: 'Poppins-Medium',
                 }}>
                 Logout
               </Text>
@@ -363,13 +363,13 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     marginTop: 5,
     marginHorizontal: 10,
-    fontFamily: 'Fredoka-Regular',
+    fontFamily: 'Poppins-Regular',
   },
   like: {
     alignSelf: 'center',
     fontSize: 13,
     color: 'black',
-    fontFamily: 'Fredoka-Regular',
+    fontFamily: 'Poppins-Regular',
   },
   likr1: {
     alignSelf: 'center',
