@@ -179,29 +179,6 @@ export default function ProfileScreen() {
           </View>
 
           <View style={{marginHorizontal: 18, marginTop: 5}}>
-            {/* <Text
-              style={{
-                fontFamily: 'Poppins-Medium',
-                fontSize: 17,
-                marginBottom: 5,
-                color: 'black',
-              }}>
-              Food orders
-            </Text> */}
-            {/* <Pressable
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 10,
-              }}>
-              <Ionicons
-                name="notifications-outline"
-                size={21}
-                color="#f35858"
-                style={{}}
-              />
-              <Text style={styles.textcolour}>Notification</Text>
-            </Pressable> */}
             <Pressable
               onPress={() => navigation.navigate('MyEvents')}
               style={{
@@ -217,35 +194,21 @@ export default function ProfileScreen() {
               />
               <Text style={styles.textcolour}>Purchase History</Text>
             </Pressable>
-            {/* <Pressable
-              onPress={() => navigation.navigate('SubscriptionHistory')}
+            <Pressable
+              onPress={() => navigation.navigate('DownloadCertificate')}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginTop: 10,
               }}>
-              <Foundation
-                name="dollar-bill"
-                size={23}
-                color="#f35858"
-                style={{}}
-              />
-              <Text style={styles.textcolour}>Subscription History</Text>
-            </Pressable> */}
-            {/* <Pressable
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 10,
-              }}
-              onPress={() => navigation.navigate('MyEvents')}>
-              <Ionicons
-                name="ios-fast-food-outline"
+              <MaterialCommunityIcons
+                name="certificate-outline"
                 size={21}
                 color="#6949ff"
+                style={{}}
               />
-              <Text style={styles.textcolour}>Combo History</Text>
-            </Pressable> */}
+              <Text style={styles.textcolour}>Download Certificate</Text>
+            </Pressable>
             <Pressable
               style={{
                 flexDirection: 'row',
@@ -260,23 +223,6 @@ export default function ProfileScreen() {
               />
               <Text style={styles.textcolour}>Update Profile</Text>
             </Pressable>
-            {/* <Pressable
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 10,
-              }}>
-              <MaterialIcons name="book-online" size={21} color="#f35858" />
-              <Text
-                style={styles.textcolour}
-                onPress={() =>
-                  Linking.openURL(
-                    'https://play.google.com/store/apps/details?id=com.ssip.governmentsachivalay',
-                  )
-                }>
-                Online Ordering App
-              </Text>
-            </Pressable> */}
             <Pressable
               onPress={() => navigation.navigate('AboutUsScreen')}
               style={{

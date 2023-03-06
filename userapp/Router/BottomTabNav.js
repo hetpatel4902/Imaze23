@@ -26,6 +26,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import PaymentHistory from '../screens/ProfileScreen/PaymentHistory';
 import UpdateProfile from '../screens/ProfileScreen/UpdateProfile';
 import AboutUsScreen from '../screens/ProfileScreen/AboutUsScreen';
+import DownloadCertificate from '../screens/ProfileScreen/DownloadCertificate';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -139,6 +140,10 @@ const ProfileScreenStack = () => {
       <Stack.Screen component={UpdateProfile} name="UpdateProfile" />
       <Stack.Screen component={MyEvents} name="MyEvents" />
       <Stack.Screen component={AboutUsScreen} name="AboutUsScreen" />
+      <Stack.Screen
+        component={DownloadCertificate}
+        name="DownloadCertificate"
+      />
     </Stack.Navigator>
   );
 };

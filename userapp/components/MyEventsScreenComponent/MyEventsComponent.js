@@ -5,7 +5,11 @@ import {useNavigation} from '@react-navigation/native';
 const MyEventsComponent = ({tech}) => {
   const navigation = useNavigation();
   const onPress = () => {
-    navigation.navigate('EventDetailScreen', {eventId: tech._id, bought: true});
+    navigation.navigate('EventDetailScreen', {
+      eventId: tech._id,
+      bought: true,
+      certificate: true,
+    });
   };
   const participants = tech?.participants;
   return (
