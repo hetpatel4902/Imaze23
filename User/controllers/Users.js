@@ -339,10 +339,10 @@ const checkUserEvent = async (req, res) => {
 
 //certificates
 const buttonVisibility = async (req, res) => {
-  const { uid, eid } = req.params;
+  let { uid, eid } = req.params;
   const event = await Event.findOne({ _id: eid });
   const attendees = event.attendance;
-  if (uid in attendees) {
+  if (attendees.includes(uid)) {
     res.status(StatusCodes.OK).json({ res: "success", data: true });
   } else {
     res.status(StatusCodes.OK).json({ res: "failed", data: false });
