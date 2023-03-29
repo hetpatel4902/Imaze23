@@ -10,8 +10,13 @@ import {
   Modal,
   Alert,
   ToastAndroid,
+  Platform,
+  PermissionsAndroid,
+  PermissionStatus,
+  Permission,
 } from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
+import RNFetchBlob from 'rn-fetch-blob';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {useAuthContext} from '../../src/Context/AuthContext';
@@ -33,6 +38,9 @@ const EventDetailScreen = () => {
   const pending = route?.params.pending;
   const bought = route?.params.bought;
   const otp = route?.params.otp;
+  const certificate = route?.params.certificate;
+  const [status, setStatus] = useState(false);
+  // const certificateStatus = route?.params.certificateStatus;
   const [eventDetail, setEventDetail] = useState(null);
   const participant = eventDetail?.participants;
   const [textShown, setTextShown] = useState(false); //To show ur remaining Text
@@ -63,19 +71,17 @@ const EventDetailScreen = () => {
   useEffect(() => {
     events();
   }, []);
+
   const onPress = async () => {
     await check();
   };
   const payOnline = () => {};
   const payOffline = async () => {
-    // console.log(checkDetail.data._id);
-    // console.log(tokens);
     const res = await axios.post(
       `http://${USER_IP}/api/v1/user/${users}/payment/offline`,
       {orderId: checkDetail?.data._id, isCombo: false},
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    // console.log('event detail:', res.data);
     setModal(false);
     showToastWithGravityAndOffset();
     navigation.navigate('MyEvents');
@@ -96,20 +102,39 @@ const EventDetailScreen = () => {
     };
     await checkEvent();
   };
+  // let response;
+  const download = async () => {
+    // console.log(response);
+    const res = await axios.get(
+      `http://${USER_IP}/api/v1/user/certificates/${users}/event/${eventDetail?._id}`,
+      {headers: {Authorization: `Bearer ${tokens}`}},
+    );
+    console.log(res.data.res);
+    if (res.data.res == 'success') {
+      Alert.alert('Success, We have mailed you your certificate.');
+    }
+  };
+
   const events = async () => {
     const response = await axios.get(
       `http://${USER_IP}/api/v1/user/events/${eventId}`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    // console.log(response.data.data.category);
     setEventDetail(response.data.data);
+    if (certificate) {
+      const res = await axios.get(
+        `http://${USER_IP}/api/v1/user/certificates/${users}/visibility/${response.data.data._id}`,
+        {headers: {Authorization: `Bearer ${tokens}`}},
+      );
+      console.log(res.data.data);
+      setStatus(res.data.data);
+    }
   };
   const onBack = () => {
     navigation.goBack();
   };
   return (
     <View style={{}}>
-      {/* <Text>{eventDetail?.name}</Text> */}
       <View style={{backgroundColor: '#ededed'}}>
         <Image
           source={{uri: `http://10.0.2.2:8000/${eventDetail?.image}`}}
@@ -344,40 +369,93 @@ const EventDetailScreen = () => {
           </Text>
         )}
         {/* {!selected && ( */}
-        <Pressable
-          onPress={onPress}
-          disabled={bought || pending}
-          style={{
-            shadowColor: '#4b2be3',
-            shadowOffset: {
-              width: 0,
-              height: 7,
-            },
-            shadowOpacity: 0.41,
-            shadowRadius: 9.11,
-            elevation: 14,
-            alignContent: 'center',
-            alignSelf: 'center',
-            marginTop: 13,
-            backgroundColor: '#6949ff',
-            paddingVertical: 10,
-            borderRadius: 13,
-            flex: 1,
-            maxWidth: width,
-            paddingHorizontal: bought ? width / 2 - 90 : width / 2 - 54,
-            marginBottom: 630,
-            opacity: selected ? 0 : 1,
-          }}>
+        {certificate && (
+          <Pressable
+            onPress={download}
+            disabled={!status}
+            style={{
+              shadowColor: status ? '#6949ff' : '#d5cdfa',
+              shadowOffset: {
+                width: 0,
+                height: 7,
+              },
+              shadowOpacity: 0.41,
+              shadowRadius: 9.11,
+              elevation: 14,
+              alignContent: 'center',
+              alignSelf: 'center',
+              marginTop: 13,
+              backgroundColor: status ? '#6949ff' : '#d5cdfa',
+              paddingVertical: 10,
+              borderRadius: 13,
+              // flex: 1,
+              // maxWidth: width,
+              // paddingHorizontal: bought ? width / 2 - 90 : width / 2 - 54,
+              width: width - 50,
+              // marginBottom: 630,
+              opacity: selected ? 0 : 1,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                alignSelf: 'center',
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: 15,
+              }}>
+              Send Certificate on Mail
+            </Text>
+          </Pressable>
+        )}
+        {!status && (
           <Text
             style={{
-              color: 'white',
-              alignSelf: 'center',
-              fontFamily: 'Poppins-SemiBold',
-              fontSize: 15,
+              color: '#303030',
+              // alignSelf: 'center',
+              fontFamily: 'Poppins-Regular',
+              fontSize: 13,
+              marginTop: 10,
+              marginHorizontal: 20,
             }}>
-            {bought ? 'Already Bought' : pending ? 'Pending' : 'Buy'}
+            *Attend the event to get the certificate
           </Text>
-        </Pressable>
+        )}
+        {!status && (
+          <Pressable
+            onPress={onPress}
+            disabled={bought || pending}
+            style={{
+              shadowColor: '#4b2be3',
+              shadowOffset: {
+                width: 0,
+                height: 7,
+              },
+              shadowOpacity: 0.41,
+              shadowRadius: 9.11,
+              elevation: 14,
+              alignContent: 'center',
+              alignSelf: 'center',
+              marginTop: 13,
+              backgroundColor: '#6949ff',
+              paddingVertical: 10,
+              borderRadius: 13,
+              flex: 1,
+              // maxWidth: width,
+              width: width - 50,
+              // paddingHorizontal: bought ? width / 2 - 90 : width / 2 - 54,
+              marginBottom: 630,
+              opacity: selected ? 0 : 1,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                alignSelf: 'center',
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: 15,
+              }}>
+              {bought ? 'Already Bought' : pending ? 'Pending' : 'Buy'}
+            </Text>
+          </Pressable>
+        )}
         {/* // )} */}
       </ScrollView>
       <Modal transparent={true} visible={modal} animationType={'slide'}>
