@@ -72,7 +72,7 @@ const getAllEvents = async (req, res) => {
   var events = Event.find({});
   if (search) {
     events = Event.find({
-      name: { $regex: search, $options: "i" },
+      name: { $regex: search, $options: "i" }
     });
   }
   if (sort) {

@@ -3,6 +3,11 @@ const router = express.Router();
 const authmiddleware = require("../middleware/authmiddleware");
 
 const {
+  registerUsers,
+  forgotPasswordUsers,
+  loginUsers,
+} = require('../controllers/Users Auth')
+const {
   getAllEvents,
   getOneEvent,
   getEventsCategorized,
@@ -19,6 +24,12 @@ const {
   getPaymentHistory,
   payOffline,
 } = require("../controllers/Users");
+
+
+//auth
+router.route('/login').post(loginUsers)
+router.route('/register').post(registerUsers)
+router.route('/forgotpassword').patch(forgotPasswordUsers)
 
 //events
 router.route("/events").get(authmiddleware, getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
