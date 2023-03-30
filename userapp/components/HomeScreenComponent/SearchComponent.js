@@ -1,7 +1,7 @@
 import {View, Text, Image, Pressable} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
-
+import {USER_IP} from '@env';
 const SearchComponent = ({searchResult}) => {
   const navigation = useNavigation();
   const onPress = () => {
@@ -19,7 +19,7 @@ const SearchComponent = ({searchResult}) => {
       }}>
       <View>
         <Image
-          source={{uri: `http://10.0.2.2:8000/${searchResult?.image}`}}
+          source={{uri: `http://${USER_IP}/${searchResult?.image}`}}
           style={{height: 70, width: 70}}
         />
       </View>

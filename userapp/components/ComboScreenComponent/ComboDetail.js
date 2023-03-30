@@ -1,7 +1,7 @@
 import {View, Text, Image, Pressable} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
-
+import {USER_IP} from '@env';
 const ComboDetail = ({info}) => {
   // console.log(info);
   const navigation = useNavigation();
@@ -17,7 +17,7 @@ const ComboDetail = ({info}) => {
       style={{flexDirection: 'row', alignItems: 'center', marginVertical: 7}}>
       <View style={{flex: 1}}>
         <Image
-          source={{uri: `http://10.0.2.2:8000/${info.image}`}}
+          source={{uri: `http://${USER_IP}/${info.image}`}}
           style={{height: 50, width: 50, borderRadius: 25}}
         />
       </View>

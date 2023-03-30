@@ -66,7 +66,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // import AppLoader from '../components/AppLoader';
 import Foundation from 'react-native-vector-icons/Foundation';
 import {USER_IP} from '@env';
-
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 export default function ProfileScreen() {
   // const {users,tokens} = useAuthContext();
   const navigation = useNavigation();
@@ -216,11 +216,12 @@ export default function ProfileScreen() {
                 marginTop: 10,
               }}
               onPress={() => navigation.navigate('UpdateProfile')}>
-              <MaterialCommunityIcons
+              {/* <MaterialCommunityIcons
                 name="home-city-outline"
                 size={21}
                 color="#6949ff"
-              />
+              /> */}
+              <FontAwesome5 name="user-edit" size={17} color={'#6949ff'} />
               <Text style={styles.textcolour}>Update Profile</Text>
             </Pressable>
             <Pressable
@@ -261,7 +262,7 @@ export default function ProfileScreen() {
             <TouchableOpacity
               style={{
                 backgroundColor: '#6949ff',
-                borderRadius: 5,
+                borderRadius: 15,
                 marginTop: 50,
                 padding: 10,
                 paddingHorizontal: 28,

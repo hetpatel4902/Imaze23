@@ -2,7 +2,7 @@ import {View, Text, Pressable, StyleSheet, Image} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import {USER_IP} from '@env';
 const PendingComboComponent = ({tech}) => {
   const navigation = useNavigation();
   const onPress = () => {
@@ -17,7 +17,7 @@ const PendingComboComponent = ({tech}) => {
     <Pressable onPress={onPress} style={styles.mainView}>
       {/* <View style={styles.imageView}> */}
       <Image
-        source={{uri: `http://10.0.2.2:8000/${tech?.event_details.image}`}}
+        source={{uri: `http://${USER_IP}/${tech?.event_details.image}`}}
         style={styles.image}
       />
       {/* </View> */}

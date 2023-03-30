@@ -16,7 +16,7 @@ import {
   Permission,
 } from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
-import RNFetchBlob from 'rn-fetch-blob';
+// import RNFetchBlob from 'rn-fetch-blob';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {useAuthContext} from '../../src/Context/AuthContext';
@@ -137,7 +137,7 @@ const EventDetailScreen = () => {
     <View style={{}}>
       <View style={{backgroundColor: '#ededed'}}>
         <Image
-          source={{uri: `http://10.0.2.2:8000/${eventDetail?.image}`}}
+          source={{uri: `http://${USER_IP}/${eventDetail?.image}`}}
           style={{height: 250, alignSelf: 'center', width: width}}
         />
         <Pressable

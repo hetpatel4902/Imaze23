@@ -2,7 +2,7 @@ import {View, Text, Pressable, Image, StyleSheet} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import {USER_IP} from '@env';
 const EventComponent = ({tech}) => {
   const navigation = useNavigation();
 
@@ -15,7 +15,7 @@ const EventComponent = ({tech}) => {
     <Pressable onPress={onPress} style={styles.mainView}>
       <View style={styles.imageView}>
         <Image
-          source={{uri: `http://10.0.2.2:8000/${tech.image}`}}
+          source={{uri: `http://${USER_IP}/${tech.image}`}}
           style={styles.image}
         />
       </View>

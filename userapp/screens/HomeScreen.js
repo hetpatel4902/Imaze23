@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import React, {useState} from 'react';
 import axios from 'axios';
@@ -52,6 +53,11 @@ const HomeScreen = () => {
         style={{backgroundColor: 'white', flex: 1}}
         showsVerticalScrollIndicator={false}>
         {/* <Text>HomeScreen</Text> */}
+        <StatusBar
+          animated={true}
+          backgroundColor={'#6949ff'}
+          barStyle={'light-content'}
+        />
         <Image
           source={require('../data/imazelogo.png')}
           style={{width: 250, height: 43, alignSelf: 'center', marginTop: 15}}

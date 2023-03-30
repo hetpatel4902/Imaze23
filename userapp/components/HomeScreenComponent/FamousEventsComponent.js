@@ -2,6 +2,7 @@ import {View, Text, ScrollView, Image, Pressable} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {USER_IP} from '@env';
 const FamousEventsComponent = ({tech}) => {
   const participants = tech?.participants;
   const navigation = useNavigation();
@@ -32,7 +33,7 @@ const FamousEventsComponent = ({tech}) => {
         paddingHorizontal: 13,
       }}>
       <Image
-        source={{uri: `http://10.0.2.2:8000/${tech?.image}`}}
+        source={{uri: `http://${USER_IP}/${tech?.image}`}}
         style={{
           height: 80,
           width: 80,
