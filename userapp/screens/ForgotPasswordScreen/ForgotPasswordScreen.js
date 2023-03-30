@@ -288,7 +288,7 @@ const ForgotPasswordScreen = () => {
       setLoading(true);
       // console.log('hello');
       const response = await axios.patch(
-        `http://${AUTH_IP}/api/v1/user/forgotpassword`,
+        `http://${USER_IP}/api/v1/user/forgotpassword`,
         {email: email},
       );
       // console.log(response.data);
@@ -419,17 +419,17 @@ const ForgotPasswordScreen = () => {
                 },
                 shadowOpacity: 0.41,
                 shadowRadius: 9.11,
-                elevation: 14,
+                elevation: 8,
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 40,
-                backgroundColor: '#6949ff',
+                backgroundColor: '#6268fc',
                 // backgroundColor: '#19347d',
-                paddingVertical: 10,
+                paddingVertical: 8,
                 borderRadius: 13,
                 flex: 1,
                 maxWidth: width,
-                paddingHorizontal: width / 2 - 54,
+                paddingHorizontal: width / 2 - 46,
               }}>
               <Text
                 style={{

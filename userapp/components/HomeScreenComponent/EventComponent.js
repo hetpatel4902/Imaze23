@@ -59,15 +59,15 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
-    height: 66,
-    width: 66,
-    borderRadius: 33,
+    height: 58,
+    width: 58,
+    borderRadius: 30,
   },
   nameView: {flex: 3, paddingHorizontal: 5},
   name: {
     color: 'black',
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: 13,
   },
   container: {
     flexDirection: 'row',
@@ -82,17 +82,17 @@ const styles = StyleSheet.create({
   subContainerDate: {
     fontFamily: 'Poppins-Medium',
     color: '#242424',
-    fontSize: 13,
+    fontSize: 12,
   },
   subContainerTime: {
     fontFamily: 'Poppins-Regular',
     color: '#242424',
-    fontSize: 12,
+    fontSize: 11,
   },
   participants: {
     color: '#191919',
     fontFamily: 'Poppins-Regular',
-    fontSize: 13,
+    fontSize: 12,
   },
   priceContainer: {
     backgroundColor: '#05fa9c',
@@ -109,9 +109,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.41,
     shadowRadius: 9.11,
-    elevation: 14,
+    elevation: 5,
   },
-  priceContainerText: {color: 'white', fontFamily: 'Poppins-Medium'},
+  priceContainerText: {
+    color: 'white',
+    fontFamily: 'Poppins-Medium',
+    fontSize: 13,
+  },
 });
 export default EventComponent;
 

@@ -35,9 +35,10 @@ const BottomTabNav = () => {
       screenOptions={{
         headerShown: false,
         tabBarInactiveTintColor: '#d8d3f2',
-        tabBarActiveTintColor: '#6949ff',
+        tabBarActiveTintColor: '#6268fc',
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          height: 54,
+          height: 50,
           position: 'absolute',
           bottom: 10,
           right: 16,
@@ -54,7 +55,7 @@ const BottomTabNav = () => {
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <Entypo name="home" size={20} color={color} />
+            <Entypo name="home" size={18} color={color} />
           ),
         }}
       />
@@ -66,7 +67,7 @@ const BottomTabNav = () => {
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <AntDesign name="appstore1" size={20} color={color} />
+            <AntDesign name="appstore1" size={18} color={color} />
           ),
         }}
       />
@@ -78,7 +79,7 @@ const BottomTabNav = () => {
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <FontAwesome5 name="history" size={20} color={color} />
+            <FontAwesome5 name="history" size={18} color={color} />
           ),
         }}
       />
@@ -90,7 +91,7 @@ const BottomTabNav = () => {
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <FontAwesome5 name="user-alt" size={20} color={color} />
+            <FontAwesome5 name="user-alt" size={18} color={color} />
           ),
         }}
       />

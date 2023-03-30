@@ -19,7 +19,7 @@ import axios from 'axios';
 // import {useAuthContext} from '../src/Context/AuthContext';
 import {useAuthContext} from '../../src/Context/AuthContext';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {USER_IP} from '@env';
+import {USER_IP, COLOR} from '@env';
 
 const UpdateProfile = () => {
   const {height, width} = useWindowDimensions();
@@ -48,6 +48,7 @@ const UpdateProfile = () => {
             headers: {Authorization: `Bearer ${tokens}`},
           },
         );
+        // console.log(response.data.data);
         console.log(response.data.data);
         setName(response.data.data.name);
         setEmail(response.data.data.email);
@@ -178,9 +179,9 @@ const UpdateProfile = () => {
               alignContent: 'center',
               alignSelf: 'center',
               marginTop: 10,
-              backgroundColor: '#6949ff',
-              paddingVertical: 12,
-              borderRadius: 10,
+              backgroundColor: COLOR,
+              paddingVertical: 9,
+              borderRadius: 20,
               width: width - 50,
             }}>
             <Text

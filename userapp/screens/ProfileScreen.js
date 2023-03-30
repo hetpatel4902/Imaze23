@@ -67,6 +67,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Foundation from 'react-native-vector-icons/Foundation';
 import {USER_IP} from '@env';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {COLOR} from '@env';
 export default function ProfileScreen() {
   // const {users,tokens} = useAuthContext();
   const navigation = useNavigation();
@@ -95,7 +96,7 @@ export default function ProfileScreen() {
     const response = await axios.get(`http://${USER_IP}/api/v1/user/${users}`, {
       headers: {Authorization: `Bearer ${tokens}`},
     });
-    console.log(response.data.data);
+    // console.log(response.data.data);
     setDetails(response.data.data);
     setLoginPending(false);
   };
@@ -149,7 +150,7 @@ export default function ProfileScreen() {
             <View>
               <Text
                 style={{
-                  fontSize: 25,
+                  fontSize: 22,
                   fontFamily: 'Poppins-Medium',
                   color: 'black',
                 }}>
@@ -189,7 +190,7 @@ export default function ProfileScreen() {
               <Ionicons
                 name="wallet-outline"
                 size={21}
-                color="#6949ff"
+                color={COLOR}
                 style={{}}
               />
               <Text style={styles.textcolour}>Purchase History</Text>
@@ -204,7 +205,7 @@ export default function ProfileScreen() {
               <MaterialCommunityIcons
                 name="certificate-outline"
                 size={21}
-                color="#6949ff"
+                color={COLOR}
                 style={{}}
               />
               <Text style={styles.textcolour}>Download Certificate</Text>
@@ -219,9 +220,9 @@ export default function ProfileScreen() {
               {/* <MaterialCommunityIcons
                 name="home-city-outline"
                 size={21}
-                color="#6949ff"
+                color=""
               /> */}
-              <FontAwesome5 name="user-edit" size={17} color={'#6949ff'} />
+              <FontAwesome5 name="user-edit" size={17} color={COLOR} />
               <Text style={styles.textcolour}>Update Profile</Text>
             </Pressable>
             <Pressable
@@ -234,7 +235,7 @@ export default function ProfileScreen() {
               <Ionicons
                 name="information-circle-outline"
                 size={21}
-                color="#6949ff"
+                color={COLOR}
               />
               <Text style={styles.textcolour}>About</Text>
             </Pressable>
@@ -261,13 +262,13 @@ export default function ProfileScreen() {
             </Text>
             <TouchableOpacity
               style={{
-                backgroundColor: '#6949ff',
+                backgroundColor: COLOR,
                 borderRadius: 15,
                 marginTop: 50,
-                padding: 10,
+                padding: 9,
                 paddingHorizontal: 28,
                 alignItems: 'center',
-                width: width - 60,
+                width: width - 48,
                 alignSelf: 'center',
               }}
               onPress={logout}>
@@ -275,8 +276,8 @@ export default function ProfileScreen() {
                 style={{
                   color: 'white',
                   fontWeight: '500',
-                  fontSize: 17,
-                  fontFamily: 'Poppins-Medium',
+                  fontSize: 15,
+                  fontFamily: 'Poppins-SemiBold',
                 }}>
                 Logout
               </Text>

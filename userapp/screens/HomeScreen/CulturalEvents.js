@@ -15,6 +15,7 @@ const CulturalEvents = () => {
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
+    console.log(response.data);
     setEvent(response.data.data.Cultural);
   };
   return (

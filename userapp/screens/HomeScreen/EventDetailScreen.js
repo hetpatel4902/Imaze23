@@ -26,7 +26,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-
+import {COLOR} from '@env';
 const EventDetailScreen = () => {
   const width = useWindowDimensions().width;
   const route = useRoute();
@@ -120,6 +120,7 @@ const EventDetailScreen = () => {
       `http://${USER_IP}/api/v1/user/events/${eventId}`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
+    console.log(response.data.data);
     setEventDetail(response.data.data);
     if (certificate) {
       const res = await axios.get(
@@ -182,7 +183,7 @@ const EventDetailScreen = () => {
             <Text
               style={{
                 fontFamily: 'Poppins-Medium',
-                fontSize: 17,
+                fontSize: 16,
                 color: '#191919',
               }}>
               {eventDetail?.name}
@@ -190,7 +191,7 @@ const EventDetailScreen = () => {
             <Text
               style={{
                 fontFamily: 'Poppins-Medium',
-                fontSize: 13,
+                fontSize: 12,
                 marginTop: -5,
                 color: 'grey',
               }}>
@@ -214,24 +215,33 @@ const EventDetailScreen = () => {
               shadowRadius: 9.11,
               elevation: 14,
             }}>
-            <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
+            <Text
+              style={{
+                color: 'white',
+                fontFamily: 'Poppins-Medium',
+                fontSize: 13,
+              }}>
               Rs.{eventDetail?.price}
             </Text>
           </View>
         </View>
         <View style={{marginHorizontal: 20, marginTop: 2}}>
-          <Text style={{fontFamily: 'Poppins-Medium'}}>
+          <Text style={{fontFamily: 'Poppins-Medium', fontSize: 12}}>
             Participants: {participant?.length}
           </Text>
         </View>
-        <View style={{marginHorizontal: 20, marginTop: 5}}>
+        <View style={{marginHorizontal: 20, marginTop: 5, fontSize: 13}}>
           <Text style={{fontFamily: 'Poppins-SemiBold', color: '#191919'}}>
             Description
           </Text>
           <Text
             onTextLayout={onTextLayout}
             numberOfLines={textShown ? undefined : 2}
-            style={{lineHeight: 21, fontFamily: 'Poppins-Regular'}}>
+            style={{
+              lineHeight: 21,
+              fontFamily: 'Poppins-Regular',
+              fontSize: 12,
+            }}>
             {eventDetail?.description}
           </Text>
 
@@ -243,7 +253,7 @@ const EventDetailScreen = () => {
                 marginTop: 4,
                 fontSize: 13,
                 fontFamily: 'Poppins-Regular',
-                color: '#6949ff',
+                color: COLOR,
               }}>
               {textShown ? 'Read less...' : 'Read more...'}
             </Text>
@@ -258,9 +268,9 @@ const EventDetailScreen = () => {
           }}>
           <View
             style={{
-              height: 30,
-              width: 30,
-              borderRadius: 15,
+              height: 28,
+              width: 28,
+              borderRadius: 14,
               backgroundColor: '#f0faf0',
               alignContent: 'center',
               alignItems: 'center',
@@ -268,14 +278,14 @@ const EventDetailScreen = () => {
               flex: 1,
               // alignItems: 'center',
             }}>
-            <FontAwesome5 name="map-marker-alt" size={16} color={'#05fa9c'} />
+            <FontAwesome5 name="map-marker-alt" size={15} color={'#05fa9c'} />
           </View>
           <View style={{flex: 7, marginHorizontal: 10}}>
             <Text
               style={{
                 fontFamily: 'Poppins-Medium',
                 color: '#242424',
-                fontSize: 14,
+                fontSize: 13,
               }}>
               {eventDetail?.venue}{' '}
             </Text>
@@ -290,10 +300,10 @@ const EventDetailScreen = () => {
           }}>
           <View
             style={{
-              height: 30,
-              width: 30,
+              height: 28,
+              width: 28,
               marginTop: 7,
-              borderRadius: 15,
+              borderRadius: 14,
               backgroundColor: '#f0faf0',
               alignContent: 'center',
               alignItems: 'center',
@@ -303,7 +313,7 @@ const EventDetailScreen = () => {
             }}>
             <MaterialCommunityIcons
               name="calendar-week"
-              size={16}
+              size={15}
               color={'#05fa9c'}
             />
           </View>
@@ -320,7 +330,7 @@ const EventDetailScreen = () => {
               style={{
                 fontFamily: 'Poppins-Medium',
                 color: '#242424',
-                fontSize: 13,
+                fontSize: 12,
               }}>
               {eventDetail?.time}
             </Text>
@@ -331,6 +341,7 @@ const EventDetailScreen = () => {
             style={{
               fontFamily: 'Poppins-Medium',
               color: '#242424',
+              fontSize: 13,
             }}>
             Event Coordinator:
           </Text>
@@ -338,7 +349,7 @@ const EventDetailScreen = () => {
             style={{
               fontFamily: 'Poppins-Regular',
               color: '#242424',
-              fontSize: 13,
+              fontSize: 12,
             }}>
             {eventDetail?.event_coordinator[0]?.name} (
             {eventDetail?.event_coordinator[0]?.phoneno})
@@ -374,7 +385,7 @@ const EventDetailScreen = () => {
             onPress={download}
             disabled={!status}
             style={{
-              shadowColor: status ? '#6949ff' : '#d5cdfa',
+              shadowColor: status ? COLOR : '#d5cdfa',
               shadowOffset: {
                 width: 0,
                 height: 7,
@@ -385,7 +396,7 @@ const EventDetailScreen = () => {
               alignContent: 'center',
               alignSelf: 'center',
               marginTop: 13,
-              backgroundColor: status ? '#6949ff' : '#d5cdfa',
+              backgroundColor: status ? COLOR : '#d5cdfa',
               paddingVertical: 10,
               borderRadius: 13,
               // flex: 1,
@@ -400,7 +411,7 @@ const EventDetailScreen = () => {
                 color: 'white',
                 alignSelf: 'center',
                 fontFamily: 'Poppins-SemiBold',
-                fontSize: 15,
+                fontSize: 14,
               }}>
               Send Certificate on Mail
             </Text>
@@ -412,7 +423,7 @@ const EventDetailScreen = () => {
               color: '#303030',
               // alignSelf: 'center',
               fontFamily: 'Poppins-Regular',
-              fontSize: 13,
+              fontSize: 12,
               marginTop: 10,
               marginHorizontal: 20,
             }}>
@@ -435,7 +446,7 @@ const EventDetailScreen = () => {
               alignContent: 'center',
               alignSelf: 'center',
               marginTop: 13,
-              backgroundColor: '#6949ff',
+              backgroundColor: COLOR,
               paddingVertical: 10,
               borderRadius: 13,
               flex: 1,
@@ -450,12 +461,13 @@ const EventDetailScreen = () => {
                 color: 'white',
                 alignSelf: 'center',
                 fontFamily: 'Poppins-SemiBold',
-                fontSize: 15,
+                fontSize: 14,
               }}>
               {bought ? 'Already Bought' : pending ? 'Pending' : 'Buy'}
             </Text>
           </Pressable>
         )}
+        <View style={{height: 50}}></View>
         {/* // )} */}
       </ScrollView>
       <Modal transparent={true} visible={modal} animationType={'slide'}>
@@ -475,7 +487,7 @@ const EventDetailScreen = () => {
               <Entypo name="cross" size={21} color={'#000000'} />
             </Pressable>
           </View>
-          <View
+          <ScrollView
             style={{
               backgroundColor: '#ffffff',
               height: '100%',
@@ -505,18 +517,18 @@ const EventDetailScreen = () => {
             <Pressable
               onPress={payOffline}
               style={{
-                shadowColor: '#6949ff',
+                shadowColor: COLOR,
                 shadowOffset: {
                   width: 0,
                   height: 7,
                 },
                 shadowOpacity: 0.41,
                 shadowRadius: 9.11,
-                elevation: 14,
+                elevation: 8,
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 25,
-                backgroundColor: '#6949ff',
+                backgroundColor: COLOR,
                 paddingVertical: 10,
                 borderRadius: 13,
                 maxWidth: width,
@@ -564,7 +576,7 @@ const EventDetailScreen = () => {
                 },
                 shadowOpacity: 0.41,
                 shadowRadius: 9.11,
-                elevation: 14,
+                elevation: 8,
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 25,
@@ -586,7 +598,8 @@ const EventDetailScreen = () => {
                 Paytm
               </Text>
             </Pressable>
-          </View>
+            <View style={{height: 40}}></View>
+          </ScrollView>
         </View>
       </Modal>
     </View>

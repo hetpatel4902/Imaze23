@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    height: 58,
-    width: 58,
+    height: 56,
+    width: 56,
     borderRadius: 29,
   },
   nameView: {flex: 5, paddingHorizontal: 9},
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subContainer: {
-    flex: 7,
+    flex: 5,
     marginHorizontal: 4,
     flexDirection: 'row',
     alignItems: 'center',

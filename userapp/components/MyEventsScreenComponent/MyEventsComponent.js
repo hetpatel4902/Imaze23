@@ -18,6 +18,7 @@ const MyEventsComponent = ({tech}) => {
       {/* <View style={styles.imageView}> */}
       <Image
         source={{uri: `http://${USER_IP}/${tech.image}`}}
+        // resizeMode={'stretch'}
         style={styles.image}
       />
       {/* </View> */}
@@ -60,8 +61,8 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    height: 58,
-    width: 58,
+    height: 56,
+    width: 56,
     borderRadius: 29,
   },
   nameView: {flex: 5, paddingHorizontal: 9},

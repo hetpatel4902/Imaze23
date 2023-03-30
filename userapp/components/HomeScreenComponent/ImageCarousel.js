@@ -21,7 +21,7 @@ const ImageCarousel = props => {
   const [entries, setEntries] = useState([]);
   const carouselRef = useRef(null);
   return (
-    <View style={{height: 200}}>
+    <View style={{height: 190}}>
       <View
         style={{
           flexDirection: 'row',
@@ -45,11 +45,11 @@ const ImageCarousel = props => {
           pagingEnabled={true}>
           <View style={{}}>
             <Image
-              source={require('../../data/carousel2.jpg')}
+              source={require('../../data/carousel4.png')}
               resizeMode={'contain'}
               style={{
                 width: 250,
-                height: 150,
+                height: 140,
                 borderRadius: 10,
                 marginHorizontal: 10,
                 borderWidth: 1,
@@ -62,7 +62,7 @@ const ImageCarousel = props => {
             resizeMode={'contain'}
             style={{
               width: 250,
-              height: 150,
+              height: 140,
               borderRadius: 10,
               marginHorizontal: 10,
               borderWidth: 1,
@@ -70,11 +70,11 @@ const ImageCarousel = props => {
             }}
           />
           <Image
-            source={require('../../data/carousel4.png')}
+            source={require('../../data/carousel2.jpg')}
             resizeMode={'stretch'}
             style={{
               width: 250,
-              height: 150,
+              height: 140,
               borderRadius: 10,
               marginHorizontal: 10,
               borderWidth: 1,
@@ -83,10 +83,10 @@ const ImageCarousel = props => {
           />
           <Image
             source={require('../../data/carousel41.png')}
-            resizeMode={'contain'}
+            resizeMode={'cover'}
             style={{
               width: 250,
-              height: 150,
+              height: 140,
               borderRadius: 10,
               marginHorizontal: 10,
               borderWidth: 1,

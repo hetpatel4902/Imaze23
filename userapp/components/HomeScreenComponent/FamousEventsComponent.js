@@ -15,8 +15,8 @@ const FamousEventsComponent = ({tech}) => {
     <Pressable
       onPress={onPress}
       style={{
-        height: 207,
-        width: 180,
+        height: 196,
+        width: 160,
         backgroundColor: 'white',
         borderRadius: 30,
         shadowColor: '#000000',
@@ -26,8 +26,8 @@ const FamousEventsComponent = ({tech}) => {
         },
         shadowOpacity: 0.41,
         shadowRadius: 9.11,
-        elevation: 14,
-        // marginTop: 10,
+        elevation: 8,
+        marginTop: 5,
         marginBottom: 18,
         marginHorizontal: 15,
         paddingHorizontal: 13,
@@ -35,9 +35,9 @@ const FamousEventsComponent = ({tech}) => {
       <Image
         source={{uri: `http://${USER_IP}/${tech?.image}`}}
         style={{
-          height: 80,
-          width: 80,
-          borderRadius: 40,
+          height: 74,
+          width: 74,
+          borderRadius: 37,
           alignSelf: 'center',
           position: 'relative',
           marginBottom: 33,
@@ -65,11 +65,12 @@ const FamousEventsComponent = ({tech}) => {
         </Text>
       </View>
       <Text
+        numberOfLines={1}
         style={{
           fontFamily: 'Poppins-Regular',
-          fontSize: 14,
+          fontSize: 13,
           color: '#191919',
-          marginTop: -30,
+          marginTop: -25,
           alignSelf: 'center',
         }}>
         {tech?.name}
@@ -77,7 +78,7 @@ const FamousEventsComponent = ({tech}) => {
       <Text
         style={{
           fontFamily: 'Poppins-Regular',
-          fontSize: 13,
+          fontSize: 11,
           marginTop: -5,
           color: 'grey',
           alignSelf: 'center',
@@ -93,7 +94,7 @@ const FamousEventsComponent = ({tech}) => {
         <View>
           <MaterialCommunityIcons
             name="calendar-week"
-            size={16}
+            size={15}
             color={'#05fa9c'}
           />
         </View>
@@ -108,7 +109,7 @@ const FamousEventsComponent = ({tech}) => {
             style={{
               fontFamily: 'Poppins-Medium',
               color: '#242424',
-              fontSize: 12,
+              fontSize: 11,
             }}>
             {tech?.date}{' '}
           </Text>
@@ -124,7 +125,7 @@ const FamousEventsComponent = ({tech}) => {
       </View>
       <View
         style={{
-          backgroundColor: '#6949ff',
+          backgroundColor: '#6268fc',
           paddingHorizontal: 8,
           alignItems: 'center',
           justifyContent: 'center',
@@ -132,7 +133,8 @@ const FamousEventsComponent = ({tech}) => {
           marginTop: 8,
           borderRadius: 18,
         }}>
-        <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
+        <Text
+          style={{color: 'white', fontFamily: 'Poppins-Medium', fontSize: 12}}>
           Rs.{tech?.price}
         </Text>
       </View>

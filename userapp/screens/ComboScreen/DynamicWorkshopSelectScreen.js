@@ -18,6 +18,7 @@ const DynamicWorkshopSelectScreen = () => {
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
+    // console.log(response.data.data);
     setEvent(response.data.data.Workshop);
   };
   return (

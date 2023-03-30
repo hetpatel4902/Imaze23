@@ -15,18 +15,28 @@ const SearchComponent = ({searchResult}) => {
         alignItems: 'center',
         backgroundColor: 'white',
         borderRadius: 15,
-        marginBottom: 4,
+        // marginBottom: 4,
       }}>
-      <View>
+      <View style={{padding: 10}}>
         <Image
           source={{uri: `http://${USER_IP}/${searchResult?.image}`}}
-          style={{height: 70, width: 70}}
+          style={{height: 56, width: 56, alignSelf: 'center', borderRadius: 28}}
         />
       </View>
-      <Text
-        style={{color: 'black', fontFamily: 'Poppins-Regular', fontSize: 13}}>
-        {searchResult.name}
-      </Text>
+      <View>
+        <Text
+          style={{color: 'black', fontFamily: 'Poppins-Regular', fontSize: 13}}>
+          {searchResult.name}
+        </Text>
+        <Text
+          style={{
+            color: '#606060',
+            fontFamily: 'Poppins-Regular',
+            fontSize: 12,
+          }}>
+          Category: {searchResult?.category}
+        </Text>
+      </View>
       {/* <Image
         source={{uri: dish.imageUrl}}
         style={{width: 40, height: 40, borderRadius: 20}}

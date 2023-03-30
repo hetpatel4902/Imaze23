@@ -16,6 +16,7 @@ import {USER_IP} from '@env';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {COLOR} from '@env';
 
 const StaticCombo = ({data, pending}) => {
   const width = Dimensions.get('screen').width;
@@ -126,7 +127,7 @@ const StaticCombo = ({data, pending}) => {
               elevation: 14,
               alignContent: 'center',
               alignSelf: 'center',
-              backgroundColor: '#6949ff',
+              backgroundColor: COLOR,
               paddingVertical: 8,
               borderRadius: 14,
             }}>
@@ -200,7 +201,7 @@ const StaticCombo = ({data, pending}) => {
             <Pressable
               onPress={payOffline}
               style={{
-                shadowColor: '#6949ff',
+                shadowColor: COLOR,
                 shadowOffset: {
                   width: 0,
                   height: 7,
@@ -211,7 +212,7 @@ const StaticCombo = ({data, pending}) => {
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 25,
-                backgroundColor: '#6949ff',
+                backgroundColor: COLOR,
                 paddingVertical: 10,
                 borderRadius: 13,
                 maxWidth: width,

@@ -1,7 +1,7 @@
 import {View, Text, Image, Pressable} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {USER_IP} from '@env';
+import {USER_IP, COLOR} from '@env';
 const ComboDetail = ({info}) => {
   // console.log(info);
   const navigation = useNavigation();
@@ -18,7 +18,7 @@ const ComboDetail = ({info}) => {
       <View style={{flex: 1}}>
         <Image
           source={{uri: `http://${USER_IP}/${info.image}`}}
-          style={{height: 50, width: 50, borderRadius: 25}}
+          style={{height: 49.5, width: 49.5, borderRadius: 25}}
         />
       </View>
       <View style={{flex: 4}}>
@@ -50,7 +50,7 @@ const ComboDetail = ({info}) => {
       <Pressable style={{flex: 1, alignContent: 'center'}} onPress={onPress}>
         <Text
           style={{
-            color: '#6949ff',
+            color: COLOR,
             fontFamily: 'Poppins-Medium',
             fontSize: 12,
           }}>

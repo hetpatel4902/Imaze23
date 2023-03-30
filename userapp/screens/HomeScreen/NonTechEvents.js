@@ -16,7 +16,7 @@ const NonTechEvents = () => {
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
     // console.log(response.data.data.Tech);
-    // console.log(response.data.data);
+    console.log(response.data.data);
     setEvent(response.data.data.NonTech);
   };
   return (

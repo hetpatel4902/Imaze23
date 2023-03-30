@@ -38,7 +38,7 @@ const MyEvents = () => {
       `http://${USER_IP}/api/v1/user/events/user/${users}`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    console.log(response.data.data.pending.combos);
+    console.log(response.data.data);
     setEvent(response.data.data);
     setLoading(false);
   };
@@ -100,7 +100,7 @@ const MyEvents = () => {
               Purchased Events
             </Text>
             <FlatList
-              style={{marginBottom: 30, marginTop: 5}}
+              style={{marginBottom: 80, marginTop: 5}}
               data={event.purchased_events}
               renderItem={({item}) => <MyEventsComponent tech={item} />}
               keyExtractor={item => item._id}

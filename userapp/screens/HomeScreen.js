@@ -55,12 +55,13 @@ const HomeScreen = () => {
         {/* <Text>HomeScreen</Text> */}
         <StatusBar
           animated={true}
-          backgroundColor={'#6949ff'}
+          backgroundColor={'#6268fc'}
           barStyle={'light-content'}
         />
         <Image
           source={require('../data/imazelogo.png')}
-          style={{width: 250, height: 43, alignSelf: 'center', marginTop: 15}}
+          resizeMode={'contain'}
+          style={{width: 255, height: 45, alignSelf: 'center', marginTop: 12}}
         />
         <Pressable
           style={styles.searchSection}
@@ -69,10 +70,10 @@ const HomeScreen = () => {
             style={styles.searchIcon}
             name="ios-search"
             size={18}
-            color="#6949ff"
+            color="#6268fc"
           />
           <View style={styles.input}>
-            <Text style={{fontFamily: 'Poppins-Regular'}}>
+            <Text style={{fontFamily: 'Poppins-Regular', fontSize: 13}}>
               Search Events...
             </Text>
           </View>
@@ -88,7 +89,7 @@ const HomeScreen = () => {
             justifyContent: 'space-between',
             backgroundColor: '#fffced',
             borderRadius: 15,
-            padding: 5,
+            padding: 1,
             // marginTop: 5,
             paddingHorizontal: 15,
             shadowColor: 'grey',
@@ -98,21 +99,21 @@ const HomeScreen = () => {
             },
             shadowOpacity: 0.41,
             shadowRadius: 9.11,
-            elevation: 14,
+            elevation: 7,
           }}>
           <View style={{}}>
             <Text
               style={{
                 color: 'black',
                 fontFamily: 'Poppins-Medium',
-                fontSize: 15,
+                fontSize: 14,
               }}>
               Hey {name},
             </Text>
             <Text
               style={{
                 color: '#424242',
-                fontSize: 13,
+                fontSize: 12,
                 // marginTop: -3,
                 marginLeft: -5,
                 fontFamily: 'Poppins-Regular',
@@ -128,7 +129,7 @@ const HomeScreen = () => {
               style={{
                 height: 45,
                 width: 45,
-                marginTop: 7,
+                marginTop: 6,
                 borderRadius: 23,
                 backgroundColor: '#fffced',
                 alignContent: 'center',
@@ -139,14 +140,16 @@ const HomeScreen = () => {
                 name="coins"
                 size={26}
                 color={'#fad505'}
-                style={{margin: 5}}
+                style={{margin: 1}}
               />
             </View>
             <Text
               style={{
-                color: '#2e2e2e',
-                fontFamily: 'Poppins-SemiBold',
+                color: '#202020',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 11,
+                marginTop: -3,
+                marginBottom: 8,
               }}>
               100
             </Text>
@@ -169,7 +172,7 @@ const HomeScreen = () => {
             marginHorizontal: 20,
             paddingHorizontal: 18,
             marginTop: 10,
-            backgroundColor: '#6949ff',
+            backgroundColor: '#6268fc',
             marginBottom: 90,
             paddingBottom: 21,
             padding: 15,
@@ -201,15 +204,17 @@ const HomeScreen = () => {
                 marginTop: 15,
                 flex: 1,
                 height: 195,
+                width: 130,
                 borderRadius: 15,
                 marginRight: 10,
                 backgroundColor: 'white',
               }}>
               <Image
                 source={require('../data/events.jpg')}
+                // resizeMode={'contain'}
                 style={{
                   height: 130,
-                  width: 148,
+                  width: 130,
                   borderTopRightRadius: 15,
                   borderTopLeftRadius: 15,
                 }}
@@ -217,7 +222,7 @@ const HomeScreen = () => {
               <Text
                 style={{
                   fontFamily: 'Poppins-Medium',
-                  fontSize: 16,
+                  fontSize: 14,
                   color: '#181818',
                   alignSelf: 'center',
                   // marginTop: 5,
@@ -227,7 +232,7 @@ const HomeScreen = () => {
               <Text
                 style={{
                   fontFamily: 'Poppins-Regular',
-                  fontSize: 13,
+                  fontSize: 12,
                   color: '#181818',
                   alignSelf: 'center',
                   // marginTop: 5,
@@ -241,6 +246,7 @@ const HomeScreen = () => {
                 marginTop: 15,
                 flex: 1,
                 height: 195,
+                width: 130,
                 borderRadius: 15,
                 // width: 50,
                 marginLeft: 10,
@@ -250,15 +256,16 @@ const HomeScreen = () => {
                 source={require('../data/nonevents.jpg')}
                 style={{
                   height: 130,
-                  width: 148,
+                  width: 130,
                   borderTopRightRadius: 15,
                   borderTopLeftRadius: 15,
                 }}
               />
               <Text
+                numberOfLines={1}
                 style={{
                   fontFamily: 'Poppins-Medium',
-                  fontSize: 16,
+                  fontSize: 14,
                   color: '#181818',
                   alignSelf: 'center',
                   // marginTop: 5,
@@ -268,7 +275,7 @@ const HomeScreen = () => {
               <Text
                 style={{
                   fontFamily: 'Poppins-Regular',
-                  fontSize: 13,
+                  fontSize: 12,
                   color: '#181818',
                   alignSelf: 'center',
                   // marginTop: 5,
@@ -289,6 +296,7 @@ const HomeScreen = () => {
                 marginTop: 15,
                 flex: 1,
                 height: 195,
+                width: 130,
                 borderRadius: 15,
                 width: 70,
                 marginRight: 10,
@@ -298,7 +306,7 @@ const HomeScreen = () => {
                 source={require('../data/cultural.jpg')}
                 style={{
                   height: 130,
-                  width: 148,
+                  width: 130,
                   borderTopRightRadius: 15,
                   borderTopLeftRadius: 15,
                 }}
@@ -306,7 +314,7 @@ const HomeScreen = () => {
               <Text
                 style={{
                   fontFamily: 'Poppins-Medium',
-                  fontSize: 16,
+                  fontSize: 14,
                   color: '#181818',
                   alignSelf: 'center',
                   // marginTop: 5,
@@ -316,7 +324,7 @@ const HomeScreen = () => {
               <Text
                 style={{
                   fontFamily: 'Poppins-Regular',
-                  fontSize: 13,
+                  fontSize: 12,
                   color: '#181818',
                   alignSelf: 'center',
                   // marginTop: 5,
@@ -330,6 +338,7 @@ const HomeScreen = () => {
                 marginTop: 15,
                 flex: 1,
                 height: 195,
+                width: 130,
                 borderRadius: 15,
                 width: 70,
                 marginLeft: 10,
@@ -339,7 +348,7 @@ const HomeScreen = () => {
                 source={require('../data/workshop.jpg')}
                 style={{
                   height: 130,
-                  width: 148,
+                  width: 130,
                   borderTopRightRadius: 15,
                   borderTopLeftRadius: 15,
                 }}
@@ -347,7 +356,7 @@ const HomeScreen = () => {
               <Text
                 style={{
                   fontFamily: 'Poppins-Medium',
-                  fontSize: 16,
+                  fontSize: 14,
                   color: '#181818',
                   alignSelf: 'center',
                   // marginTop: 5,
@@ -357,7 +366,7 @@ const HomeScreen = () => {
               <Text
                 style={{
                   fontFamily: 'Poppins-Regular',
-                  fontSize: 13,
+                  fontSize: 12,
                   color: '#181818',
                   alignSelf: 'center',
                   // marginTop: 5,
@@ -387,17 +396,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     marginTop: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
-    elevation: 10,
+    borderRadius: 30,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 5,
+    // },
+    // shadowOpacity: 0.34,
+    // shadowRadius: 6.27,
+    // elevation: 10,
     marginHorizontal: 20,
     marginVertical: 8,
+    borderColor: '#ededed',
+    borderWidth: 1,
   },
   searchIcon: {
     padding: 7,
@@ -406,11 +417,12 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingLeft: 0,
-    borderRadius: 10,
+    borderRadius: 30,
     backgroundColor: '#fff',
-    color: '#6949ff',
+    color: '#6268fc',
     height: 45,
     justifyContent: 'center',
+    fontSize: 12,
     // fontFamily: 'Poppins-SemiBold',
   },
 });

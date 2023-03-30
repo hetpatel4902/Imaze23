@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderRadius: 15,
     justifyContent: 'center',
-    height: 80,
+    height: 70,
     padding: 20,
     shadowColor: '#000000',
     shadowOffset: {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.41,
     shadowRadius: 9.11,
-    elevation: 14,
+    elevation: 10,
   },
   comboText: {
     fontFamily: 'Poppins-Medium',

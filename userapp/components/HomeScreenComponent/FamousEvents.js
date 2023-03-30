@@ -30,7 +30,7 @@ const FamousEvents = () => {
       `http://${USER_IP}/api/v1/user/events/?sort=noOfParticipants`,
       {headers: {Authorization: `Bearer ${jsonValue.token}`}},
     );
-    // console.table(response.data.data);
+    console.table(response.data.data);
     setEvent(response.data.data);
     setLoading(false);
   };
@@ -43,7 +43,7 @@ const FamousEvents = () => {
             fontFamily: 'Poppins-Medium',
             fontSize: 15,
             color: '#191919',
-            marginTop: 10,
+            marginTop: 16,
             paddingHorizontal: 15,
           }}>
           Most Selling Events...
@@ -51,7 +51,7 @@ const FamousEvents = () => {
         <FlatList
           data={event}
           horizontal
-          style={{marginBottom: 20, marginTop: 5}}
+          style={{marginBottom: 10, marginTop: 5}}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => <FamousEventsComponent tech={item} />}

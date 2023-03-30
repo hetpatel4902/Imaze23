@@ -19,7 +19,7 @@ const StaticComboScreen = () => {
     const response = await axios.get(`http://${USER_IP}/api/v1/user/combos`, {
       headers: {Authorization: `Bearer ${tokens}`},
     });
-    // console.log(response.data.data.Tech);
+    console.log(response.data.data.Tech);
     // console.log('static combo:', response.data.data);
     setCombo(response.data.data);
     setLoading(false);
@@ -36,7 +36,7 @@ const StaticComboScreen = () => {
           Static Combos
         </Text>
         <FlatList
-          style={{marginBottom: 30, marginTop: 5}}
+          style={{marginBottom: 30}}
           data={combo}
           renderItem={({item}) => <StaticCombo data={item} pending={false} />}
           keyExtractor={item => item._id}

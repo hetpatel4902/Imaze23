@@ -127,15 +127,15 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
-    height: 66,
-    width: 66,
+    height: 58,
+    width: 58,
     borderRadius: 33,
   },
   nameView: {flex: 3, paddingHorizontal: 10},
   name: {
     color: 'black',
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: 13,
   },
   container: {
     flexDirection: 'row',
@@ -150,17 +150,17 @@ const styles = StyleSheet.create({
   priceText: {
     fontFamily: 'Poppins-Medium',
     color: '#242424',
-    fontSize: 13,
+    fontSize: 12,
   },
   subContainerTime: {
     fontFamily: 'Poppins-Regular',
     color: '#242424',
-    fontSize: 12,
+    fontSize: 11,
   },
   participants: {
     color: '#454545',
     fontFamily: 'Poppins-Regular',
-    fontSize: 12,
+    fontSize: 11,
   },
   selectContainer: {
     backgroundColor: '#05fa9c',

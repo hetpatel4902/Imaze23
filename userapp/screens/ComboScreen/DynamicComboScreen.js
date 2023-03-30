@@ -136,15 +136,16 @@ const DynamicComboScreen = () => {
             borderRadius: 13,
             marginTop: 40,
             // flex: 1,
-            maxWidth: width,
-            paddingHorizontal: width / 2 - 72,
+            // maxWidth: width,
+            // paddingHorizontal: width / 2 - 72,
+            width: width - 45,
           }}>
           <Text
             style={{
               color: 'white',
               alignSelf: 'center',
               fontFamily: 'Poppins-SemiBold',
-              fontSize: 15,
+              fontSize: 14,
             }}>
             Buy Combo
           </Text>
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.41,
     shadowRadius: 9.11,
-    elevation: 14,
+    elevation: 7,
     borderRadius: 14,
   },
   eventView: {
@@ -328,15 +329,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderRadius: 15,
     justifyContent: 'center',
-    height: 80,
+    height: 70,
     padding: 20,
   },
   eventImageView: {
     flex: 1,
   },
   eventImage: {
-    height: 80,
-    width: 80,
+    height: 70,
+    width: 70,
     borderRadius: 14,
   },
   eventTextView: {flex: 3.7},

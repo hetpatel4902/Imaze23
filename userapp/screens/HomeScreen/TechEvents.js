@@ -18,7 +18,7 @@ const TechEvents = () => {
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    // console.log(response.data.data.Tech);
+    console.log(response.data.data.Tech);
     setEvent(response.data.data.Tech);
   };
   return (
