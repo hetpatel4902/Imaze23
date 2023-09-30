@@ -6,8 +6,17 @@ import {
   // Pressable,
   useWindowDimensions,
   Pressable,
+  Dimensions,
+  Modal,
+  Alert,
+  ToastAndroid,
+  Platform,
+  PermissionsAndroid,
+  PermissionStatus,
+  Permission,
 } from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
+// import RNFetchBlob from 'rn-fetch-blob';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {useAuthContext} from '../../src/Context/AuthContext';
@@ -16,16 +25,29 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {COLOR} from '@env';
 const EventDetailScreen = () => {
   const width = useWindowDimensions().width;
   const route = useRoute();
-  const {tokens} = useAuthContext();
+  const [modal, setModal] = useState(false);
+  const {tokens, users} = useAuthContext();
   const navigation = useNavigation();
   const eventId = route?.params.eventId;
+  const selected = route?.params.selected;
+  const pending = route?.params.pending;
+  const bought = route?.params.bought;
+  const otp = route?.params.otp;
+  const certificate = route?.params.certificate;
+  const [status, setStatus] = useState(false);
+  // const certificateStatus = route?.params.certificateStatus;
   const [eventDetail, setEventDetail] = useState(null);
   const participant = eventDetail?.participants;
   const [textShown, setTextShown] = useState(false); //To show ur remaining Text
   const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
+  const [checkDetail, setCheckDetail] = useState(null);
+  const [arr, setArr] = useState([]);
+  // const width = Dimensions.get('screen').width;
   const toggleNumberOfLines = () => {
     //To toggle the show text or hide it
     setTextShown(!textShown);
@@ -36,25 +58,89 @@ const EventDetailScreen = () => {
     console.log(e.nativeEvent);
   }, []);
 
+  const showToastWithGravityAndOffset = async () => {
+    ToastAndroid.showWithGravityAndOffset(
+      'Provide this otp at Registration desk!',
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  };
+
   useEffect(() => {
     events();
   }, []);
-  const onPress = () => {};
+
+  const onPress = async () => {
+    await check();
+  };
+  const payOnline = () => {};
+  const payOffline = async () => {
+    const res = await axios.post(
+      `http://${USER_IP}/api/v1/user/${users}/payment/offline`,
+      {orderId: checkDetail?.data._id, isCombo: false},
+      {headers: {Authorization: `Bearer ${tokens}`}},
+    );
+    setModal(false);
+    showToastWithGravityAndOffset();
+    navigation.navigate('MyEvents');
+  };
+  const check = async () => {
+    const checkEvent = async () => {
+      const response = await axios.post(
+        `http://${USER_IP}/api/v1/user/events/${users}/check`,
+        {price: eventDetail?.price, eid: eventDetail?._id},
+        {headers: {Authorization: `Bearer ${tokens}`}},
+      );
+      setCheckDetail(response.data);
+      if (response.data.flag == true) {
+        Alert.alert(`Your ${response.data.data} events are clashing.`);
+      } else {
+        setModal(true);
+      }
+    };
+    await checkEvent();
+  };
+  // let response;
+  const download = async () => {
+    // console.log(response);
+    const res = await axios.get(
+      `http://${USER_IP}/api/v1/user/certificates/${users}/event/${eventDetail?._id}`,
+      {headers: {Authorization: `Bearer ${tokens}`}},
+    );
+    console.log(res.data.res);
+    if (res.data.res == 'success') {
+      Alert.alert('Success, We have mailed you your certificate.');
+    }
+  };
+
   const events = async () => {
     const response = await axios.get(
       `http://${USER_IP}/api/v1/user/events/${eventId}`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    // console.log(response.data.data.category);
+    console.log(response.data.data);
     setEventDetail(response.data.data);
+    if (certificate) {
+      const res = await axios.get(
+        `http://${USER_IP}/api/v1/user/certificates/${users}/visibility/${response.data.data._id}`,
+        {headers: {Authorization: `Bearer ${tokens}`}},
+      );
+      console.log(res.data.data);
+      setStatus(res.data.data);
+    }
   };
   const onBack = () => {
     navigation.goBack();
   };
   return (
     <View style={{}}>
-      {/* <Text>{eventDetail?.name}</Text> */}
       <View style={{backgroundColor: '#ededed'}}>
+        <Image
+          source={{uri: `http://${USER_IP}/${eventDetail?.image}`}}
+          style={{height: 250, alignSelf: 'center', width: width}}
+        />
         <Pressable
           onPress={onBack}
           style={{
@@ -70,10 +156,6 @@ const EventDetailScreen = () => {
           }}>
           <AntDesign name="arrowleft" size={24} color={'#141414'} />
         </Pressable>
-        <Image
-          source={{uri: `http://10.0.2.2:8000/${eventDetail?.image}`}}
-          style={{height: 230, width: 230, alignSelf: 'center'}}
-        />
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -82,6 +164,9 @@ const EventDetailScreen = () => {
           borderTopLeftRadius: 40,
           backgroundColor: 'white',
           height: 1000,
+          width: width,
+          position: 'absolute',
+          top: 215,
         }}>
         <View style={{alignContent: 'center', alignSelf: 'center'}}>
           <Octicons name="dash" color={'grey'} size={45} />
@@ -98,7 +183,7 @@ const EventDetailScreen = () => {
             <Text
               style={{
                 fontFamily: 'Poppins-Medium',
-                fontSize: 17,
+                fontSize: 16,
                 color: '#191919',
               }}>
               {eventDetail?.name}
@@ -106,7 +191,7 @@ const EventDetailScreen = () => {
             <Text
               style={{
                 fontFamily: 'Poppins-Medium',
-                fontSize: 13,
+                fontSize: 12,
                 marginTop: -5,
                 color: 'grey',
               }}>
@@ -115,13 +200,13 @@ const EventDetailScreen = () => {
           </View>
           <View
             style={{
-              backgroundColor: '#33e835',
+              backgroundColor: '#05fa9c',
               paddingHorizontal: 14,
               alignItems: 'center',
               justifyContent: 'center',
               paddingVertical: 3.5,
               borderRadius: 18,
-              shadowColor: '#33e835',
+              shadowColor: '#05fa9c',
               shadowOffset: {
                 width: 0,
                 height: 7,
@@ -130,24 +215,33 @@ const EventDetailScreen = () => {
               shadowRadius: 9.11,
               elevation: 14,
             }}>
-            <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
+            <Text
+              style={{
+                color: 'white',
+                fontFamily: 'Poppins-Medium',
+                fontSize: 13,
+              }}>
               Rs.{eventDetail?.price}
             </Text>
           </View>
         </View>
         <View style={{marginHorizontal: 20, marginTop: 2}}>
-          <Text style={{fontFamily: 'Poppins-Medium'}}>
+          <Text style={{fontFamily: 'Poppins-Medium', fontSize: 12}}>
             Participants: {participant?.length}
           </Text>
         </View>
-        <View style={{marginHorizontal: 20, marginTop: 5}}>
+        <View style={{marginHorizontal: 20, marginTop: 5, fontSize: 13}}>
           <Text style={{fontFamily: 'Poppins-SemiBold', color: '#191919'}}>
             Description
           </Text>
           <Text
             onTextLayout={onTextLayout}
             numberOfLines={textShown ? undefined : 2}
-            style={{lineHeight: 21, fontFamily: 'Poppins-Regular'}}>
+            style={{
+              lineHeight: 21,
+              fontFamily: 'Poppins-Regular',
+              fontSize: 12,
+            }}>
             {eventDetail?.description}
           </Text>
 
@@ -159,7 +253,7 @@ const EventDetailScreen = () => {
                 marginTop: 4,
                 fontSize: 13,
                 fontFamily: 'Poppins-Regular',
-                color: '#6949ff',
+                color: COLOR,
               }}>
               {textShown ? 'Read less...' : 'Read more...'}
             </Text>
@@ -174,9 +268,9 @@ const EventDetailScreen = () => {
           }}>
           <View
             style={{
-              height: 30,
-              width: 30,
-              borderRadius: 15,
+              height: 28,
+              width: 28,
+              borderRadius: 14,
               backgroundColor: '#f0faf0',
               alignContent: 'center',
               alignItems: 'center',
@@ -184,14 +278,14 @@ const EventDetailScreen = () => {
               flex: 1,
               // alignItems: 'center',
             }}>
-            <FontAwesome5 name="map-marker-alt" size={16} color={'#33e835'} />
+            <FontAwesome5 name="map-marker-alt" size={15} color={'#05fa9c'} />
           </View>
           <View style={{flex: 7, marginHorizontal: 10}}>
             <Text
               style={{
                 fontFamily: 'Poppins-Medium',
                 color: '#242424',
-                fontSize: 14,
+                fontSize: 13,
               }}>
               {eventDetail?.venue}{' '}
             </Text>
@@ -206,10 +300,10 @@ const EventDetailScreen = () => {
           }}>
           <View
             style={{
-              height: 30,
-              width: 30,
+              height: 28,
+              width: 28,
               marginTop: 7,
-              borderRadius: 15,
+              borderRadius: 14,
               backgroundColor: '#f0faf0',
               alignContent: 'center',
               alignItems: 'center',
@@ -219,8 +313,8 @@ const EventDetailScreen = () => {
             }}>
             <MaterialCommunityIcons
               name="calendar-week"
-              size={16}
-              color={'#33e835'}
+              size={15}
+              color={'#05fa9c'}
             />
           </View>
           <View style={{flex: 7, marginHorizontal: 10}}>
@@ -236,7 +330,7 @@ const EventDetailScreen = () => {
               style={{
                 fontFamily: 'Poppins-Medium',
                 color: '#242424',
-                fontSize: 13,
+                fontSize: 12,
               }}>
               {eventDetail?.time}
             </Text>
@@ -247,6 +341,7 @@ const EventDetailScreen = () => {
             style={{
               fontFamily: 'Poppins-Medium',
               color: '#242424',
+              fontSize: 13,
             }}>
             Event Coordinator:
           </Text>
@@ -254,7 +349,7 @@ const EventDetailScreen = () => {
             style={{
               fontFamily: 'Poppins-Regular',
               color: '#242424',
-              fontSize: 13,
+              fontSize: 12,
             }}>
             {eventDetail?.event_coordinator[0]?.name} (
             {eventDetail?.event_coordinator[0]?.phoneno})
@@ -271,39 +366,242 @@ const EventDetailScreen = () => {
             </Text>
           )}
         </View>
-        <Pressable
-          onPress={onPress}
-          style={{
-            shadowColor: '#4b2be3',
-            shadowOffset: {
-              width: 0,
-              height: 7,
-            },
-            shadowOpacity: 0.41,
-            shadowRadius: 9.11,
-            elevation: 14,
-            alignContent: 'center',
-            alignSelf: 'center',
-            marginTop: 13,
-            backgroundColor: '#6949ff',
-            paddingVertical: 10,
-            borderRadius: 13,
-            flex: 1,
-            maxWidth: width,
-            paddingHorizontal: width / 2 - 54,
-            marginBottom: 630,
-          }}>
+        {otp && (
           <Text
             style={{
-              color: 'white',
-              alignSelf: 'center',
-              fontFamily: 'Poppins-SemiBold',
-              fontSize: 15,
+              color: 'black',
+              // alignSelf: 'center',
+              fontFamily: 'Poppins-Regular',
+              fontSize: 13,
+              marginTop: 10,
+              marginHorizontal: 20,
             }}>
-            Buy
+            Show this otp at Registration desk for verfiying your payment: {otp}
           </Text>
-        </Pressable>
+        )}
+        {/* {!selected && ( */}
+        {certificate && (
+          <Pressable
+            onPress={download}
+            disabled={!status}
+            style={{
+              shadowColor: status ? COLOR : '#d5cdfa',
+              shadowOffset: {
+                width: 0,
+                height: 7,
+              },
+              shadowOpacity: 0.41,
+              shadowRadius: 9.11,
+              elevation: 14,
+              alignContent: 'center',
+              alignSelf: 'center',
+              marginTop: 13,
+              backgroundColor: status ? COLOR : '#d5cdfa',
+              paddingVertical: 10,
+              borderRadius: 13,
+              // flex: 1,
+              // maxWidth: width,
+              // paddingHorizontal: bought ? width / 2 - 90 : width / 2 - 54,
+              width: width - 50,
+              // marginBottom: 630,
+              opacity: selected ? 0 : 1,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                alignSelf: 'center',
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: 14,
+              }}>
+              Send Certificate on Mail
+            </Text>
+          </Pressable>
+        )}
+        {!status && (
+          <Text
+            style={{
+              color: '#303030',
+              // alignSelf: 'center',
+              fontFamily: 'Poppins-Regular',
+              fontSize: 12,
+              marginTop: 10,
+              marginHorizontal: 20,
+            }}>
+            *Attend the event to get the certificate
+          </Text>
+        )}
+        {!status && (
+          <Pressable
+            onPress={onPress}
+            disabled={bought || pending}
+            style={{
+              shadowColor: '#4b2be3',
+              shadowOffset: {
+                width: 0,
+                height: 7,
+              },
+              shadowOpacity: 0.41,
+              shadowRadius: 9.11,
+              elevation: 14,
+              alignContent: 'center',
+              alignSelf: 'center',
+              marginTop: 13,
+              backgroundColor: COLOR,
+              paddingVertical: 10,
+              borderRadius: 13,
+              flex: 1,
+              // maxWidth: width,
+              width: width - 50,
+              // paddingHorizontal: bought ? width / 2 - 90 : width / 2 - 54,
+              marginBottom: 630,
+              opacity: selected ? 0 : 1,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                alignSelf: 'center',
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: 14,
+              }}>
+              {bought ? 'Already Bought' : pending ? 'Pending' : 'Buy'}
+            </Text>
+          </Pressable>
+        )}
+        <View style={{height: 50}}></View>
+        {/* // )} */}
       </ScrollView>
+      <Modal transparent={true} visible={modal} animationType={'slide'}>
+        <View style={{flex: 1, backgroundColor: '#000000aa'}}>
+          <View style={{height: 175, alignItems: 'center'}}>
+            <Pressable
+              onPress={() => setModal(false)}
+              style={{
+                backgroundColor: 'white',
+                height: 35,
+                width: 35,
+                padding: 7,
+                borderRadius: 17,
+                alignItems: 'center',
+                marginTop: 90,
+              }}>
+              <Entypo name="cross" size={21} color={'#000000'} />
+            </Pressable>
+          </View>
+          <ScrollView
+            style={{
+              backgroundColor: '#ffffff',
+              height: '100%',
+              borderTopLeftRadius: 50,
+              borderTopRightRadius: 50,
+              padding: 20,
+            }}>
+            <Image
+              source={require('../../data/paymentMode.jpg')}
+              style={{
+                height: 217,
+                width: 267,
+                alignSelf: 'center',
+                marginTop: 12,
+              }}
+            />
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                color: '#191919',
+                fontSize: 17,
+                textAlign: 'center',
+                marginTop: 20,
+              }}>
+              Choose the Payment Mode
+            </Text>
+            <Pressable
+              onPress={payOffline}
+              style={{
+                shadowColor: COLOR,
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 8,
+                alignContent: 'center',
+                alignSelf: 'center',
+                marginTop: 25,
+                backgroundColor: COLOR,
+                paddingVertical: 10,
+                borderRadius: 13,
+                maxWidth: width,
+                width: width - 46,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  alignSelf: 'center',
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 15,
+                }}>
+                Pay Offline
+              </Text>
+            </Pressable>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+              }}>
+              <View
+                style={{backgroundColor: 'grey', height: 1, flex: 3}}></View>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Medium',
+                  color: '#454545',
+                  fontSize: 13,
+                  flex: 1,
+                  textAlign: 'center',
+                }}>
+                OR
+              </Text>
+              <View
+                style={{flex: 3, backgroundColor: 'grey', height: 1}}></View>
+            </View>
+            <Pressable
+              onPress={payOnline}
+              style={{
+                shadowColor: '#53c2f0',
+                // shadowColor: '#19347d',
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 8,
+                alignContent: 'center',
+                alignSelf: 'center',
+                marginTop: 25,
+                backgroundColor: '#53c2f0',
+                // backgroundColor: '#19347d',
+                paddingVertical: 10,
+                borderRadius: 13,
+                maxWidth: width,
+                // paddingHorizontal: width / 2 - 64,
+                width: width - 46,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  alignSelf: 'center',
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 15,
+                }}>
+                Paytm
+              </Text>
+            </Pressable>
+            <View style={{height: 40}}></View>
+          </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
 };

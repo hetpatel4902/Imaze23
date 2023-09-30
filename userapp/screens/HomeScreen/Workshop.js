@@ -16,11 +16,13 @@ const Workshop = () => {
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
     // console.log(response.data.data.Tech);
-    // console.log(response.data.data);
+    console.log(response.data.data);
     setEvent(response.data.data.Workshop);
   };
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{padding: 15}}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{padding: 15, backgroundColor: 'white', flex: 1}}>
       <Text
         style={{color: '#191919', fontFamily: 'Poppins-Medium', fontSize: 17}}>
         Workshop 🎉

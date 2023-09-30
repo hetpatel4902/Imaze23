@@ -11,7 +11,7 @@ const getTransactionToken = async (req, res) => {
     mid: process.env.MID,
     websiteName: "WEBSTAGING",
     orderId: orderId,
-    callbackUrl: "/payment/transaction-complete",
+    callbackUrl: "http:10.0.2.2:6900/api/v1/payment/transaction-complete",
     txnAmount: {
       value: amount,
       currency: "INR",
@@ -48,7 +48,7 @@ const getTransactionToken = async (req, res) => {
 
     post_res.on("end", function () {
       const token = JSON.parse(response);
-      res.status(StatusCodes.OK).json({ res: "succes", data: token });
+      res.status(StatusCodes.OK).json({ res: "success", data: token });
     });
   });
   post_req.write(post_data);

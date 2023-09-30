@@ -21,13 +21,34 @@ const AuthContextProvider = ({children}) => {
   const [name, setName] = useState(null);
   const [userId, setUserId] = useState(null);
   const [loginPending, setLoginPending] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [price, setPrice] = useState(0);
   // const [name,setName] = useState()
   let jsonValue;
   let favourite;
+  let Arr;
   useEffect(() => {
     getData();
   }, []);
-
+  // const set = arr => {
+  //   setTechArr(arr);
+  //   console.log('from context arr:', techArr);
+  // };
+  const check = () => {
+    console.log('tech:', techArr.length);
+    console.log('nontech:', nonTechArr.length);
+    console.log('workshop:', workshopArr.length);
+    if (
+      techArr.length == 2 &&
+      nonTechArr.length == 1 &&
+      workshopArr.length == 1
+    ) {
+      setVisible(true);
+    } else {
+      setVisible(false);
+    }
+  };
   const getData = async () => {
     setLoginPending(true);
     const value = await AsyncStorage.getItem('userDetail');
@@ -72,6 +93,14 @@ const AuthContextProvider = ({children}) => {
         setNonTechArr,
         workshopArr,
         setWorkshopArr,
+        loading,
+        setLoading,
+        check,
+        visible,
+        setVisible,
+        Arr,
+        price,
+        setPrice,
       }}>
       {children}
       {loginPending ? <SearchLoader /> : null}

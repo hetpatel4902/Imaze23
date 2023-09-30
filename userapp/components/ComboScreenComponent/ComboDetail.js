@@ -1,11 +1,62 @@
-import {View, Text} from 'react-native';
+import {View, Text, Image, Pressable} from 'react-native';
 import React from 'react';
-
+import {useNavigation} from '@react-navigation/native';
+import {USER_IP, COLOR} from '@env';
 const ComboDetail = ({info}) => {
-  console.log(info);
+  // console.log(info);
+  const navigation = useNavigation();
+  const participants = info?.participants;
+  const onPress = () => {
+    navigation.navigate('EventDetailScreen', {
+      eventId: info?._id,
+      selected: true,
+    });
+  };
   return (
-    <View>
-      <Text>{info.category}</Text>
+    <View
+      style={{flexDirection: 'row', alignItems: 'center', marginVertical: 7}}>
+      <View style={{flex: 1}}>
+        <Image
+          source={{uri: `http://${USER_IP}/${info.image}`}}
+          style={{height: 49.5, width: 49.5, borderRadius: 25}}
+        />
+      </View>
+      <View style={{flex: 4}}>
+        <Text
+          style={{
+            fontFamily: 'Poppins-Medium',
+            color: '#191919',
+            fontSize: 13,
+          }}>
+          {info.name}
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Poppins-Regular',
+            color: '#383838',
+            fontSize: 12,
+          }}>
+          {info.category}
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Poppins-Regular',
+            color: '#191919',
+            fontSize: 12,
+          }}>
+          {participants.length} participants
+        </Text>
+      </View>
+      <Pressable style={{flex: 1, alignContent: 'center'}} onPress={onPress}>
+        <Text
+          style={{
+            color: COLOR,
+            fontFamily: 'Poppins-Medium',
+            fontSize: 12,
+          }}>
+          View Detail
+        </Text>
+      </Pressable>
     </View>
   );
 };
