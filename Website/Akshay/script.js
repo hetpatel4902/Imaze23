@@ -1,50 +1,38 @@
-// toggle icon navbar
+// toggle icon navbars
 let menuIcon = document.querySelector('#menu-icon');
-let navbar = document.querySelector('.navbar');
+let navbars = document.querySelector('.navbars');
 let body = document.body;
 
 menuIcon.onclick = () => {
     menuIcon.classList.toggle('bx-x');
-    navbar.classList.toggle('active');
+    navbars.classList.toggle('active');
 
-    if (navbar.classList.contains('active')) {
-        // Open the navbar with a smooth animation
-        navbar.style.maxHeight = navbar.scrollHeight + 'px';
-        navbar.style.opacity = 1;
+    if (navbars.classList.contains('active')) {
+        // Open the navbars with a smooth animation
+        navbars.style.maxHeight = navbars.scrollHeight + 'px';
+        navbars.style.opacity = 1;
     } else {
-        // Close the navbar with a smooth animation
-        navbar.style.maxHeight = '0';
-        navbar.style.opacity = 0;
+        // Close the navbars with a smooth animation
+        navbars.style.maxHeight = '0';
+        navbars.style.opacity = 0;
     }
 };
 
 window.addEventListener('resize', () => {
     if (window.innerWidth > 768) {
-        navbar.style.maxHeight = ''; 
-        navbar.style.opacity = ''; 
+        navbars.style.maxHeight = ''; 
+        navbars.style.opacity = ''; 
     }
 });
-function closeNavbar() {
+function closenavbars() {
     menuIcon.classList.remove('bx-x');
-    navbar.classList.remove('active');
-    navbar.style.maxHeight = '0';
-    navbar.style.opacity = '0';
+    navbars.classList.remove('active');
+    navbars.style.maxHeight = '0';
+    navbars.style.opacity = '0';
 }
 
 body.addEventListener('click', (event) => {
-    if (navbar.classList.contains('active') && event.target !== menuIcon && !navbar.contains(event.target)) {
-        closeNavbar();
+    if (navbars.classList.contains('active') && event.target !== menuIcon && !navbars.contains(event.target)) {
+        closenavbars();
     }
 });
-
- // JavaScript to control video playback
- const video = document.getElementById("myVideo");
-
- // Add an event listener to restart the video when it ends
- video.addEventListener("ended", function () {
-     video.currentTime = 0;
-     video.play();
- });
- 
-
- 
