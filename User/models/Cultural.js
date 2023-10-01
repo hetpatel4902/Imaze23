@@ -1,7 +1,15 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-const SoloCulturalSchema = new mongoose.Schema({
+const CulturalSchema = new mongoose.Schema({
+  category:{
+    type:String,
+    default:"Cultural"
+  },
+  type:{
+    type:String,
+    enum:["SOLO","GROUP"]
+  },
   name:{
     type:String,
     required:[true,'Please provide Event Name']
@@ -48,11 +56,6 @@ const SoloCulturalSchema = new mongoose.Schema({
     ref:"Users",
     default:[]
   },
-  attendance:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
-    default:[]
-  },
   maxparticipants:{
     type:Number,
     required:[true,'Please provide number of participants']
@@ -67,10 +70,10 @@ const SoloCulturalSchema = new mongoose.Schema({
   }
 })
 
-SoloCulturalSchema.pre("save",async function(){
+CulturalSchema.pre("save",async function(){
   console.log(this.participants);
   this.noOfParticipants = this.participants.length;
 })
 
 
-module.exports = mongoose.model('SoloCultural',SoloCulturalSchema)
+module.exports = mongoose.model('SoloCultural',CulturalSchema)

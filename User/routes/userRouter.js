@@ -23,6 +23,7 @@ const {
   updatepassword,
   getPaymentHistory,
   payOffline,
+  payOnline
 } = require("../controllers/Users");
 
 
@@ -34,7 +35,7 @@ router.route('/forgotpassword').patch(forgotPasswordUsers)
 //events
 router.route("/events").get(authmiddleware, getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
 router.route("/events/category").get(authmiddleware, getEventsCategorized); //get categorized events
-router.route("/events/:eid").get(authmiddleware, getOneEvent); //get event details [:eid = event id]
+router.route("/events/:eid").get(authmiddleware, getOneEvent); //get event details [:eid = event id] [req.body = {type:NORMAL/FLAGSHIP/CULTURAL}]
 router.route("/events/user/:uid").get(authmiddleware, getUserEvents); //get events bought by the user, both combos and individual events [:uid = user id]
 
 //combos

@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 
 const FlagshipEventSchema = new mongoose.Schema({
-  category:{//ideathon , toyothon
+  category:{//ideathon , toyothon, 
     type:String,
-    enum:["IDEATHON","TOYOTHON"],
+    enum:["Ideathon","Toyothon","HappyStreet"],
     required:[true,'Please provide Category']
   },
   name:{
@@ -43,15 +43,15 @@ const FlagshipEventSchema = new mongoose.Schema({
     type:Number,
     required:[true,'Please provide Total Number of Winnners']
   },
-  participants:{//[{team name:,team leader:id,member1:id,member2:id...}]
+  participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}]
     type:[Object],
     default:[]
   },
-  winner:{//[{team name:,team leader:id,member1:id,member2:id...}]
+  winner:{//[{team name:,members:[ids]}]
     type:[Object],
     default:[]
   },
-  attendance:{//[{team name:,team leader:id,member1:id,member2:id...}]
+  attendance:{//[{team name:,members:[ids]}]
     type:[Object],
     default:[]
   },
