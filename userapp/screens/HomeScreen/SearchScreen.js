@@ -76,7 +76,8 @@ const SearchScreen = () => {
       </View> */}
       <Image
         source={require('../../data/imazelogo.png')}
-        style={{width: 250, height: 60, alignSelf: 'center'}}
+        resizeMode={'contain'}
+        style={{width: 250, height: 45, alignSelf: 'center'}}
       />
       <View style={styles.searchSection}>
         <Ionicons
@@ -116,15 +117,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginTop: 14,
     marginBottom: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
-    elevation: 10,
+    borderRadius: 25,
+    borderColor: '#ededed',
+    borderWidth: 1,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 5,
+    // },
+    // shadowOpacity: 0.34,
+    // shadowRadius: 6.27,
+    // elevation: 10,
   },
   searchIcon: {
     padding: 7,
@@ -134,7 +137,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // marginBottom: 10,
     paddingLeft: 0,
-    borderRadius: 10,
+    borderRadius: 25,
     backgroundColor: '#fff',
     color: '#424242',
   },

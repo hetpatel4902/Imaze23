@@ -54,7 +54,7 @@ const SignInScreen = () => {
             email: changeText,
             password: password,
           });
-
+          // console.log(response.data);
           const obj = {
             token: response.data.token,
             userID: response.data.user.id,
@@ -96,14 +96,14 @@ const SignInScreen = () => {
               height: 232,
               width: 232,
               borderRadius: 20,
-              marginTop: 30,
+              marginTop: 20,
               alignSelf: 'center',
             }}
           />
           <View
             style={{
               marginVertical: 20,
-              marginBottom: 20,
+              marginBottom: 10,
             }}>
             <Text
               style={{
@@ -182,6 +182,7 @@ const SignInScreen = () => {
           <FontAwesome5
             name={hidePass ? 'eye-slash' : 'eye'}
             size={15}
+            color={'#454545'}
             onPress={() => setHidePass(!hidePass)}
           />
         </View>
@@ -194,7 +195,8 @@ const SignInScreen = () => {
           }}>
           <Text
             style={{
-              color: '#6949ff',
+              color: '#6268fc',
+              // color: '#19347d',
               fontFamily: 'Poppins-Medium',
               fontSize: 13,
             }}>
@@ -206,22 +208,25 @@ const SignInScreen = () => {
             onPress={onSignInPressed}
             style={{
               shadowColor: '#4b2be3',
+              // shadowColor: '#19347d',
               shadowOffset: {
                 width: 0,
                 height: 7,
               },
               shadowOpacity: 0.41,
               shadowRadius: 9.11,
-              elevation: 14,
+              elevation: 8,
               alignContent: 'center',
               alignSelf: 'center',
               marginTop: 25,
-              backgroundColor: '#6949ff',
-              paddingVertical: 10,
+              backgroundColor: '#6268fc',
+              // backgroundColor: '#19347d',
+              paddingVertical: 8,
               borderRadius: 13,
               flex: 1,
-              maxWidth: width,
-              paddingHorizontal: width / 2 - 54,
+              width: width - 47,
+              // maxWidth: width,
+              // paddingHorizontal: width / 2 - 46,
             }}>
             <Text
               style={{
@@ -247,14 +252,20 @@ const SignInScreen = () => {
         </View>
         <Pressable
           onPress={onSignUpPress}
-          style={{alignContent: 'center', alignSelf: 'center', marginTop: 20}}>
+          style={{
+            alignContent: 'center',
+            alignSelf: 'center',
+            marginTop: 20,
+            marginBottom: 50,
+          }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{color: 'grey', fontFamily: 'Poppins-Medium'}}>
               New to Imaze?
             </Text>
             <Text
               style={{
-                color: '#6949ff',
+                color: '#6268fc',
+                // color: '#19347d',
                 fontFamily: 'Poppins-SemiBold',
                 marginLeft: 5,
               }}>

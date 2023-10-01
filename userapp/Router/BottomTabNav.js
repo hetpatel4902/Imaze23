@@ -22,7 +22,11 @@ import DynamicComboScreen from '../screens/ComboScreen/DynamicComboScreen';
 import DynamicTechSelectScreen from '../screens/ComboScreen/DynamicTechSelectScreen';
 import DynamicNonTechSelectScreen from '../screens/ComboScreen/DynamicNonTechSelectScreen';
 import DynamicWorkshopSelectScreen from '../screens/ComboScreen/DynamicWorkshopSelectScreen';
-
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import PaymentHistory from '../screens/ProfileScreen/PaymentHistory';
+import UpdateProfile from '../screens/ProfileScreen/UpdateProfile';
+import AboutUsScreen from '../screens/ProfileScreen/AboutUsScreen';
+import DownloadCertificate from '../screens/ProfileScreen/DownloadCertificate';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -31,9 +35,10 @@ const BottomTabNav = () => {
       screenOptions={{
         headerShown: false,
         tabBarInactiveTintColor: '#d8d3f2',
-        tabBarActiveTintColor: '#6949ff',
+        tabBarActiveTintColor: '#6268fc',
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          height: 54,
+          height: 50,
           position: 'absolute',
           bottom: 10,
           right: 16,
@@ -46,11 +51,11 @@ const BottomTabNav = () => {
         component={HomeStack}
         name="Home"
         options={{
-          unmountOnBlur: true,
+          // unmountOnBlur: true,
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <Entypo name="home" size={20} color={color} />
+            <Entypo name="home" size={18} color={color} />
           ),
         }}
       />
@@ -62,19 +67,19 @@ const BottomTabNav = () => {
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <Entypo name="shopping-cart" size={20} color={color} />
+            <AntDesign name="appstore1" size={18} color={color} />
           ),
         }}
       />
       <Tab.Screen
         component={MyEventStack}
-        name="MyEvents"
+        name="My Events"
         options={{
           unmountOnBlur: true,
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <Ionicons name="fast-food" size={20} color={color} />
+            <FontAwesome5 name="history" size={18} color={color} />
           ),
         }}
       />
@@ -86,7 +91,7 @@ const BottomTabNav = () => {
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <FontAwesome5 name="user-alt" size={20} color={color} />
+            <FontAwesome5 name="user-alt" size={18} color={color} />
           ),
         }}
       />
@@ -100,6 +105,7 @@ const MyEventStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={MyEvents} name="MyEvents" />
+      <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
     </Stack.Navigator>
   );
 };
@@ -122,6 +128,8 @@ const ComboStack = () => {
         component={DynamicWorkshopSelectScreen}
         name="DynamicWorkshopSelectScreen"
       />
+      <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
+      <Stack.Screen component={MyEvents} name="MyEvents" />
     </Stack.Navigator>
   );
 };
@@ -129,6 +137,14 @@ const ProfileScreenStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={ProfileScreen} name="ProfileScreen" />
+      <Stack.Screen component={PaymentHistory} name="PaymentHistory" />
+      <Stack.Screen component={UpdateProfile} name="UpdateProfile" />
+      <Stack.Screen component={MyEvents} name="MyEvents" />
+      <Stack.Screen component={AboutUsScreen} name="AboutUsScreen" />
+      <Stack.Screen
+        component={DownloadCertificate}
+        name="DownloadCertificate"
+      />
     </Stack.Navigator>
   );
 };
@@ -137,6 +153,7 @@ const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={HomeScreen} name="HomeScreen" />
+      <Stack.Screen component={MyEvents} name="MyEvents" />
       <Stack.Screen component={TechEvents} name="TechEvents" />
       <Stack.Screen component={NonTechEvents} name="NonTechEvents" />
       <Stack.Screen component={CulturalEvents} name="CulturalEvents" />

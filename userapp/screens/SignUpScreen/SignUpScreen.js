@@ -49,6 +49,7 @@ const SignUpScreen = () => {
   const onRegisterPressed = async data => {
     setPasswordMin(false);
     setEmailWrong(false);
+
     // setPasswordWrong(false);
     if (!name || !phoneNumber || !email || !password || !collegeName) {
       Alert.alert('Enter all required details.');
@@ -275,6 +276,7 @@ const SignUpScreen = () => {
             <FontAwesome5
               name={hidePass ? 'eye-slash' : 'eye'}
               size={15}
+              color={'#454545'}
               onPress={() => setHidePass(!hidePass)}
             />
           </View>
@@ -294,22 +296,24 @@ const SignUpScreen = () => {
               onPress={onRegisterPressed}
               style={{
                 shadowColor: '#4b2be3',
+                shadowColor: '#19347d',
                 shadowOffset: {
                   width: 0,
                   height: 7,
                 },
                 shadowOpacity: 0.41,
                 shadowRadius: 9.11,
-                elevation: 14,
+                elevation: 8,
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 25,
-                backgroundColor: '#6949ff',
-                paddingVertical: 10,
+                backgroundColor: '#6268fc',
+                // backgroundColor: '#19347d',
+                paddingVertical: 8,
                 borderRadius: 13,
                 flex: 1,
-                maxWidth: width,
-                paddingHorizontal: width / 2 - 64,
+                width: width - 47,
+                // paddingHorizontal: width / 2 - 50,
               }}>
               <Text
                 style={{
@@ -362,6 +366,7 @@ const SignUpScreen = () => {
               alignContent: 'center',
               alignSelf: 'center',
               marginTop: 20,
+              marginBottom: 30,
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text style={{color: 'grey', fontFamily: 'Poppins-Medium'}}>
@@ -369,7 +374,8 @@ const SignUpScreen = () => {
               </Text>
               <Text
                 style={{
-                  color: '#6949ff',
+                  color: '#6268fc',
+                  // color: '#19347d',
                   fontFamily: 'Poppins-SemiBold',
                   marginLeft: 5,
                 }}>
@@ -406,8 +412,8 @@ const styles = StyleSheet.create({
     color: '#FDB075',
   },
   logo: {
-    width: 230,
-    height: 230,
+    width: 220,
+    height: 220,
     // maxWidth: 260,
     // maxHeight: 260,
     alignSelf: 'center',

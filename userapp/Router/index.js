@@ -7,6 +7,7 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/NewPasswordScreen';
 import {useAuthContext} from '../src/Context/AuthContext';
 import BottomTabNav from './BottomTabNav';
+import ValidateEmailScreen from '../screens/ValidateEmailScreen/ValidateEmailScreen';
 const Stack = createNativeStackNavigator();
 
 const index = () => {
@@ -34,6 +35,10 @@ const StackNavigator2 = () => {
       <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="NewPasswordScreen" component={NewPasswordScreen} />
+      <Stack.Screen
+        name="ValidateEmailScreen"
+        component={ValidateEmailScreen}
+      />
     </Stack.Navigator>
   );
 };

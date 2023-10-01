@@ -1,8 +1,8 @@
-import {View, Text, Pressable, Image} from 'react-native';
+import {View, Text, Pressable, Image, StyleSheet} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import {USER_IP} from '@env';
 const EventComponent = ({tech}) => {
   const navigation = useNavigation();
 
@@ -12,113 +12,111 @@ const EventComponent = ({tech}) => {
 
   const participants = tech?.participants;
   return (
-    <View>
-      <Pressable
-        onPress={onPress}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          // backgroundColor: 'blue',
-          marginBottom: 10,
-        }}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignContent: 'center',
-          }}>
-          <Image
-            source={{uri: `http://10.0.2.2:8000/${tech.image}`}}
-            style={{
-              height: 100,
-              width: 100,
-            }}
+    <Pressable onPress={onPress} style={styles.mainView}>
+      <View style={styles.imageView}>
+        <Image
+          source={{uri: `http://${USER_IP}/${tech.image}`}}
+          style={styles.image}
+        />
+      </View>
+      <View style={styles.nameView}>
+        <Text style={styles.name}>{tech.name}</Text>
+        <View style={styles.container}>
+          <MaterialCommunityIcons
+            name="calendar-week"
+            size={16}
+            color={'#05fa9c'}
           />
-        </View>
-        <View style={{flex: 3, paddingHorizontal: 5}}>
-          <Text
-            style={{
-              color: 'black',
-              fontFamily: 'Poppins-Regular',
-              fontSize: 14,
-            }}>
-            {tech.name}
-          </Text>
-          <View></View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <MaterialCommunityIcons
-              name="calendar-week"
-              size={16}
-              color={'#33e835'}
-            />
-            <View
-              style={{
-                flex: 7,
-                marginHorizontal: 4,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  color: '#242424',
-                  fontSize: 13,
-                }}>
-                {tech?.date}{' '}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Regular',
-                  color: '#242424',
-                  fontSize: 12,
-                }}>
-                ({tech?.time})
-              </Text>
-            </View>
-          </View>
-          <View>
-            <Text
-              style={{
-                color: '#191919',
-                fontFamily: 'Poppins-Regular',
-                fontSize: 13,
-              }}>
-              {participants.length} participants
-            </Text>
+          <View style={styles.subContainer}>
+            <Text style={styles.subContainerDate}>{tech?.date} </Text>
+            <Text style={styles.subContainerTime}>({tech?.time})</Text>
           </View>
         </View>
-        <View
-          style={{
-            backgroundColor: '#33e835',
-            // paddingHorizontal: 14,
-            alignItems: 'center',
-            flex: 1,
-            justifyContent: 'center',
-            paddingVertical: 3.5,
-            borderRadius: 18,
-            shadowColor: '#33e835',
-            shadowOffset: {
-              width: 0,
-              height: 7,
-            },
-            shadowOpacity: 0.41,
-            shadowRadius: 9.11,
-            elevation: 14,
-          }}>
-          <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
-            Rs.{tech?.price}
+        <View>
+          <Text style={styles.participants}>
+            {participants.length} participants
           </Text>
         </View>
-      </Pressable>
-    </View>
+      </View>
+      <View style={styles.priceContainer}>
+        <Text style={styles.priceContainerText}>Rs.{tech?.price}</Text>
+      </View>
+    </Pressable>
   );
 };
 
+const styles = StyleSheet.create({
+  mainView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  imageView: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  image: {
+    height: 58,
+    width: 58,
+    borderRadius: 30,
+  },
+  nameView: {flex: 3, paddingHorizontal: 5},
+  name: {
+    color: 'black',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 13,
+  },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subContainer: {
+    flex: 7,
+    marginHorizontal: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subContainerDate: {
+    fontFamily: 'Poppins-Medium',
+    color: '#242424',
+    fontSize: 12,
+  },
+  subContainerTime: {
+    fontFamily: 'Poppins-Regular',
+    color: '#242424',
+    fontSize: 11,
+  },
+  participants: {
+    color: '#191919',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 12,
+  },
+  priceContainer: {
+    backgroundColor: '#05fa9c',
+    // backgroundColor: '#05fa9c',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    paddingVertical: 3.5,
+    borderRadius: 18,
+    shadowColor: '#05fa9c',
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+    elevation: 5,
+  },
+  priceContainerText: {
+    color: 'white',
+    fontFamily: 'Poppins-Medium',
+    fontSize: 13,
+  },
+});
 export default EventComponent;
 
 // [
