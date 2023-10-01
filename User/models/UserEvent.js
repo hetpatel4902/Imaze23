@@ -27,8 +27,8 @@ const UserEventSchema = new mongoose.Schema({
     type:Number,
     default:0
   },
-  date:{//javascript date :UTC
-    type:Date,
+  date:{//format dd-mm-yyyy
+    type:String,
     required:[true,"Please provide the transaction date"]
   },
   category:{
