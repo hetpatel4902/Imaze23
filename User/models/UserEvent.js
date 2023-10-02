@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 const UserEventSchema = new mongoose.Schema({
   userId:{
     type:mongoose.Types.ObjectId,
@@ -49,4 +49,4 @@ const UserEventSchema = new mongoose.Schema({
 
 
 
-module.exports = mongoose.model('UserEvent',UserEventSchema)
+module.exports = mongoose.model("UserEvent", UserEventSchema);

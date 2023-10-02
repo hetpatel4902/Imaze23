@@ -59,7 +59,7 @@ const HomeScreen = () => {
           barStyle={'light-content'}
         />
         <Image
-          source={require('../data/imazelogo.png')}
+          source={require('../data/imazelogot.png')}
           resizeMode={'contain'}
           style={{width: 255, height: 45, alignSelf: 'center', marginTop: 12}}
         />
@@ -73,7 +73,12 @@ const HomeScreen = () => {
             color="#6268fc"
           />
           <View style={styles.input}>
-            <Text style={{fontFamily: 'Poppins-Regular', fontSize: 13}}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Regular',
+                fontSize: 13,
+                color: '#303030',
+              }}>
               Search Events...
             </Text>
           </View>
@@ -420,7 +425,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: '#fff',
     color: '#6268fc',
-    height: 45,
+    height: 40,
     justifyContent: 'center',
     fontSize: 12,
     // fontFamily: 'Poppins-SemiBold',

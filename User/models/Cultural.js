@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const CulturalSchema = new mongoose.Schema({
   tokens:{
@@ -10,21 +10,21 @@ const CulturalSchema = new mongoose.Schema({
     type:String,
     default:"Cultural"
   },
-  type:{
-    type:String,
-    enum:["SOLO","GROUP"]
-  },
-  name:{
-    type:String,
-    required:[true,'Please provide Event Name']
-  },
-  image:{
-    type:String,
-    required:[true,'Please provide Image']
-  },
-  date:{
+  type: {
     type: String,
-    required:[true,'Please provide Date']
+    enum: ["SOLO", "GROUP"],
+  },
+  name: {
+    type: String,
+    required: [true, "Please provide Event Name"],
+  },
+  image: {
+    type: String,
+    required: [true, "Please provide Image"],
+  },
+  date: {
+    type: String,
+    required: [true, "Please provide Date"],
   },
   time:{
     type:String,
@@ -34,21 +34,26 @@ const CulturalSchema = new mongoose.Schema({
     type:Number,
     required:[true,'Please provide Event Price']
   },
-  description:{
-    type:String,
-    required:[true,'Please provide Description']
+  description: {
+    type: String,
+    required: [true, "Please provide Description"],
   },
-  venue:{
-    type:String,
-    required:[true,'Please provide Venue']
+  venue: {
+    type: String,
+    required: [true, "Please provide Venue"],
   },
-  event_coordinator:{
-    type:[Object],//{name and phone number}
-    required:[true,'Please provide Event Coordinator details']
+  event_coordinator: {
+    type: [Object], //{name and phone number}
+    required: [true, "Please provide Event Coordinator details"],
   },
-  totalwinners:{
-    type:Number,
-    required:[true,'Please provide Total Number of Winnners']
+  totalwinners: {
+    type: Number,
+    required: [true, "Please provide Total Number of Winnners"],
+  },
+  participants: {
+    type: [mongoose.Types.ObjectId],
+    ref: "Users",
+    default: [],
   },
   participants:{
     type:[],
@@ -58,24 +63,19 @@ const CulturalSchema = new mongoose.Schema({
     type:[],
     default:[]
   },
-  maxparticipants:{
-    type:Number,
-    required:[true,'Please provide number of participants']
+  isAvailable: {
+    type: Boolean,
+    default: true,
   },
-  isAvailable:{
-    type:Boolean,
-    default:true
+  noOfParticipants: {
+    type: Number,
+    default: 0,
   },
-  noOfParticipants:{
-    type:Number,
-    default:0
-  }
-})
+});
 
-CulturalSchema.pre("save",async function(){
+CulturalSchema.pre("save", async function () {
   console.log(this.participants);
   this.noOfParticipants = this.participants.length;
-})
+});
 
-
-module.exports = mongoose.model('SoloCultural',CulturalSchema)
+module.exports = mongoose.model("SoloCultural", CulturalSchema);

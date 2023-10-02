@@ -5,11 +5,7 @@ import LottieView from 'lottie-react-native';
 const PartyLoader = () => {
   return (
     <View style={[StyleSheet.absoluteFillObject, styles.container]}>
-      <LottieView
-        source={require('../data/29774-dance-party.json')}
-        autoPlay
-        loop
-      />
+      <LottieView source={require('../data/loading.json')} autoPlay loop />
     </View>
   );
 };

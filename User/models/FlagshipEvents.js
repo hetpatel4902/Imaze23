@@ -45,7 +45,7 @@ const FlagshipEventSchema = new mongoose.Schema({
   },
   totalwinners:{
     type:Number,
-    required:[true,'Please provide Total Number of Winnners']
+    required:[true,'Please provide Total Number of Winners']
   },
   participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}]
     type:[Object],
