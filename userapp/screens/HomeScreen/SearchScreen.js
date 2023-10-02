@@ -75,9 +75,9 @@ const SearchScreen = () => {
         </Text>
       </View> */}
       <Image
-        source={require('../../data/imazelogo.png')}
+        source={require('../../data/imazelogot1.png')}
         resizeMode={'contain'}
-        style={{width: 250, height: 45, alignSelf: 'center'}}
+        style={{width: 270, height: 80, alignSelf: 'center'}}
       />
       <View style={styles.searchSection}>
         <Ionicons

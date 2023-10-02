@@ -50,7 +50,7 @@ const FamousEvents = () => {
         </Text>
         <FlatList
           data={event}
-          horizontal
+          // horizontal
           style={{marginBottom: 10, marginTop: 5}}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
