@@ -27,7 +27,7 @@ const FlagshipEventSchema = new mongoose.Schema({
     type:String,
     required:[true,'Please provide Time']
   },//24h format 
-  fees:{
+  price:{
     type:Number,
     required:[true,'Please provide Event Price']
   },

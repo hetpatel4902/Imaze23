@@ -558,7 +558,7 @@ const participateSolo = async (req, res) => {
     const temp = await UserEvent.create({
       userId: uid,
       eventid: eid,
-      price: event.fees,
+      price: event.price,
       payment_mode: "OFFLINE",
       payment_status: "NEW",
       category: "CULTURAL",
@@ -648,7 +648,7 @@ const submitGroup = async (req, res) => {
     const temp = await UserEvent.create({
       userId: uid,
       eventid: eid,
-      price: event.fees,
+      price: event.price,
       payment_mode: "OFFLINE",
       payment_status: "NEW",
       category: "CULTURAL",
@@ -657,6 +657,82 @@ const submitGroup = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
   }
 };
+
+const submitFlagship = async(req,res)=>{
+  const { uid, team_name, eid, members } = req.body;
+  const event = await FlagshipEvents.findOne({ _id: eid });
+  const participants = event.participants;
+  let team_name_flag = false;
+  let team_leader_flag = false;
+  let team_member_flag = false;
+  let member = null;
+  //checking if the team name already exists
+  ///checking if the team leader is already in a team
+  for (let i = 0; i < participants.length; i++) {
+    if (participants[i].team_name === team_name) {
+      team_name_flag = true;
+      break;
+    }
+    if (participants[i].team_leader === uid) {
+      team_leader_flag = true;
+      break;
+    }
+    if (uid in participants[i].members) {
+      team_leader_flag = true;
+      break;
+    }
+  }
+  //checking if member is a part of other teams
+  for (let i = 0; i < members.length; i++) {
+    const mem = await User.findOne({ _id: members[i] });
+    if (eid in mem.teams) {
+      team_member_flag = true;
+      member = mem;
+      break;
+    }
+  }
+  if (team_name_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag: false, data: "Team name already exists!" });
+  } else if (team_leader_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "Team leader is already in a team!",
+      });
+  } else if (team_member_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "Team member is already in a team",
+        member,
+      });
+  } else {
+    const obj = {
+      team_name: team_name,
+      team_leader: uid,
+      members: members,
+    };
+
+    const temp = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      price: event.price,
+      payment_mode: "OFFLINE",
+      payment_status: "NEW",
+      category: "FLAGSHIP",
+      team: obj,
+    });
+    res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
+  }
+}
+
+
 module.exports = {
   getAllEvents,
   getOneEvent,
@@ -679,5 +755,5 @@ module.exports = {
   participateSolo,
   participateGroup,
   submitGroup,
-  participateFlagship,
+  submitFlagship
 };

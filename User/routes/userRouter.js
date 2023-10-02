@@ -29,7 +29,7 @@ const {
   participateGroup,
   participateSolo,
   submitGroup,
-  participateFlagship
+  submitFlagship
 } = require("../controllers/Users");
 
 //auth
@@ -51,7 +51,8 @@ router.route("/cultural/submit/group").post(authmiddleware,submitGroup)//req.bod
 
 //flagship
 router.route("/flagship/list").get(authmiddleware,getList) //For drop down when selecting team mates,req.body = {enrolment}
-router.route("/flagship/participate").post(authmiddleware,participateFlagship) //req.body = {eid:event id,team name:,uid:user id,members:[ids]}
+router.route("/flagship/participate").post(authmiddleware,participateGroup) //req.body = {eid:event id,uid:user id}
+router.route("/flagship/submit").post(authmiddleware,submitFlagship) //req.body = {eid:event id,team_name:,uid:user id,members:[ids]}
 
 
 //purchase tokens
