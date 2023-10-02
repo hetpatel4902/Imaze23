@@ -30,7 +30,8 @@ const {
   participateSolo,
   submitGroup,
   submitFlagship,
-  registerSoloFlagship
+  registerSoloFlagship,
+  participateFlagshipSolo
 } = require("../controllers/Users");
 
 //auth
@@ -52,10 +53,12 @@ router.route("/cultural/submit/group").post(authmiddleware,submitGroup)//req.bod
 
 //flagship
 router.route("/flagship/list").get(authmiddleware,getList) //For drop down when selecting team mates,req.body = {enrolment}
-router.route("/flagship/participate").post(authmiddleware,participateGroup) //req.body = {eid:event id,uid:user id}
+//for solo events
+router.route("/flagship/participate/solo").post(authmiddleware,participateFlagshipSolo)//req.body = {eid:event id,uid:user id} :-> called for solo flagship events ie.,workshop
 //for group events
-router.route("/flagship/submit").post(authmiddleware,submitFlagship) //req.body = {eid:event id,team_name:,uid:user id,members:[ids],poster_url,leader_ID,project_title}
-//for solo events ->directly create user event with payment status complete
+router.route("/flagship/participate/group").post(authmiddleware,participateGroup) //req.body = {eid:event id,uid:user id}
+router.route("/flagship/submit/group").post(authmiddleware,submitFlagship) //req.body = {eid:event id,team_name:,uid:user id,members:[ids],poster_url,leader_ID,project_title}
+//for free events ->directly create user event with payment status complete
 router.route("/flagship/register").post(authmiddleware,registerSoloFlagship) //req.body = {eid:event id,uid:user id}
 
 //purchase tokens
