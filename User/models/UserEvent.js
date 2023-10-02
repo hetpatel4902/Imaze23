@@ -1,49 +1,49 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 const UserEventSchema = new mongoose.Schema({
-  userId:{
-    type:mongoose.Types.ObjectId,
-    ref:"Users"
+  userId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Users",
   },
-  eventid:{//cultural , tech ,non tech,workshop,flagship
-    type:mongoose.Types.ObjectId,
-    required:[true,'Please provide event details']
+  eventid: {
+    //cultural , tech ,non tech,workshop,flagship
+    type: mongoose.Types.ObjectId,
+    required: [true, "Please provide event details"],
   },
-  price:{
-    type:Number,
-    required:[true,'Please provide price']
+  price: {
+    type: Number,
+    required: [true, "Please provide price"],
   },
-  payment_mode:{
-    type:String,
-    enum:['ONLINE','OFFLINE'],
-    required:[true,'Please provide payment mode']
+  payment_mode: {
+    type: String,
+    enum: ["ONLINE", "OFFLINE"],
+    required: [true, "Please provide payment mode"],
   },
-  payment_status:{
-    type:String,
-    enum:['COMPLETED','INCOMPLETE','NEW'],//new : if otp is not yet generated
-    required:[true,'Please provide payment status']
+  payment_status: {
+    type: String,
+    enum: ["COMPLETED", "INCOMPLETE", "NEW"], //new : if otp is not yet generated
+    required: [true, "Please provide payment status"],
   },
-  cashotp:{
-    type:Number,
-    default:0
+  cashotp: {
+    type: Number,
+    default: 0,
   },
-  date:{//format dd-mm-yyyy
-    type:String,
-    required:[true,"Please provide the transaction date"]
+  date: {
+    //format dd-mm-yyyy
+    type: String,
+    required: [true, "Please provide the transaction date"],
   },
-  category:{
-    type:String,
-    enum:["NORMAL","FLAGSHIP","CULTURAL"],
-    required:[true,"Please provide the category of the event"]
+  category: {
+    type: String,
+    enum: ["NORMAL", "FLAGSHIP", "CULTURAL"],
+    required: [true, "Please provide the category of the event"],
   },
-  transId:{
-    type:String,
+  transId: {
+    type: String,
   },
-  transaction_image:{
-    type:String
+  transaction_image: {
+    type: String,
   },
-})
+});
 
-
-
-module.exports = mongoose.model('UserEvent',UserEventSchema)
+module.exports = mongoose.model("UserEvent", UserEventSchema);

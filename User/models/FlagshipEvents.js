@@ -1,78 +1,82 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const FlagshipEventSchema = new mongoose.Schema({
-  category:{//ideathon , toyothon, 
-    type:String,
-    enum:["Ideathon","Toyothon","HappyStreet"],
-    required:[true,'Please provide Category']
-  },
-  name:{
-    type:String,
-    required:[true,'Please provide Event Name']
-  },
-  image:{
-    type:String,
-    required:[true,'Please provide Image']
-  },
-  date:{
+  category: {
+    //ideathon , toyothon,
     type: String,
-    required:[true,'Please provide Date']
+    enum: ["Ideathon", "Toyothon", "HappyStreet"],
+    required: [true, "Please provide Category"],
   },
-  time:{
-    type:String,
-    required:[true,'Please provide Time']
-  },//24h format 
-  price:{
-    type:Number,
-    required:[true,'Please provide Event Price']
+  name: {
+    type: String,
+    required: [true, "Please provide Event Name"],
   },
-  description:{
-    type:String,
-    required:[true,'Please provide Description']
+  image: {
+    type: String,
+    required: [true, "Please provide Image"],
   },
-  venue:{
-    type:String,
-    required:[true,'Please provide Venue']
+  date: {
+    type: String,
+    required: [true, "Please provide Date"],
   },
-  event_coordinator:{
-    type:[Object],//{name and phone number}
-    required:[true,'Please provide Event Coordinator details']
+  time: {
+    type: String,
+    required: [true, "Please provide Time"],
+  }, //24h format
+  price: {
+    type: Number,
+    required: [true, "Please provide Event Price"],
   },
-  totalwinners:{
-    type:Number,
-    required:[true,'Please provide Total Number of Winnners']
+  description: {
+    type: String,
+    required: [true, "Please provide Description"],
   },
-  participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}]
-    type:[Object],
-    default:[]
+  venue: {
+    type: String,
+    required: [true, "Please provide Venue"],
   },
-  winner:{//[{team name:,members:[ids]}]
-    type:[Object],
-    default:[]
+  event_coordinator: {
+    type: [Object], //{name and phone number}
+    required: [true, "Please provide Event Coordinator details"],
   },
-  attendance:{//[{team name:,members:[ids]}]
-    type:[Object],
-    default:[]
+  totalwinners: {
+    type: Number,
+    required: [true, "Please provide Total Number of Winnners"],
   },
-  maxparticipants:{
-    type:Number,
-    required:[true,'Please provide number of participants']
+  participants: {
+    //[{team name:,team leader:id,members:[ids],idcard:,poster:}]
+    type: [Object],
+    default: [],
   },
-  isAvailable:{
-    type:Boolean,
-    default:true
+  winner: {
+    //[{team name:,members:[ids]}]
+    type: [Object],
+    default: [],
   },
-  noOfParticipants:{//no of teams
-    type:Number,
-    default:0
-  }
-})
+  attendance: {
+    //[{team name:,members:[ids]}]
+    type: [Object],
+    default: [],
+  },
+  maxparticipants: {
+    type: Number,
+    required: [true, "Please provide number of participants"],
+  },
+  isAvailable: {
+    type: Boolean,
+    default: true,
+  },
+  noOfParticipants: {
+    //no of teams
+    type: Number,
+    default: 0,
+  },
+});
 
-FlagshipEventSchema.pre("save",async function(){
+FlagshipEventSchema.pre("save", async function () {
   console.log(this.participants);
   this.noOfParticipants = this.participants.length;
-})
+});
 
-
-module.exports = mongoose.model('FlagshipEvents',FlagshipEventSchema)
+module.exports = mongoose.model("FlagshipEvents", FlagshipEventSchema);

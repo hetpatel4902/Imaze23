@@ -6,7 +6,7 @@ const {
   registerUsers,
   forgotPasswordUsers,
   loginUsers,
-} = require('../controllers/Users Auth')
+} = require("../controllers/Users Auth");
 const {
   getAllEvents,
   getOneEvent,
@@ -24,14 +24,13 @@ const {
   getPaymentHistory,
   payOffline,
   payOnline,
-  purchaseToken
+  purchaseToken,
 } = require("../controllers/Users");
 
-
 //auth
-router.route('/login').post(loginUsers)
-router.route('/register').post(registerUsers)
-router.route('/forgotpassword').patch(forgotPasswordUsers)
+router.route("/login").post(loginUsers);
+router.route("/register").post(registerUsers);
+router.route("/forgotpassword").patch(forgotPasswordUsers);
 
 //events
 router.route("/events").get(authmiddleware, getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
@@ -40,7 +39,7 @@ router.route("/events/:eid").get(authmiddleware, getOneEvent); //get event detai
 router.route("/events/user/:uid").get(authmiddleware, getUserEvents); //get events bought by the user, both combos and individual events [:uid = user id]
 
 //purchase tokens
-router.route("/purchase/tokens/:uid").post(authmiddleware,purchaseToken); //req.body={Concert:0,HappyStreet:2}
+router.route("/purchase/tokens/:uid").post(authmiddleware, purchaseToken); //req.body={Concert:0,HappyStreet:2}
 
 //combos
 router.route("/combos").get(authmiddleware, getStaticCombos); //get all the static combos
@@ -50,19 +49,22 @@ router.route("/combos/:uid/check").post(authmiddleware, checkCombo); //[req.body
 router.route("/events/:uid/check").post(authmiddleware, checkUserEvent); //[req.body = {price,eid:event_Id}] call this api when proceed to pay button is clicked , this will return clashing events if the events are clashing with previously bought events else will create the order
 
 //certificates
-router.route("/certificates/:uid/visibility/:eid").get(authmiddleware, buttonVisibility); //visible only if the user has attended that event ***[req.body = {category:NORMAL/FLAGSHIP/CULTURAL}]
-router.route("/certificates/:uid/event/:eid").get(authmiddleware, getCertificate); //download certificate [:eid = event id] [:uid = user id]
+router
+  .route("/certificates/:uid/visibility/:eid")
+  .get(authmiddleware, buttonVisibility); //visible only if the user has attended that event ***[req.body = {category:NORMAL/FLAGSHIP/CULTURAL}]
+router
+  .route("/certificates/:uid/event/:eid")
+  .get(authmiddleware, getCertificate); //download certificate [:eid = event id] [:uid = user id]
 
 //user
-router.route("/:uid").get(authmiddleware,getUserDetails); // url-> /api/v1/user/${userid}
-router.route("/:uid").post(authmiddleware,updateUserDetails);//req.body= {email:,name:}
+router.route("/:uid").get(authmiddleware, getUserDetails); // url-> /api/v1/user/${userid}
+router.route("/:uid").post(authmiddleware, updateUserDetails); //req.body= {email:,name:}
 router.route("/:email/validateOTP").post(validateUserOtp); //req.body = { otp:otp }
 router.route("/:email/password").patch(updatepassword); //req.body = {password:password}
 
 //payment
 router.route("/:uid/payment/history").get(authmiddleware, getPaymentHistory); //get the payment history [both individual and combos]
 router.route("/:uid/payment/offline").post(authmiddleware, payOffline); //call this api to generate otp for offline purchase [req.body={orderId:userEventId or comboId, isCombo:true/false}]
-router.route("/:uid/payment/online").post(authmiddleware,payOnline); //call this api after paying online and send the transaction id [req.body = {orderId:userEventId or comboId,transId:'',transUrl:'',isCombo:true/false}]
-
+router.route("/:uid/payment/online").post(authmiddleware, payOnline); //call this api after paying online and send the transaction id [req.body = {orderId:userEventId or comboId,transId:'',transUrl:'',isCombo:true/false}]
 
 module.exports = router;

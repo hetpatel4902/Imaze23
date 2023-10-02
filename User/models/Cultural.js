@@ -1,79 +1,78 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const CulturalSchema = new mongoose.Schema({
-  category:{
-    type:String,
-    default:"Cultural"
-  },
-  type:{
-    type:String,
-    enum:["SOLO","GROUP"]
-  },
-  name:{
-    type:String,
-    required:[true,'Please provide Event Name']
-  },
-  image:{
-    type:String,
-    required:[true,'Please provide Image']
-  },
-  date:{
+  category: {
     type: String,
-    required:[true,'Please provide Date']
+    default: "Cultural",
   },
-  time:{
-    type:String,
-    required:[true,'Please provide Time']
-  },//24h format 
-  price:{
-    type:Number,
-    required:[true,'Please provide Event Price']
+  type: {
+    type: String,
+    enum: ["SOLO", "GROUP"],
   },
-  description:{
-    type:String,
-    required:[true,'Please provide Description']
+  name: {
+    type: String,
+    required: [true, "Please provide Event Name"],
   },
-  venue:{
-    type:String,
-    required:[true,'Please provide Venue']
+  image: {
+    type: String,
+    required: [true, "Please provide Image"],
   },
-  event_coordinator:{
-    type:[Object],//{name and phone number}
-    required:[true,'Please provide Event Coordinator details']
+  date: {
+    type: String,
+    required: [true, "Please provide Date"],
   },
-  totalwinners:{
-    type:Number,
-    required:[true,'Please provide Total Number of Winnners']
+  time: {
+    type: String,
+    required: [true, "Please provide Time"],
+  }, //24h format
+  price: {
+    type: Number,
+    required: [true, "Please provide Event Price"],
   },
-  participants:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
-    default:[]
+  description: {
+    type: String,
+    required: [true, "Please provide Description"],
   },
-  winner:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
-    default:[]
+  venue: {
+    type: String,
+    required: [true, "Please provide Venue"],
   },
-  maxparticipants:{
-    type:Number,
-    required:[true,'Please provide number of participants']
+  event_coordinator: {
+    type: [Object], //{name and phone number}
+    required: [true, "Please provide Event Coordinator details"],
   },
-  isAvailable:{
-    type:Boolean,
-    default:true
+  totalwinners: {
+    type: Number,
+    required: [true, "Please provide Total Number of Winnners"],
   },
-  noOfParticipants:{
-    type:Number,
-    default:0
-  }
-})
+  participants: {
+    type: [mongoose.Types.ObjectId],
+    ref: "Users",
+    default: [],
+  },
+  winner: {
+    type: [mongoose.Types.ObjectId],
+    ref: "Users",
+    default: [],
+  },
+  maxparticipants: {
+    type: Number,
+    required: [true, "Please provide number of participants"],
+  },
+  isAvailable: {
+    type: Boolean,
+    default: true,
+  },
+  noOfParticipants: {
+    type: Number,
+    default: 0,
+  },
+});
 
-CulturalSchema.pre("save",async function(){
+CulturalSchema.pre("save", async function () {
   console.log(this.participants);
   this.noOfParticipants = this.participants.length;
-})
+});
 
-
-module.exports = mongoose.model('SoloCultural',CulturalSchema)
+module.exports = mongoose.model("SoloCultural", CulturalSchema);

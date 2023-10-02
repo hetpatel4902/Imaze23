@@ -17,9 +17,23 @@ const UsersSchema = new mongoose.Schema({
     ],
     unique: true,
   },
+  enrolment: {
+    type: Number,
+    required: [true, "Please provide enrolment number"],
+    unique: [true, "This enrolment has already registered!"],
+  },
   college: {
     type: String,
     required: [true, "Please provide college name"],
+  },
+  year: {
+    type: Number,
+    enum: [1, 2, 3, 4],
+    required: [true, "Please provide the year"],
+  },
+  branch: {
+    type: String,
+    required: [true, "Please provide the branch of the student"],
   },
   password: {
     type: String,
@@ -30,9 +44,19 @@ const UsersSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide valid Number"],
   },
-  points: {
+  coins: {
     type: Number,
     default: 0,
+  },
+  tokens: {
+    //happy street tokens
+    type: Number,
+    default: 0,
+  },
+  concertToken: {
+    type: Number,
+    default: 0,
+    max: 1,
   },
   otp: {
     type: Number,

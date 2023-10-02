@@ -482,7 +482,7 @@ const payOffline = async (req, res) => {
 const payOnline = async (req, res) => {
   const { uid } = req.params;
   const { orderId, isCombo, transId, transUrl } = req.body;
-  if(!transId || !transUrl){
+  if (!transId || !transUrl) {
     throw new BadRequestError("Please provide transaction id and image url!!");
     return;
   }
@@ -512,9 +512,9 @@ const payOnline = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success" });
   }
 };
-const purchaseToken = async(req,res)=>{
+const purchaseToken = async (req, res) => {
   console.log("purchase");
-}
+};
 module.exports = {
   getAllEvents,
   getOneEvent,
