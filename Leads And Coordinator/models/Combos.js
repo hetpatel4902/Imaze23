@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 //combos history and static combos needed
 const CombosSchema = new mongoose.Schema({
   userId:{
@@ -33,9 +33,18 @@ const CombosSchema = new mongoose.Schema({
   cashotp:{
     type:Number,
     default:0
-  }
+  },
+  date:{//format dd-mm-yyyy
+    type:String,
+  },
+  transId:{
+    type:String,
+  },
+  transaction_image:{
+    type:String
+  },
 })
 
 
 
-module.exports = mongoose.model('Combo',CombosSchema)
+module.exports = mongoose.model("Combo", CombosSchema);
