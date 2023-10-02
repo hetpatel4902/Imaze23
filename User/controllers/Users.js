@@ -8,6 +8,8 @@ const { BadRequestError, NotFoundError } = require("../errors/index");
 const fs = require("fs");
 const pdfkit = require("pdfkit");
 const bcrypt = require("bcrypt");
+const Cultural = require("../models/Cultural");
+const FlagshipEvents = require("../models/FlagshipEvents");
 
 //utility functions
 const isClashing = async (events) => {
@@ -69,39 +71,61 @@ const isClashing = async (events) => {
 //events
 const getAllEvents = async (req, res) => {
   const { search, fields, sort } = req.query;
-  var events = Event.find({});
+  var events = await Event.find({});
+  var cultural = await Cultural.find({});
+  var flagship = await FlagshipEvents.find({});
+  var allevents = [...events, ...cultural, ...flagship];
   if (search) {
-    events = Event.find({
-      name: { $regex: search, $options: "i" }
+    events = await Event.find({
+      name: { $regex: search, $options: "i" },
     });
+    cultural = await Cultural.find({
+      name: { $regex: search, $options: "i" },
+    });
+    flagship = await FlagshipEvents.find({
+      name: { $regex: search, $options: "i" },
+    });
+    allevents = [...events, ...cultural, ...flagship];
   }
   if (sort) {
-    const sortList = sort.split(",").join(" ");
-    events = events.sort(sortList);
+    allevents = allevents.sort(function (a, b) {
+      return b.noOfParticipants - a.noOfParticipants;
+    });
   }
-  if (fields) {
-    const fieldsList = fields.split(",").join(" ");
-    events = events.select(fieldsList);
-  }
-  events = events.limit(10); //top 10
-  events = await events;
-  res.status(StatusCodes.OK).json({ res: "success", data: events });
+  allevents = allevents.splice(0, 10);
+  res
+    .status(StatusCodes.OK)
+    .json({ res: "success", nhits: allevents.length, data: allevents });
 };
 const getEventsCategorized = async (req, res) => {
   var findEl = "category";
-  var resp = await Event.find({});
+  var events = await Event.find({});
+  var cultural = await Cultural.find({});
+  var flagship = await FlagshipEvents.find({
+    category: ["Ideathon", "Toyothon"],
+  });
+  var allevents = [...events, ...cultural, ...flagship];
   var groupby = function (xs, key) {
     return xs.reduce(function (rv, x) {
       (rv[x[key]] = rv[x[key]] || []).push(x);
       return rv;
     }, {});
   };
-  const result = groupby(resp, findEl);
+  const result = groupby(allevents, findEl);
   res.status(StatusCodes.OK).json({ res: "success", data: result });
 };
 const getOneEvent = async (req, res) => {
   const { eid } = req.params;
-  const event = await Event.findOne({ _id: eid });
+  const { type } = req.body;
+  let event;
+  switch (type) {
+    case "NORMAL":
+      event = await Event.findOne({ _id: eid });
+    case "FLAGSHIP":
+      event = await FlagshipEvents.findOne({ _id: eid });
+    case "CULTURAL":
+      event = await Cultural.findOne({ _id: eid });
+  }
   if (!event) {
     throw new NotFoundError(
       "there is no event corresponding to provided event id"
@@ -160,7 +184,7 @@ const getUserEvents = async (req, res) => {
     individual.push(obj);
   }
 
-  //purchased events
+  //purchased events + group events in which this user is a team member
   var event_ids = [];
   for (let i = 0; i < userEvents.length; i++) {
     event_ids.push(userEvents[i].eventid);
@@ -205,7 +229,6 @@ const getStaticCombos = async (req, res) => {
 const checkCombo = async (req, res) => {
   const { events, combotype, price } = req.body;
   const { uid } = req.params;
-  console.log(events);
   var event_ids = [...events];
   //purchased events + incomplete
   const userEvents = await UserEvent.find({
@@ -221,66 +244,13 @@ const checkCombo = async (req, res) => {
   }
   for (let i = 0; i < userCombos.length; i++) {
     let combo_events = userCombos[i].event;
-    for (let j = 0; j < combo_events.length; j++) {
-      event_ids.push(combo_events[j]);
-    }
+    event_ids = [...event_ids, combo_events];
   }
 
   //checking for time clashes
-  var data = [];
-  let flag = false;
-  var result = {};
-  for (let i = 0; i < event_ids.length; i++) {
-    const event = await Event.findOne({ _id: event_ids[i] });
-    const event_day = event.date.substring(0, 2);
-    const event_time = event.time;
-    const event_name = event.name;
-    if (event_day in result) {
-      if (event_time.substring(2, 4) === "00") {
-        result[event_day][Number(event_time.substring(0, 2)) - 1].push(
-          event_name
-        );
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
-      } else {
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
-      }
-    } else {
-      const time_div = {
-        8: [],
-        9: [],
-        10: [],
-        11: [],
-        12: [],
-        13: [],
-        14: [],
-        15: [],
-        16: [],
-        17: [],
-        18: [],
-        19: [],
-      };
-      result[event_day] = time_div;
-      if (event_time.substring(2, 4) === "00") {
-        result[event_day][Number(event_time.substring(0, 2)) - 1].push(
-          event_name
-        );
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
-      } else {
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
-      }
-    }
-  }
-  for (var day in result) {
-    let time = result[day];
-    for (let t in time) {
-      if (time[t].length > 1) {
-        data.push(time[t]);
-        flag = true;
-      }
-    }
-  }
-
+  const { flag, data } = await isClashing(events);
   if (!flag) {
+    // let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
     const create_combo = await Combo.create({
       price,
       event: events,
@@ -324,12 +294,14 @@ const checkUserEvent = async (req, res) => {
   if (flag) {
     res.status(StatusCodes.OK).json({ res: "success", flag, data });
   } else {
+    // let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
     const create_event = await UserEvent.create({
       userId: uid,
       eventid: eid,
       price,
       payment_mode: "OFFLINE",
       payment_status: "NEW",
+      category: "NORMAL",
     });
     res
       .status(StatusCodes.OK)
@@ -406,11 +378,14 @@ const getUserDetails = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", data: user });
   }
 };
-const updateUserDetails = async(req,res)=>{
-  const {uid} = req.params;
-  const user = await User.findOneAndUpdate({_id:uid},req.body,{new:true,runValidators:true});
-  res.status(StatusCodes.OK).json({res:"success",data:user})
-}
+const updateUserDetails = async (req, res) => {
+  const { uid } = req.params;
+  const user = await User.findOneAndUpdate({ _id: uid }, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  res.status(StatusCodes.OK).json({ res: "success", data: user });
+};
 const validateUserOtp = async (req, res) => {
   const { otp } = req.body;
   const { email } = req.params;
@@ -489,25 +464,291 @@ const payOffline = async (req, res) => {
   const { uid } = req.params;
   const { orderId, isCombo } = req.body;
 
+  const d = new Date()
+  let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
   //generate otp
   const otp = Math.floor(Math.random() * 10000);
   if (isCombo) {
     const combo = await Combo.findOneAndUpdate(
       { userId: uid, _id: orderId },
-      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
+      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" ,date},
       { new: true }
     );
-    res.status(StatusCodes.OK).json({ res: "success", otp:combo.cashotp });
-
+    res.status(StatusCodes.OK).json({ res: "success", otp: combo.cashotp });
   } else {
     const event = await UserEvent.findOneAndUpdate(
       { userId: uid, _id: orderId },
-      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
+      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE",date },
       { new: true }
     );
-    res.status(StatusCodes.OK).json({ res: "success", otp:event.cashotp });
+    res.status(StatusCodes.OK).json({ res: "success", otp: event.cashotp });
   }
 };
+const payOnline = async (req, res) => {
+  const { uid } = req.params;
+  const { orderId, isCombo, transId, transUrl } = req.body;
+  if (!transId || !transUrl) {
+    throw new BadRequestError("Please provide transaction id and image url!!");
+    return;
+  }
+  const d = new Date()
+  let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
+  if (isCombo) {
+    const combo = await Combo.findOneAndUpdate(
+      { _id: orderId },
+      {
+        payment_mode: "ONLINE",
+        payment_status: "INCOMPLETE",
+        transId: transId,
+        transaction_image: transUrl,
+        date
+      },
+      { new: true }
+    );
+    res.status(StatusCodes.OK).json({ res: "success" });
+  } else {
+    const event = await UserEvent.findOneAndUpdate(
+      { userId: uid, _id: orderId },
+      {
+        payment_mode: "ONLINE",
+        payment_status: "INCOMPLETE",
+        transId: transId,
+        transaction_image: transUrl,
+        date
+      },
+      { new: true }
+    );
+    res.status(StatusCodes.OK).json({ res: "success" });
+  }
+};
+const purchaseToken = async (req, res) => {
+  const {Concert,HappyStreet} = req.body;
+  const {uid} = req.params;
+  const user = await User.findOne({_id:uid});
+  if(!user){
+    throw new BadRequestError("User does not exists!")
+  }
+  else{
+    const balance = user.coins;
+    const buy = (Concert*100 + HappyStreet*20);
+    if(balance - buy <0){
+      res.status(StatusCodes.OK).json({res:"success",flag:false,data:"Not enough balance"});
+    }
+    else{
+      const upd = await User.findOneAndUpdate({_id:uid},{tokens:user.tokens+HappyStreet,concertToken:user.concertToken+Concert,coins:balance-buy},{new:true})
+      res.status(StatusCodes.OK).json({res:"success",flag:true,data:upd})
+    }
+  }
+};
+
+const getList = async (req, res) => {
+  const { enrolment } = req.body;
+  let allUsers = await User.find({
+    enrolment: { $regex: enrolment, $options: "i" },
+  });
+  res.status(StatusCodes.OK).json({ res: "success", data: allUsers });
+};
+
+const participateSolo = async (req, res) => {
+  const { eid, uid } = req.body;
+  const event = await Cultural.findOne({ _id: eid });
+  const participants = event.participants;
+  let flag = true;
+  //checking if the user has already registered
+  for (let i = 0; i < participants.length; i++) {
+    if (participants[i] === uid) {
+      flag = false;
+      break;
+    }
+  }
+
+  if (!flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag,
+        data: "You have already registered in this event",
+      });
+  } else {
+    const temp = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      price: event.price,
+      payment_mode: "OFFLINE",
+      payment_status: "NEW",
+      category: "CULTURAL",
+    });
+    res.status(StatusCodes.OK).json({ res: "success", flag, data: temp });
+  }
+};
+const participateGroup = async (req, res) => {
+  const { uid, eid } = req.body;
+  const user = await User.findOne({ _id: uid });
+  const user_teams = user.teams;
+
+  if (eid in user_teams) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "You are already in a team",
+        team: user_teams[eid],
+      });
+  } else {
+    res.status(StatusCodes.OK).json({ res: "success", flag });
+  }
+};
+const submitGroup = async (req, res) => {
+  const { uid, team_name, eid, members } = req.body;
+  const event = await Cultural.findOne({ _id: eid });
+  const participants = event.participants;
+  let team_name_flag = false;
+  let team_leader_flag = false;
+  let team_member_flag = false;
+  let member = null;
+  //checking if the team name already exists
+  ///checking if the team leader is already in a team
+  for (let i = 0; i < participants.length; i++) {
+    if (participants[i].team_name === team_name) {
+      team_name_flag = true;
+      break;
+    }
+    if (participants[i].team_leader === uid) {
+      team_leader_flag = true;
+      break;
+    }
+    if (uid in participants[i].members) {
+      team_leader_flag = true;
+      break;
+    }
+  }
+  //checking if member is a part of other teams
+  for (let i = 0; i < members.length; i++) {
+    const mem = await User.findOne({ _id: members[i] });
+    if (eid in mem.teams) {
+      team_member_flag = true;
+      member = mem;
+      break;
+    }
+  }
+  if (team_name_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag: false, data: "Team name already exists!" });
+  } else if (team_leader_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "Team leader is already in a team!",
+      });
+  } else if (team_member_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "Team member is already in a team",
+        member,
+      });
+  } else {
+    const obj = {
+      team_name: team_name,
+      team_leader: uid,
+      members: members,
+    };
+
+    const temp = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      price: event.price,
+      payment_mode: "OFFLINE",
+      payment_status: "NEW",
+      category: "CULTURAL",
+      team: obj,
+    });
+    res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
+  }
+};
+
+const submitFlagship = async(req,res)=>{
+  const { uid, team_name, eid, members } = req.body;
+  const event = await FlagshipEvents.findOne({ _id: eid });
+  const participants = event.participants;
+  let team_name_flag = false;
+  let team_leader_flag = false;
+  let team_member_flag = false;
+  let member = null;
+  //checking if the team name already exists
+  ///checking if the team leader is already in a team
+  for (let i = 0; i < participants.length; i++) {
+    if (participants[i].team_name === team_name) {
+      team_name_flag = true;
+      break;
+    }
+    if (participants[i].team_leader === uid) {
+      team_leader_flag = true;
+      break;
+    }
+    if (uid in participants[i].members) {
+      team_leader_flag = true;
+      break;
+    }
+  }
+  //checking if member is a part of other teams
+  for (let i = 0; i < members.length; i++) {
+    const mem = await User.findOne({ _id: members[i] });
+    if (eid in mem.teams) {
+      team_member_flag = true;
+      member = mem;
+      break;
+    }
+  }
+  if (team_name_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag: false, data: "Team name already exists!" });
+  } else if (team_leader_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "Team leader is already in a team!",
+      });
+  } else if (team_member_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "Team member is already in a team",
+        member,
+      });
+  } else {
+    const obj = {
+      team_name: team_name,
+      team_leader: uid,
+      members: members,
+    };
+
+    const temp = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      price: event.price,
+      payment_mode: "OFFLINE",
+      payment_status: "NEW",
+      category: "FLAGSHIP",
+      team: obj,
+    });
+    res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
+  }
+}
+
+
 module.exports = {
   getAllEvents,
   getOneEvent,
@@ -524,4 +765,11 @@ module.exports = {
   updatepassword,
   getPaymentHistory,
   payOffline,
+  payOnline,
+  purchaseToken,
+  getList,
+  participateSolo,
+  participateGroup,
+  submitGroup,
+  submitFlagship
 };

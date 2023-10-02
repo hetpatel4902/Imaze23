@@ -7,6 +7,10 @@ const FlagshipEventSchema = new mongoose.Schema({
     enum:["Ideathon","Toyothon","HappyStreet"],
     required:[true,'Please provide Category']
   },
+  tokens:{
+    type:Number,
+    default:80
+  },
   name:{
     type:String,
     required:[true,'Please provide Event Name']
@@ -41,7 +45,7 @@ const FlagshipEventSchema = new mongoose.Schema({
   },
   totalwinners:{
     type:Number,
-    required:[true,'Please provide Total Number of Winnners']
+    required:[true,'Please provide Total Number of Winners']
   },
   participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}]
     type:[Object],

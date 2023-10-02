@@ -5,11 +5,7 @@ import LottieView from 'lottie-react-native';
 const AppLoader = () => {
   return (
     <View style={[StyleSheet.absoluteFillObject, styles.container]}>
-      <LottieView
-        source={require('../data/61417-animated-emojis-party-emoji.json')}
-        autoPlay
-        loop
-      />
+      <LottieView source={require('../data/loading.json')} autoPlay loop />
     </View>
   );
 };
