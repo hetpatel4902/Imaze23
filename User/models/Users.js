@@ -18,7 +18,7 @@ const UsersSchema = new mongoose.Schema({
     unique: true,
   },
   enrolment: {
-    type: Number,
+    type: String,
     required: [true, "Please provide enrolment number"],
     unique: [true, "This enrolment has already registered!"],
   },
@@ -67,7 +67,7 @@ const UsersSchema = new mongoose.Schema({
     default: [],
   },
   teams:{
-    type:{Object},//{{eventid:{team details}}} the user is a member or a leader
+    type:{},//{{eventid:{team details}}} the user is a member or a leader
     default:{}
   }
 });

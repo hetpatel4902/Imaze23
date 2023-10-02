@@ -4,7 +4,11 @@ require('dotenv').config()
 const EventSchema = new mongoose.Schema({
   category:{
     type:String,
+    enum:["Tech","NonTech","Workshop"],
     required:[true,'Please provide Category']
+  },
+  title:{
+    type:String
   },
   name:{
     type:String,

@@ -489,7 +489,6 @@ const payOnline = async (req, res) => {
   const { orderId, isCombo, transId, transUrl } = req.body;
   if (!transId || !transUrl) {
     throw new BadRequestError("Please provide transaction id and image url!!");
-    return;
   }
   const d = new Date()
   let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
@@ -505,9 +504,37 @@ const payOnline = async (req, res) => {
       },
       { new: true }
     );
-    res.status(StatusCodes.OK).json({ res: "success" });
+    const combo_events = combo.event;
+    let add_coins = 0;
+    for(let i =0;i<combo_events.length;i++){
+      const temp = await Event.findOne({_id:combo_events[i]});
+      //add participant, increase no of participants, check is available , add coins
+      temp.participants.push(uid)
+      temp.noOfParticipants = temp.noOfParticipants+1;
+      if(temp.noOfParticipants  === temp.maxparticipants){
+        temp.isAvailable = false;
+      }
+      const upd = await Event.findOneAndUpdate({_id:combo_events[i]},{temp},{new:true});
+      switch(temp.category){
+        case "Tech":
+          add_coins += 60;
+          break;
+        case "NonTech":
+          add_coins += 40;
+          break;
+        case "Workshop":
+          add_coins +=80;
+          break;
+      }
+      const student = await User.findOne({_id:uid});
+      const upd_student = await User.findOneAndUpdate({_id:uid},{
+        coins:student.coins+add_coins
+      })
+    }
+    res.status(StatusCodes.OK).json({ res: "success" ,data:upd_student});
   } else {
-    const event = await UserEvent.findOneAndUpdate(
+    //check the category of the event, add participants , increase number of participants, check isAvailable,add coins to all the members if group event
+    const evt = await UserEvent.findOneAndUpdate(
       { userId: uid, _id: orderId },
       {
         payment_mode: "ONLINE",
@@ -517,7 +544,12 @@ const payOnline = async (req, res) => {
         date
       },
       { new: true }
-    );
+      );
+      //checking the category
+      switch(evt.category){
+        case "NORMAL":
+          
+      }
     res.status(StatusCodes.OK).json({ res: "success" });
   }
 };
@@ -549,6 +581,8 @@ const getList = async (req, res) => {
   res.status(StatusCodes.OK).json({ res: "success", data: allUsers });
 };
 
+
+//cultural
 const participateSolo = async (req, res) => {
   const { eid, uid } = req.body;
   const event = await Cultural.findOne({ _id: eid });
@@ -561,7 +595,6 @@ const participateSolo = async (req, res) => {
       break;
     }
   }
-
   if (!flag) {
     res
       .status(StatusCodes.OK)
@@ -597,11 +630,12 @@ const participateGroup = async (req, res) => {
         team: user_teams[eid],
       });
   } else {
-    res.status(StatusCodes.OK).json({ res: "success", flag });
+    res.status(StatusCodes.OK).json({ res: "success", flag:true });
   }
 };
 const submitGroup = async (req, res) => {
   const { uid, team_name, eid, members } = req.body;
+  console.log(team_name);
   const event = await Cultural.findOne({ _id: eid });
   const participants = event.participants;
   let team_name_flag = false;
@@ -674,8 +708,10 @@ const submitGroup = async (req, res) => {
   }
 };
 
+
+//flagship
 const submitFlagship = async(req,res)=>{
-  const { uid, team_name, eid, members } = req.body;
+  const { uid, team_name, eid, members,leader_ID,poster_url,project_title } = req.body;
   const event = await FlagshipEvents.findOne({ _id: eid });
   const participants = event.participants;
   let team_name_flag = false;
@@ -733,6 +769,9 @@ const submitFlagship = async(req,res)=>{
       team_name: team_name,
       team_leader: uid,
       members: members,
+      leader_ID,
+      poster_url,
+      project_title
     };
 
     const temp = await UserEvent.create({
@@ -746,6 +785,25 @@ const submitFlagship = async(req,res)=>{
     });
     res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
   }
+}
+const registerSoloFlagship = async(req,res)=>{
+  const {uid,eid} = req.body;
+  const event = await Event.findOne({_id:eid});
+  let event_participants = event.participants;
+  event_participants = [...event_participants,uid];
+  const upd = await Event.findOneAndUpdate({_id:eid},{participants:event_participants},{new:true});
+  const d = new Date()
+  let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
+  const create_event = await UserEvent.create({
+    userId:uid,
+    eventId:eid,
+    price:0,
+    date,
+    payment_status:"COMPLETED",
+    payment_mode:"OFFLINE"
+
+  })
+  res.status(StatusCodes.OK).json({res:"success",data:create_event});
 }
 
 
@@ -771,5 +829,6 @@ module.exports = {
   participateSolo,
   participateGroup,
   submitGroup,
-  submitFlagship
+  submitFlagship,
+  registerSoloFlagship
 };

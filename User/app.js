@@ -30,12 +30,11 @@ app.use(helmet())
 app.use(cors())
 app.use(xss())
 
-let enr = "12002080501000"
 //routes user
 app.get('/populate',async(req,res)=>{
   const users = await Users.find({});
   for(let i =0;i<users.length;i++){
-    const upd = await Users.findOneandUpdate({_id:users._id},{enrolment:enr+1,branch:"IT",year:"4"})
+    const upd = await Users.findOneAndUpdate({_id:users[i]._id},{coins:0})
   }
   res.status(200).json("success");
 })
