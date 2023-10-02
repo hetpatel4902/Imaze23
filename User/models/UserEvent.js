@@ -5,9 +5,8 @@ const UserEventSchema = new mongoose.Schema({
     type:mongoose.Types.ObjectId,
     ref:"Users"
   },
-  eventid:{
+  eventid:{//cultural , tech ,non tech,workshop,flagship
     type:mongoose.Types.ObjectId,
-    ref:'Event',
     required:[true,'Please provide event details']
   },
   price:{
@@ -27,7 +26,22 @@ const UserEventSchema = new mongoose.Schema({
   cashotp:{
     type:Number,
     default:0
-  }
+  },
+  date:{//format dd-mm-yyyy
+    type:String,
+    required:[true,"Please provide the transaction date"]
+  },
+  category:{
+    type:String,
+    enum:["NORMAL","FLAGSHIP","CULTURAL"],
+    required:[true,"Please provide the category of the event"]
+  },
+  transId:{
+    type:String,
+  },
+  transaction_image:{
+    type:String
+  },
 })
 
 

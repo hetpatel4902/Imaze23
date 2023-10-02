@@ -40,7 +40,6 @@ const UsersSchema = new mongoose.Schema({
   },
   winning: {
     type: [mongoose.Types.ObjectId],
-    ref: "Event",
     default: [],
   },
 });

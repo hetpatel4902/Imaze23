@@ -33,7 +33,17 @@ const CombosSchema = new mongoose.Schema({
   cashotp:{
     type:Number,
     default:0
-  }
+  },
+  date:{//format dd-mm-yyyy
+    type:String,
+    required:[true,"Please provide the transaction date"]
+  },
+  transId:{
+    type:String,
+  },
+  transaction_image:{
+    type:String
+  },
 })
 
 
