@@ -50,11 +50,6 @@ const CulturalSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Please provide Total Number of Winnners"],
   },
-  participants: {
-    type: [mongoose.Types.ObjectId],
-    ref: "Users",
-    default: [],
-  },
   participants:{
     type:[],
     default:[]

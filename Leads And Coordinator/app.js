@@ -33,7 +33,7 @@ const authMiddleware = require('./middleware/authentication')
 
 // routers
 app.use('/api/v1/coordinator',authMiddleware,CoordinatorRoute)
-app.use('/api/v1/lead',authMiddleware,LeadRoute)
+app.use('/api/v1/lead',LeadRoute)
 
 
 app.use(express.json());
