@@ -54,7 +54,6 @@ router.route("/flagship/list").get(authmiddleware,getList) //For drop down when 
 router.route("/flagship/participate").post(authmiddleware,participateGroup) //req.body = {eid:event id,uid:user id}
 router.route("/flagship/submit").post(authmiddleware,submitFlagship) //req.body = {eid:event id,team_name:,uid:user id,members:[ids]}
 
-
 //purchase tokens
 router.route("/purchase/tokens/:uid").post(authmiddleware, purchaseToken); //req.body={Concert:0,HappyStreet:2}
 

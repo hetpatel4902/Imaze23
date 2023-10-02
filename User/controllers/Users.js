@@ -522,7 +522,23 @@ const payOnline = async (req, res) => {
   }
 };
 const purchaseToken = async (req, res) => {
-  console.log("purchase");
+  const {Concert,HappyStreet} = req.body;
+  const {uid} = req.params;
+  const user = await User.findOne({_id:uid});
+  if(!user){
+    throw new BadRequestError("User does not exists!")
+  }
+  else{
+    const balance = user.coins;
+    const buy = (Concert*100 + HappyStreet*20);
+    if(balance - buy <0){
+      res.status(StatusCodes.OK).json({res:"success",flag:false,data:"Not enough balance"});
+    }
+    else{
+      const upd = await User.findOneAndUpdate({_id:uid},{tokens:user.tokens+HappyStreet,concertToken:user.concertToken+Concert,coins:balance-buy},{new:true})
+      res.status(StatusCodes.OK).json({res:"success",flag:true,data:upd})
+    }
+  }
 };
 
 const getList = async (req, res) => {
