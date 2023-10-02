@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 const UserEventSchema = new mongoose.Schema({
   userId:{
     type:mongoose.Types.ObjectId,
@@ -27,9 +27,8 @@ const UserEventSchema = new mongoose.Schema({
     type:Number,
     default:0
   },
-  date:{//javascript date :UTC
-    type:Date,
-    required:[true,"Please provide the transaction date"]
+  date:{//format dd-mm-yyyy
+    type:String,
   },
   category:{
     type:String,
@@ -42,8 +41,12 @@ const UserEventSchema = new mongoose.Schema({
   transaction_image:{
     type:String
   },
+  team:{
+    type:Object,
+    default:{}
+  }
 })
 
 
 
-module.exports = mongoose.model('UserEvent',UserEventSchema)
+module.exports = mongoose.model("UserEvent", UserEventSchema);

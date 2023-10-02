@@ -70,6 +70,10 @@ const FlagshipEventSchema = new mongoose.Schema({
   noOfParticipants:{//no of teams
     type:Number,
     default:0
+  },
+  type: {
+    type: String,
+    enum: ["SOLO", "GROUP"],
   }
 })
 
