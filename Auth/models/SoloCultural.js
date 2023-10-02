@@ -1,11 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-const EventSchema = new mongoose.Schema({
-  category:{
-    type:String,
-    required:[true,'Please provide Category']
-  },
+const SoloCulturalSchema = new mongoose.Schema({
   name:{
     type:String,
     required:[true,'Please provide Event Name']
@@ -71,10 +67,10 @@ const EventSchema = new mongoose.Schema({
   }
 })
 
-EventSchema.pre("save",async function(){
+SoloCulturalSchema.pre("save",async function(){
   console.log(this.participants);
   this.noOfParticipants = this.participants.length;
 })
 
 
-module.exports = mongoose.model('Event',EventSchema)
+module.exports = mongoose.model('SoloCultural',SoloCulturalSchema)

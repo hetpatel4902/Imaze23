@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-const EventSchema = new mongoose.Schema({
-  category:{
+const FlagshipEventSchema = new mongoose.Schema({
+  category:{//ideathon , toyothon, 
     type:String,
+    enum:["Ideathon","Toyothon","HappyStreet"],
     required:[true,'Please provide Category']
   },
   name:{
@@ -42,19 +43,16 @@ const EventSchema = new mongoose.Schema({
     type:Number,
     required:[true,'Please provide Total Number of Winnners']
   },
-  participants:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
+  participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}]
+    type:[Object],
     default:[]
   },
-  winner:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
+  winner:{//[{team name:,members:[ids]}]
+    type:[Object],
     default:[]
   },
-  attendance:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
+  attendance:{//[{team name:,members:[ids]}]
+    type:[Object],
     default:[]
   },
   maxparticipants:{
@@ -65,16 +63,16 @@ const EventSchema = new mongoose.Schema({
     type:Boolean,
     default:true
   },
-  noOfParticipants:{
+  noOfParticipants:{//no of teams
     type:Number,
     default:0
   }
 })
 
-EventSchema.pre("save",async function(){
+FlagshipEventSchema.pre("save",async function(){
   console.log(this.participants);
   this.noOfParticipants = this.participants.length;
 })
 
 
-module.exports = mongoose.model('Event',EventSchema)
+module.exports = mongoose.model('FlagshipEvents',FlagshipEventSchema)
