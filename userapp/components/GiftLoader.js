@@ -5,11 +5,7 @@ import LottieView from 'lottie-react-native';
 const GiftLoader = () => {
   return (
     <View style={[StyleSheet.absoluteFillObject, styles.container]}>
-      <LottieView
-        source={require('../data/89021-jumping-gift-boxes.json')}
-        autoPlay
-        loop
-      />
+      <LottieView source={require('../data/loading.json')} autoPlay loop />
     </View>
   );
 };
