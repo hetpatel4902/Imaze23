@@ -65,6 +65,10 @@ const UsersSchema = new mongoose.Schema({
     type: [mongoose.Types.ObjectId],
     default: [],
   },
+  teams:{
+    type:{Object},//{{eventid:{team details}}} the user is a member or a leader
+    default:{}
+  }
 });
 
 UsersSchema.pre("save", async function () {

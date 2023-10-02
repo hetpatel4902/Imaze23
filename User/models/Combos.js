@@ -36,7 +36,6 @@ const CombosSchema = new mongoose.Schema({
   },
   date:{//format dd-mm-yyyy
     type:String,
-    required:[true,"Please provide the transaction date"]
   },
   transId:{
     type:String,

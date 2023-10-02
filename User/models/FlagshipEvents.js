@@ -7,6 +7,10 @@ const FlagshipEventSchema = new mongoose.Schema({
     enum:["Ideathon","Toyothon","HappyStreet"],
     required:[true,'Please provide Category']
   },
+  tokens:{
+    type:Number,
+    default:80
+  },
   name:{
     type:String,
     required:[true,'Please provide Event Name']
@@ -23,7 +27,7 @@ const FlagshipEventSchema = new mongoose.Schema({
     type:String,
     required:[true,'Please provide Time']
   },//24h format 
-  price:{
+  fees:{
     type:Number,
     required:[true,'Please provide Event Price']
   },

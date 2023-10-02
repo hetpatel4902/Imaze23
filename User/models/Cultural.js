@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 
 const CulturalSchema = new mongoose.Schema({
+  tokens:{
+    type:Number,
+    default:60
+  },
   category:{
     type:String,
     default:"Cultural"
@@ -26,7 +30,7 @@ const CulturalSchema = new mongoose.Schema({
     type:String,
     required:[true,'Please provide Time']
   },//24h format 
-  price:{
+  fees:{
     type:Number,
     required:[true,'Please provide Event Price']
   },
@@ -47,13 +51,11 @@ const CulturalSchema = new mongoose.Schema({
     required:[true,'Please provide Total Number of Winnners']
   },
   participants:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
+    type:[],
     default:[]
   },
   winner:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
+    type:[],
     default:[]
   },
   maxparticipants:{

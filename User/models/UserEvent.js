@@ -29,7 +29,6 @@ const UserEventSchema = new mongoose.Schema({
   },
   date:{//format dd-mm-yyyy
     type:String,
-    required:[true,"Please provide the transaction date"]
   },
   category:{
     type:String,
@@ -42,6 +41,10 @@ const UserEventSchema = new mongoose.Schema({
   transaction_image:{
     type:String
   },
+  team:{
+    type:Object,
+    default:{}
+  }
 })
 
 

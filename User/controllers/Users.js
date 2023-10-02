@@ -184,7 +184,7 @@ const getUserEvents = async (req, res) => {
     individual.push(obj);
   }
 
-  //purchased events
+  //purchased events + group events in which this user is a team member
   var event_ids = [];
   for (let i = 0; i < userEvents.length; i++) {
     event_ids.push(userEvents[i].eventid);
@@ -250,6 +250,7 @@ const checkCombo = async (req, res) => {
   //checking for time clashes
   const { flag, data } = await isClashing(events);
   if (!flag) {
+    // let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
     const create_combo = await Combo.create({
       price,
       event: events,
@@ -293,12 +294,14 @@ const checkUserEvent = async (req, res) => {
   if (flag) {
     res.status(StatusCodes.OK).json({ res: "success", flag, data });
   } else {
+    // let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
     const create_event = await UserEvent.create({
       userId: uid,
       eventid: eid,
       price,
       payment_mode: "OFFLINE",
       payment_status: "NEW",
+      category: "NORMAL",
     });
     res
       .status(StatusCodes.OK)
@@ -461,19 +464,21 @@ const payOffline = async (req, res) => {
   const { uid } = req.params;
   const { orderId, isCombo } = req.body;
 
+  const d = new Date()
+  let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
   //generate otp
   const otp = Math.floor(Math.random() * 10000);
   if (isCombo) {
     const combo = await Combo.findOneAndUpdate(
       { userId: uid, _id: orderId },
-      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
+      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" ,date},
       { new: true }
     );
     res.status(StatusCodes.OK).json({ res: "success", otp: combo.cashotp });
   } else {
     const event = await UserEvent.findOneAndUpdate(
       { userId: uid, _id: orderId },
-      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE" },
+      { cashotp: otp, payment_mode: "OFFLINE", payment_status: "INCOMPLETE",date },
       { new: true }
     );
     res.status(StatusCodes.OK).json({ res: "success", otp: event.cashotp });
@@ -482,10 +487,12 @@ const payOffline = async (req, res) => {
 const payOnline = async (req, res) => {
   const { uid } = req.params;
   const { orderId, isCombo, transId, transUrl } = req.body;
-  if(!transId || !transUrl){
+  if (!transId || !transUrl) {
     throw new BadRequestError("Please provide transaction id and image url!!");
     return;
   }
+  const d = new Date()
+  let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
   if (isCombo) {
     const combo = await Combo.findOneAndUpdate(
       { _id: orderId },
@@ -494,6 +501,7 @@ const payOnline = async (req, res) => {
         payment_status: "INCOMPLETE",
         transId: transId,
         transaction_image: transUrl,
+        date
       },
       { new: true }
     );
@@ -506,15 +514,149 @@ const payOnline = async (req, res) => {
         payment_status: "INCOMPLETE",
         transId: transId,
         transaction_image: transUrl,
+        date
       },
       { new: true }
     );
     res.status(StatusCodes.OK).json({ res: "success" });
   }
 };
-const purchaseToken = async(req,res)=>{
+const purchaseToken = async (req, res) => {
   console.log("purchase");
-}
+};
+
+const getList = async (req, res) => {
+  const { enrolment } = req.body;
+  let allUsers = await User.find({
+    enrolment: { $regex: enrolment, $options: "i" },
+  });
+  res.status(StatusCodes.OK).json({ res: "success", data: allUsers });
+};
+
+const participateSolo = async (req, res) => {
+  const { eid, uid } = req.body;
+  const event = await Cultural.findOne({ _id: eid });
+  const participants = event.participants;
+  let flag = true;
+  //checking if the user has already registered
+  for (let i = 0; i < participants.length; i++) {
+    if (participants[i] === uid) {
+      flag = false;
+      break;
+    }
+  }
+
+  if (!flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag,
+        data: "You have already registered in this event",
+      });
+  } else {
+    const temp = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      price: event.fees,
+      payment_mode: "OFFLINE",
+      payment_status: "NEW",
+      category: "CULTURAL",
+    });
+    res.status(StatusCodes.OK).json({ res: "success", flag, data: temp });
+  }
+};
+const participateGroup = async (req, res) => {
+  const { uid, eid } = req.body;
+  const user = await User.findOne({ _id: uid });
+  const user_teams = user.teams;
+
+  if (eid in user_teams) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "You are already in a team",
+        team: user_teams[eid],
+      });
+  } else {
+    res.status(StatusCodes.OK).json({ res: "success", flag });
+  }
+};
+const submitGroup = async (req, res) => {
+  const { uid, team_name, eid, members } = req.body;
+  const event = await Cultural.findOne({ _id: eid });
+  const participants = event.participants;
+  let team_name_flag = false;
+  let team_leader_flag = false;
+  let team_member_flag = false;
+  let member = null;
+  //checking if the team name already exists
+  ///checking if the team leader is already in a team
+  for (let i = 0; i < participants.length; i++) {
+    if (participants[i].team_name === team_name) {
+      team_name_flag = true;
+      break;
+    }
+    if (participants[i].team_leader === uid) {
+      team_leader_flag = true;
+      break;
+    }
+    if (uid in participants[i].members) {
+      team_leader_flag = true;
+      break;
+    }
+  }
+  //checking if member is a part of other teams
+  for (let i = 0; i < members.length; i++) {
+    const mem = await User.findOne({ _id: members[i] });
+    if (eid in mem.teams) {
+      team_member_flag = true;
+      member = mem;
+      break;
+    }
+  }
+  if (team_name_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag: false, data: "Team name already exists!" });
+  } else if (team_leader_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "Team leader is already in a team!",
+      });
+  } else if (team_member_flag) {
+    res
+      .status(StatusCodes.OK)
+      .json({
+        res: "success",
+        flag: false,
+        data: "Team member is already in a team",
+        member,
+      });
+  } else {
+    const obj = {
+      team_name: team_name,
+      team_leader: uid,
+      members: members,
+    };
+
+    const temp = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      price: event.fees,
+      payment_mode: "OFFLINE",
+      payment_status: "NEW",
+      category: "CULTURAL",
+      team: obj,
+    });
+    res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
+  }
+};
 module.exports = {
   getAllEvents,
   getOneEvent,
@@ -533,4 +675,9 @@ module.exports = {
   payOffline,
   payOnline,
   purchaseToken,
+  getList,
+  participateSolo,
+  participateGroup,
+  submitGroup,
+  participateFlagship,
 };
