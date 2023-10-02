@@ -1,7 +1,4 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const { boolean } = require('joi')
 require('dotenv').config()
 
 const StaticComboSchema = new mongoose.Schema({
@@ -12,7 +9,7 @@ const StaticComboSchema = new mongoose.Schema({
   events:{
     type:[mongoose.Types.ObjectId],
     ref:'Event',
-    required:[true,'Please Provide Evevnt ID\'s']
+    required:[true,'Please Provide Event ID\'s']
   }
 })
 

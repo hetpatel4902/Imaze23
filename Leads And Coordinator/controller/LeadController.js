@@ -13,6 +13,9 @@ const User = require('../models/Users')
 const Lead = require('../models/Leads')
 const UserEvent = require('../models/UserEvent')
 const Combos = require('../models/Combos')
+const { uploadImageToS3 } = require("../utils/s3");
+const fs = require('fs')
+const Flagship = require('../models/FlagshipEvents')
 
 const eventFetch = async (req,res) => {
   const {eid} = req.params
@@ -140,24 +143,87 @@ const searchUserEmail = async (req,res) => {
   setTimeout(()=>{
     res.status(StatusCodes.OK).json({ res: "success", data:user });
   },1000)
-
 } 
 
-const showEventOfflineOTP = async (req,res) => {
-  const {email,otp} = req.body
-  if(!email || !otp){
+const showEventOfflineForUser = async (req,res) => {
+  const {email} = req.body
+  if(!email){
     throw new BadRequestError('Please provide neccesary Credentials')
   }
   const user = await User.findOne({email})
   if(!user){
     throw new BadRequestError('Please provide Valid Username')
   }
-  const event = await UserEvent.findOne({userId:user._id,payment_status:'INCOMPLETE',cashotp:otp,payment_mode:'OFFLINE'})
+  const event = await UserEvent.findOne({userId:user._id,payment_status:'INCOMPLETE',payment_mode:'OFFLINE'})
   if(!event){
     throw new BadRequestError('Please provide Valid Details')
   }
-  const EventDetails = await Event.findOne({_id:event.eventid})
-  res.status(StatusCodes.OK).json({res:"Success",data:EventDetails})
+  for(let i=0;i<event.length;++i){
+    const response = await Event.findOne({_id:event[i].eventid})
+    event[i].name = response.name
+  }
+  obj={}
+  obj.event = event
+  const combo = await Combos.find({userId:user._id,payment_status:'INCOMPLETE',payment_mode:'OFFLINE'})
+  for(let i=0;i<combo.length;++i){
+    let name=[]
+    for(let j=0;j<combo[i].event.length;++j){
+      const response = await Event.findOne({_id:combo[i].event[j]})
+      name.push(response.name)
+    }
+    combo[i].name = name
+  }
+  obj.combo = combo
+  res.status(StatusCodes.OK).json({res:"Success",data:event})
+}
+
+const verifiedOfflineEvent = async(req,res)=>{
+  const {name,_id} = req.body
+  let points = 0
+  if(name == 'COMBO'){
+    const response = await Combos.findOneAndUpdate({_id},{payment_status:'COMPLETE'},{ new: true, runValidators: true })
+    for(let i=0;i<response.event.length;++i){
+      const eventdetails = await Event.findOne({_id:response.event[i]})
+      if(eventdetails.category == 'Tech'){
+        points+=60
+      }
+      else if(eventdetails.category == 'NonTech'){
+        points+=40
+      }
+      else if(eventdetails.category == 'Workshop'){
+        points+=80
+      }
+      const participants = [...eventdetails.participants,response.userId]
+      const event = await Event.findOneAndUpdate({_id:response.event[i]},{participants},{ new: true, runValidators: true })
+    }
+    const userdetails = await User.findOne({_id:response.userId})
+    points+=userdetails.coins
+    const user = await User.findOneAndUpdate({_id:response.userId},{coins:points},{ new: true, runValidators: true })
+  }
+  else if(name=='EVENT'){
+    const userevent = await UserEvent.findOne({_id})
+    let points = 0
+    if(userevent.category == 'NORMAL'){
+      const eventdetails = await Event.findOne({_id:userevent.eventid})
+      if(eventdetails.category == 'Tech'){
+        points=60
+      }
+      else if(eventdetails.category == 'NonTech'){
+        points=40
+      }
+      else if(eventdetails.category == 'Workshop'){
+        points=80
+      }
+      const participants = [...eventdetails.participants,userevent.userId]
+      const updatedevent = await Event.findOneAndUpdate({_id:userevent.eventid},{participants},{ new: true, runValidators: true })
+    }
+    else if(userevent.category == 'FLAGSHIP'){
+      const flagship = await Flagship
+    }
+    else if(userevent.category == 'CULTURAL'){
+
+    }
+  }
 }
 
 const verifyEventOfflineOTP = async (req,res) => {
@@ -237,34 +303,22 @@ const eventParticipantExcel = async (req,res) => {
   let headerColumns = [
     "Name",
     "Email",
-    "College",
     "Phone Number",
-    "Purchase_Type",
-    "Payment_Mode"
+    "Enrollment",
+    "Year",
+    "Branch",
+    "College"
   ];
   for(var i=0;i<event.participants.length;++i){
     let obj={}
     const user = await User.findOne({_id:event.participants[i]})
-    obj.name = user.name;
-    obj.email=user.email;
-    obj.college = user.college;
-    obj.phonenumber = user.phonenumber;
-    const userevent = await UserEvent.findOne({userId:event.participants[i],eventid:eid})
-      if(userevent){
-        obj.purchasetype = 'EVENT'
-        obj.paymentmode = userevent.payment_mode
-      }
-      else{
-        const combos = await Combos.find({userId:event.participants[i]})
-        combos.forEach((combo)=>{
-          combo.event.forEach((comb)=>{
-            if(String(comb) === String(eid)){
-              obj.purchasetype = combo.combotype+'_COMBO'
-              obj.paymentmode = combo.payment_mode
-            }
-          })
-        })
-      }
+    obj.name = user?.name;
+    obj.email=user?.email;
+    obj.phonenumber = user?.phonenumber;
+    obj.enrollment = user?.enrolment
+    obj.year = user?.year
+    obj.branch = user?.branch;
+    obj.college = user?.college
     arr.push(obj)
   }
   
@@ -286,11 +340,10 @@ const eventParticipantExcel = async (req,res) => {
     const file = __dirname + `/${event.name} participants.xlsx`;
     const fileName = path.basename(file);
     const mimeType = mime.getType(file);
-    res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-    res.setHeader("Content-Type", mimeType);
-    setTimeout(() => {
-      res.download(file);
-    }, 2000);
+    const fileStream = fs.createReadStream(file);
+    const url = await uploadImageToS3(`${event.name} participants.xlsx`,fileStream)
+    console.log(url)
+    res.status(StatusCodes.OK).json({res:"Success",data:url})
 }
 
 const eventAttendedExcel = async (req,res) => {
@@ -306,34 +359,23 @@ const eventAttendedExcel = async (req,res) => {
   let headerColumns = [
     "Name",
     "Email",
-    "College",
     "Phone Number",
-    "Purchase_Type",
-    "Payment_Mode"
+    "Enrollment",
+    "Year",
+    "Branch",
+    "College"
   ];
   for(var i=0;i<event.attendance.length;++i){
     let obj={}
     const user = await User.findOne({_id:event.attendance[i]})
-    obj.name = user.name;
-    obj.email=user.email;
-    obj.college = user.college;
-    obj.phonenumber = user.phonenumber;
-    const userevent = await UserEvent.findOne({userId:event.attendance[i],eventid:eid})
-      if(userevent){
-        obj.purchasetype = 'EVENT'
-        obj.paymentmode = userevent.payment_mode
-      }
-      else{
-        const combos = await Combos.find({userId:event.attendance[i]})
-        combos.forEach((combo)=>{
-          combo.event.forEach((comb)=>{
-            if(String(comb) === String(eid)){
-              obj.purchasetype = combo.combotype+'_COMBO'
-              obj.paymentmode = combo.payment_mode
-            }
-          })
-        })
-      }
+    obj.name = user?.name;
+    obj.email=user?.email;
+    obj.phonenumber = user?.phonenumber;
+    obj.enrollment = user?.enrolment
+    obj.year = user?.year
+    obj.branch = user?.branch;
+    obj.college = user?.college
+    
     arr.push(obj)
   };
 
@@ -355,12 +397,14 @@ const eventAttendedExcel = async (req,res) => {
     const file = __dirname + `/${event.name} attendees.xlsx`;
     const fileName = path.basename(file);
     const mimeType = mime.getType(file);
-    res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-    res.setHeader("Content-Type", mimeType);
-    setTimeout(() => {
-      res.download(file);
-    }, 2000);
+    const fileStream = fs.createReadStream(file);
+    const url = await uploadImageToS3(`${event.name} attendees.xlsx`,fileStream)
+    console.log(url)
+    res.status(StatusCodes.OK).json({res:"Success",data:url})
 }
+
+
+
 module.exports = {
-  eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,verifyEventOfflineOTP,showEventOfflineOTP,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel
+  eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,verifyEventOfflineOTP,showEventOfflineForUser,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel
 }

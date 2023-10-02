@@ -1,12 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-const FlagshipEventSchema = new mongoose.Schema({
-  category:{//ideathon , toyothon, 
-    type:String,
-    enum:["Ideathon","Toyothon","HappyStreet"],
-    required:[true,'Please provide Category']
-  },
+const SoloCulturalSchema = new mongoose.Schema({
   name:{
     type:String,
     required:[true,'Please provide Event Name']
@@ -43,16 +38,19 @@ const FlagshipEventSchema = new mongoose.Schema({
     type:Number,
     required:[true,'Please provide Total Number of Winnners']
   },
-  participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}]
-    type:[Object],
+  participants:{
+    type:[mongoose.Types.ObjectId],
+    ref:"Users",
     default:[]
   },
-  winner:{//[{team name:,members:[ids]}]
-    type:[Object],
+  winner:{
+    type:[mongoose.Types.ObjectId],
+    ref:"Users",
     default:[]
   },
-  attendance:{//[{team name:,members:[ids]}]
-    type:[Object],
+  attendance:{
+    type:[mongoose.Types.ObjectId],
+    ref:"Users",
     default:[]
   },
   maxparticipants:{
@@ -63,16 +61,16 @@ const FlagshipEventSchema = new mongoose.Schema({
     type:Boolean,
     default:true
   },
-  noOfParticipants:{//no of teams
+  noOfParticipants:{
     type:Number,
     default:0
   }
 })
 
-FlagshipEventSchema.pre("save",async function(){
+SoloCulturalSchema.pre("save",async function(){
   console.log(this.participants);
   this.noOfParticipants = this.participants.length;
 })
 
 
-module.exports = mongoose.model('FlagshipEvents',FlagshipEventSchema)
+module.exports = mongoose.model('SoloCultural',SoloCulturalSchema)

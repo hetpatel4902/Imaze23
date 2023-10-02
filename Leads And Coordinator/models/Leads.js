@@ -9,8 +9,7 @@ const LeadsSchema = new mongoose.Schema({
     required:[true,'Please provide valid Name']
   },
   eventId:{
-    type:mongoose.Types.ObjectId,
-    ref:"Event"
+    type:mongoose.Types.ObjectId
   },
   email:{
     type:String,
@@ -21,6 +20,11 @@ const LeadsSchema = new mongoose.Schema({
   password:{
     type:String,
     required:[true,'Please provide valid Password']
+  },
+  type:{
+    type:String,
+    required:[true,'Please provide type'],
+    enum:['CULTURAL','FLAGSHIP','NORMAL']
   }
   
 })

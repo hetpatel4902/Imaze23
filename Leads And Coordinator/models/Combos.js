@@ -34,7 +34,6 @@ const CombosSchema = new mongoose.Schema({
     type:Number,
     default:0
   }
-  //add price , payment_mode
 })
 
 

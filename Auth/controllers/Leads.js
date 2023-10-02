@@ -5,6 +5,7 @@ const {StatusCodes} = require('http-status-codes')
 const {BadRequestError,UnauthenticatedError} = require('../errors/index')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
+const Flagship = require('../models/FlagshipEvents')
 
 const registerLeads = async (req,res) => {
   const {name,email,password}=req.body
@@ -30,7 +31,12 @@ const loginLeads = async (req,res) => {
     throw new UnauthenticatedError('Invalid Credentials')
   }
   const token = lead.createJWT()
-  res.status(StatusCodes.CREATED).json({lead:{name:lead.name,id:lead._id},token})
+  name = ''
+  if(lead?.type=='FLAGSHIP'){
+    const event = await Flagship.findOne({_id:lead?.eventId})
+    name = event.category
+  }
+  res.status(StatusCodes.CREATED).json({leadid:lead._id,token,type:lead?.type,eid:lead?.eventId,name})
 }
 
 module.exports = {

@@ -1,12 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-const FlagshipEventSchema = new mongoose.Schema({
-  category:{//ideathon , toyothon, 
-    type:String,
-    enum:["Ideathon","Toyothon","HappyStreet"],
-    required:[true,'Please provide Category']
-  },
+const GroupCulturalSchema = new mongoose.Schema({
   name:{
     type:String,
     required:[true,'Please provide Event Name']
@@ -43,15 +38,15 @@ const FlagshipEventSchema = new mongoose.Schema({
     type:Number,
     required:[true,'Please provide Total Number of Winnners']
   },
-  participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}]
+  participants:{
     type:[Object],
     default:[]
   },
-  winner:{//[{team name:,members:[ids]}]
+  winner:{
     type:[Object],
     default:[]
   },
-  attendance:{//[{team name:,members:[ids]}]
+  attendance:{
     type:[Object],
     default:[]
   },
@@ -69,10 +64,10 @@ const FlagshipEventSchema = new mongoose.Schema({
   }
 })
 
-FlagshipEventSchema.pre("save",async function(){
+GroupCulturalSchema.pre("save",async function(){
   console.log(this.participants);
   this.noOfParticipants = this.participants.length;
 })
 
 
-module.exports = mongoose.model('FlagshipEvents',FlagshipEventSchema)
+module.exports = mongoose.model('GroupCultural',GroupCulturalSchemaSchema)
