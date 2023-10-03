@@ -10,6 +10,15 @@ const CulturalSchema = new mongoose.Schema({
     type:String,
     default:"CULTURAL"
   },
+  title:{
+    type:String
+  },
+  min_members:{
+    type:Number,
+  },
+  max_members:{
+    type:Number,
+  },
   event_type:{
     type:String,
     default:"CULTURAL"

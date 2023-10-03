@@ -17,7 +17,8 @@ const isClashing = async (events) => {
   let flag = false;
   var result = {};
   for (let i = 0; i < events.length; i++) {
-    const event = await Event.findOne({ _id: events[i] });
+    const event = await Event.findOne({ _id: events[i] ,type:"SOLO"});
+    if(!event) continue;
     const event_day = event.date.substring(0, 2);
     const event_time = event.time;
     const event_name = event.name;

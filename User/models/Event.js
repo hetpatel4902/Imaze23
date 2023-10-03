@@ -15,6 +15,12 @@ const EventSchema = new mongoose.Schema({
     type:String,
     enum:["SOLO","GROUP"]
   },
+  min_members:{
+    type:Number,
+  },
+  max_members:{
+    type:Number,
+  },
   title:{
     type:String
   },
