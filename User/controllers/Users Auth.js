@@ -42,7 +42,7 @@ const forgotPasswordUsers = async (req, res) => {
       ciphers: "SSLv3",
     },
     auth: {
-      user: "maze2k23@gmail.com",
+      user: "imaze2k23@gmail.com",
       pass: "rcgsnfhskniwytmr",
     },
   });
