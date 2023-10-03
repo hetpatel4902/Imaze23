@@ -234,6 +234,7 @@ const checkCombo = async (req, res) => {
   //purchased events + incomplete
   const userEvents = await UserEvent.find({
     userId: uid,
+    category:"NORMAL",
     payment_status: ["COMPLETED", "INCOMPLETE"],
   });
   const userCombos = await Combo.find({
@@ -275,6 +276,7 @@ const checkUserEvent = async (req, res) => {
   var events = [];
   const userEvents = await UserEvent.find({
     userId: uid,
+    category:"NORMAL",
     payment_status: ["COMPLETED", "INCOMPLETE"],
   });
   const userCombos = await Combo.find({
@@ -291,6 +293,7 @@ const checkUserEvent = async (req, res) => {
     }
   }
   events.push(eid);
+  console.log(events);
   const { flag, data } = await isClashing(events);
   if (flag) {
     res.status(StatusCodes.OK).json({ res: "success", flag, data });
