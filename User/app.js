@@ -23,6 +23,9 @@ const userRouter =  require('./routes/userRouter')
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 const Users = require('./models/Users');
+const Event = require('./models/Event');
+const Cultural = require('./models/Cultural');
+const FlagshipEvents = require('./models/FlagshipEvents');
 
 app.use(express.static(`${__dirname}/public`));
 app.use(express.json());
@@ -32,9 +35,17 @@ app.use(xss())
 
 //routes user
 app.get('/populate',async(req,res)=>{
-  const users = await Users.find({});
-  for(let i =0;i<users.length;i++){
-    const upd = await Users.findOneAndUpdate({_id:users[i]._id},{coins:0})
+  const normla = await Event.find({});
+  for(let i =0;i<normla.length;i++){
+    const upd  = await Event.findOneAndUpdate({_id:normla[i]._id},{event_type:"NORMAL"});
+  }
+  const cult = await Cultural.find({});
+  for(let i =0;i<cult.length;i++){
+    const upd = await Cultural.findOneAndUpdate({_id:cult[i]._id},{event_type:"CULTURAL"})
+  }
+  const flag = await FlagshipEvents.find({});
+  for(let i =0;i<flag.length;i++){
+    const upd = await FlagshipEvents.findOneAndUpdate({_id:flag[i]._id},{event_type:"FLAGSHIP"})
   }
   res.status(200).json("success");
 })

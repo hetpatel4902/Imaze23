@@ -7,6 +7,10 @@ const FlagshipEventSchema = new mongoose.Schema({
     enum:["Ideathon","ITK_toyothon","ITK_workshop","ITK_exhibition","ITK_sa","HappyStreet"],
     required:[true,'Please provide Category']
   },
+  event_type:{
+    type:String,
+    default:"FLAGSHIP"
+  },
   tokens:{
     type:Number,
     default:80

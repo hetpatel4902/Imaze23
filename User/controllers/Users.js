@@ -101,9 +101,7 @@ const getEventsCategorized = async (req, res) => {
   var findEl = "category";
   var events = await Event.find({});
   var cultural = await Cultural.find({});
-  var flagship = await FlagshipEvents.find({
-    category: ["Ideathon", "Toyothon"],
-  });
+  var flagship = await FlagshipEvents.find({});
   var allevents = [...events, ...cultural, ...flagship];
   var groupby = function (xs, key) {
     return xs.reduce(function (rv, x) {

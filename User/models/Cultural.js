@@ -6,9 +6,9 @@ const CulturalSchema = new mongoose.Schema({
     type:Number,
     default:60
   },
-  category:{
+  event_type:{
     type:String,
-    default:"Cultural"
+    default:"CULTURAL"
   },
   type: {
     type: String,
