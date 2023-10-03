@@ -27,6 +27,9 @@ import PaymentHistory from '../screens/ProfileScreen/PaymentHistory';
 import UpdateProfile from '../screens/ProfileScreen/UpdateProfile';
 import AboutUsScreen from '../screens/ProfileScreen/AboutUsScreen';
 import DownloadCertificate from '../screens/ProfileScreen/DownloadCertificate';
+import Itk from '../screens/Itk';
+import HappyStreet from '../screens/HappyStreet';
+import Ideathon from '../screens/Ideathon';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -34,13 +37,13 @@ const BottomTabNav = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarInactiveTintColor: '#d8d3f2',
-        tabBarActiveTintColor: '#6268fc',
+        tabBarInactiveTintColor: '#e0fcff',
+        tabBarActiveTintColor: '#000000',
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           height: 50,
           position: 'absolute',
-          bottom: 10,
+          bottom: 5,
           right: 16,
           left: 16,
           borderRadius: 13,
@@ -52,8 +55,14 @@ const BottomTabNav = () => {
         name="Home"
         options={{
           // unmountOnBlur: true,
+
           headerShown: false,
-          tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
+          tabBarLabelStyle: {
+            marginTop: -8,
+            marginBottom: 2,
+            fontSize: 9,
+            color: 'black',
+          },
           tabBarIcon: ({color}) => (
             <Entypo name="home" size={18} color={color} />
           ),
@@ -160,6 +169,9 @@ const HomeStack = () => {
       <Stack.Screen component={Workshop} name="Workshop" />
       <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
       <Stack.Screen component={SearchScreen} name="SearchScreen" />
+      <Stack.Screen component={Ideathon} name="Ideathon" />
+      <Stack.Screen component={HappyStreet} name="HappyStreet" />
+      <Stack.Screen component={Itk} name="Itk" />
     </Stack.Navigator>
   );
 };

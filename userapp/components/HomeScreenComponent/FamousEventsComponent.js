@@ -15,10 +15,10 @@ const FamousEventsComponent = ({tech}) => {
     <Pressable
       onPress={onPress}
       style={{
-        height: 196,
-        width: 160,
+        height: 85,
+        // width: 160,
         backgroundColor: 'white',
-        borderRadius: 30,
+        borderRadius: 22,
         shadowColor: '#000000',
         shadowOffset: {
           width: 0,
@@ -26,117 +26,117 @@ const FamousEventsComponent = ({tech}) => {
         },
         shadowOpacity: 0.41,
         shadowRadius: 9.11,
-        elevation: 8,
+        elevation: 5,
         marginTop: 5,
-        marginBottom: 18,
+        marginBottom: 15,
         marginHorizontal: 15,
         paddingHorizontal: 13,
+        flexDirection: 'row',
+        paddingHorizontal: 10,
+        paddingVertical: 14,
       }}>
-      <Image
-        source={{uri: `http://${USER_IP}/${tech?.image}`}}
-        style={{
-          height: 74,
-          width: 74,
-          borderRadius: 37,
-          alignSelf: 'center',
-          position: 'relative',
-          marginBottom: 33,
-          marginTop: 10,
-        }}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          top: 15,
-          //   left: 110,
-          right: -20,
-          backgroundColor: '#05fa9c',
-          borderRadius: 6,
-          padding: 3,
-          paddingHorizontal: 5,
-        }}>
-        <Text
-          style={{
-            color: 'white',
-            fontFamily: 'Poppins-Regular',
-            fontSize: 11,
-          }}>
-          {participants.length} participants
-        </Text>
-      </View>
-      <Text
-        numberOfLines={1}
-        style={{
-          fontFamily: 'Poppins-Regular',
-          fontSize: 13,
-          color: '#191919',
-          marginTop: -25,
-          alignSelf: 'center',
-        }}>
-        {tech?.name}
-      </Text>
-      <Text
-        style={{
-          fontFamily: 'Poppins-Regular',
-          fontSize: 11,
-          marginTop: -5,
-          color: 'grey',
-          alignSelf: 'center',
-        }}>
-        {tech?.category}
-      </Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <View>
-          <MaterialCommunityIcons
-            name="calendar-week"
-            size={15}
-            color={'#05fa9c'}
+      {/* 2a4173 */}
+      <View style={{flex: 1}}>
+        <View style={{backgroundColor: 'black', padding: 7, borderRadius: 30}}>
+          <Image
+            source={{uri: `http://${USER_IP}/${tech?.image}`}}
+            style={{
+              height: 44,
+              width: 44,
+              borderRadius: 10,
+              // backgroundColor: 'black',
+              // padding: 10,
+              // alignSelf: 'center',
+              // position: 'relative',
+              // marginBottom: 33,
+              // marginTop: 10,
+            }}
           />
         </View>
+      </View>
+      <View style={{flex: 3, paddingHorizontal: 8}}>
+        <Text
+          numberOfLines={1}
+          style={{
+            fontFamily: 'Poppins-Regular',
+            fontSize: 13,
+            color: '#191919',
+            // marginTop: -25,
+            // alignSelf: 'center',
+          }}>
+          {tech?.name}
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Poppins-Regular',
+            fontSize: 11,
+            marginTop: -5,
+            color: 'grey',
+            // alignSelf: 'center',
+          }}>
+          {tech?.category}
+        </Text>
         <View
           style={{
-            flex: 7,
-            marginHorizontal: 4,
             flexDirection: 'row',
             alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View>
+            <MaterialCommunityIcons
+              name="calendar-week"
+              size={15}
+              color={'#00e4ff'}
+            />
+          </View>
+          <View
+            style={{
+              flex: 7,
+              marginHorizontal: 4,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                color: '#242424',
+                fontSize: 11,
+              }}>
+              {tech?.date}{' '}
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Regular',
+                color: '#242424',
+                fontSize: 11,
+              }}>
+              ({tech?.time})
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        <View
+          style={{
+            backgroundColor: '#000000',
+            paddingHorizontal: 8,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 3.5,
+            // marginTop: 8,
+            borderRadius: 18,
+            alignContent: 'center',
+            // flex: 1,
           }}>
           <Text
             style={{
+              color: 'white',
               fontFamily: 'Poppins-Medium',
-              color: '#242424',
-              fontSize: 11,
+              fontSize: 12,
             }}>
-            {tech?.date}{' '}
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'Poppins-Regular',
-              color: '#242424',
-              fontSize: 11,
-            }}>
-            ({tech?.time})
+            Rs.{tech?.price}
           </Text>
         </View>
-      </View>
-      <View
-        style={{
-          backgroundColor: '#6268fc',
-          paddingHorizontal: 8,
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingVertical: 3.5,
-          marginTop: 8,
-          borderRadius: 18,
-        }}>
-        <Text
-          style={{color: 'white', fontFamily: 'Poppins-Medium', fontSize: 12}}>
-          Rs.{tech?.price}
-        </Text>
       </View>
     </Pressable>
   );

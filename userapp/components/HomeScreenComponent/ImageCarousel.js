@@ -1,25 +1,53 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {FlatList} from 'react-native';
-// import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
+  FlatList,
   View,
   Text,
   Dimensions,
   StyleSheet,
-  TouchableOpacity,
-  Platform,
   Image,
   ScrollView,
 } from 'react-native';
-// import ImageCarouselData from '../../data/ImageCarouselData';
-// import {ScrollView} from 'react-native-gesture-handler';
 
 const {width: screenWidth} = Dimensions.get('window');
 
 const ImageCarousel = props => {
-  const [entries, setEntries] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef(null);
+
+  const data = [
+    require('../../data/carousel4.png'),
+    require('../../data/carousel1.png'),
+    require('../../data/carousel2.jpg'),
+    require('../../data/carousel41.png'),
+  ];
+
+  const renderItem = ({item}) => (
+    <Image
+      source={item}
+      resizeMode="contain"
+      style={{
+        width: 250,
+        height: 140,
+        borderRadius: 10,
+        marginHorizontal: 10,
+        borderWidth: 1,
+      }}
+    />
+  );
+
+  useEffect(() => {
+    const scrollInterval = setInterval(() => {
+      const nextIndex = (currentIndex + 1) % data.length;
+      setCurrentIndex(nextIndex);
+      carouselRef.current.scrollToIndex({index: nextIndex, animated: true});
+    }, 3000); // Auto-scroll every 3 seconds (adjust as needed)
+
+    return () => {
+      clearInterval(scrollInterval);
+    };
+  }, [currentIndex]);
+
   return (
     <View style={{height: 190}}>
       <View
@@ -33,101 +61,28 @@ const ImageCarousel = props => {
             color: '#191919',
             fontSize: 15,
             fontFamily: 'Poppins-Medium',
+            marginBottom: 8,
+            marginTop: 5,
           }}>
-          Our Sponsers
+          Our Sponsors
         </Text>
       </View>
-      <View style={styles.container}>
-        <ScrollView
-          style={{paddingHorizontal: 7}}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled={true}>
-          <View style={{}}>
-            <Image
-              source={require('../../data/carousel4.png')}
-              resizeMode={'contain'}
-              style={{
-                width: 250,
-                height: 140,
-                borderRadius: 10,
-                marginHorizontal: 10,
-                borderWidth: 1,
-                // borderColor: '#c2c2c2',
-              }}
-            />
-          </View>
-          <Image
-            source={require('../../data/carousel1.png')}
-            resizeMode={'contain'}
-            style={{
-              width: 250,
-              height: 140,
-              borderRadius: 10,
-              marginHorizontal: 10,
-              borderWidth: 1,
-              // borderColor: '#c2c2c2',
-            }}
-          />
-          <Image
-            source={require('../../data/carousel2.jpg')}
-            resizeMode={'stretch'}
-            style={{
-              width: 250,
-              height: 140,
-              borderRadius: 10,
-              marginHorizontal: 10,
-              borderWidth: 1,
-              // borderColor: '#c2c2c2',
-            }}
-          />
-          <Image
-            source={require('../../data/carousel41.png')}
-            resizeMode={'cover'}
-            style={{
-              width: 250,
-              height: 140,
-              borderRadius: 10,
-              marginHorizontal: 10,
-              borderWidth: 1,
-              // borderColor: '#c2c2c2',
-            }}
-          />
-          {/* <Image
-            source={{
-              uri: 'https://www.jagannathskitchen.in/images/placeholder.jpg',
-            }}
-            style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
-          />
-          <Image
-            source={{
-              uri: 'https://www.theloveofspice.com/wp-content/uploads/2019/01/kanda-poha-recipe.jpg',
-            }}
-            style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
-          />
-          <Image
-            source={{
-              uri: 'https://cdn.pixabay.com/photo/2020/05/17/04/22/pizza-5179939_1280.jpg',
-            }}
-            style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
-          /> */}
-          {/* <Image
-            source={{
-              uri: 'https://www.eatthis.com/wp-content/uploads/sites/4/2021/07/mcdonalds-burgers-fries.jpg?quality=82&strip=1&resize=640%2C360',
-            }}
-            style={{width: 260, height: 160, borderRadius: 10, margin: 10}}
-          /> */}
-        </ScrollView>
-        {/* <Carousel
-          ref={carouselRef}
-          sliderWidth={screenWidth}
-          sliderHeight={screenWidth}
-          itemWidth={screenWidth - 60}
-          data={entries}
-          renderItem={renderItem}
-          hasParallaxImages={true}
-        /> */}
-      </View>
+      <FlatList
+        ref={carouselRef}
+        data={data}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        initialScrollIndex={0}
+        getItemLayout={(data, index) => ({
+          length: screenWidth - 60,
+          offset: (screenWidth - 125) * index,
+          index,
+        })}
+        style={{marginBottom: 15}}
+      />
     </View>
   );
 };
@@ -136,20 +91,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 5,
-  },
-  item: {
-    width: screenWidth - 60,
-    height: screenWidth - 160,
-  },
-  imageContainer: {
-    flex: 1,
-    marginBottom: Platform.select({ios: 0, android: 1}),
-    backgroundColor: 'white',
-    borderRadius: 20,
-  },
-  image: {
-    ...StyleSheet.absoluteFillObject,
-    resizeMode: 'cover',
   },
 });
 
