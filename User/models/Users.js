@@ -27,8 +27,8 @@ const UsersSchema = new mongoose.Schema({
     required: [true, "Please provide college name"],
   },
   year: {
-    type: Number,
-    enum: [1, 2, 3, 4,"DIPLOMA"],
+    type: String,
+    enum: ["1", "2","3", "4","DIPLOMA"],
     required: [true, "Please provide the year"],
   },
   branch: {
