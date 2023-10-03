@@ -666,20 +666,21 @@ const payOnline = async (req, res) => {
               { new: true }
             );
             //team members
-            for (let i = 0; i < team_obj.members.length; i++) {
-              const group_student = await User.findOne({ _id: uid });
+            for (let i = 0; i < team.members.length; i++) {
+              const group_student = await User.findOne({ _id: team.members[i] });
               let team_obj = group_student.teams;
               team_obj[evt.eventid] = evt.team;
               const upd_group_student = await User.findOneAndUpdate(
-                { _id: uid },
+                { _id: team.members[i] },
                 { coins: group_student.coins + 80, teams: team_obj },
                 { new: true }
               );
             }
+            res.status(StatusCodes.OK).json({res:"success",data:group_student})
             break;
         }
         break;
-
+        
       case "CULTURAL":
         //there can be 2 categories : solo and group
         const cultural_event = await Cultural.findOne({
@@ -739,16 +740,18 @@ const payOnline = async (req, res) => {
               { new: true }
             );
             //team members
-            for (let i = 0; i < team_obj.members.length; i++) {
-              const group_student = await User.findOne({ _id: uid });
+            for (let i = 0; i < team.members.length; i++) {
+              const group_student = await User.findOne({ _id: team.members[i] });
               let team_obj = group_student.teams;
               team_obj[evt.eventid] = evt.team;
               const upd_group_student = await User.findOneAndUpdate(
-                { _id: uid },
+                { _id: team.members[i] },
                 { coins: group_student.coins + 60, teams: team_obj },
                 { new: true }
               );
             }
+            res.status(StatusCodes.OK).json({res:"success",data:group_student});
+
             break;
         }
         break;
