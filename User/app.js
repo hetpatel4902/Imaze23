@@ -34,21 +34,6 @@ app.use(cors())
 app.use(xss())
 
 //routes user
-app.get('/populate',async(req,res)=>{
-  const normla = await Event.find({});
-  for(let i =0;i<normla.length;i++){
-    const upd  = await Event.findOneAndUpdate({_id:normla[i]._id},{event_type:"NORMAL"});
-  }
-  const cult = await Cultural.find({});
-  for(let i =0;i<cult.length;i++){
-    const upd = await Cultural.findOneAndUpdate({_id:cult[i]._id},{event_type:"CULTURAL"})
-  }
-  const flag = await FlagshipEvents.find({});
-  for(let i =0;i<flag.length;i++){
-    const upd = await FlagshipEvents.findOneAndUpdate({_id:flag[i]._id},{event_type:"FLAGSHIP"})
-  }
-  res.status(200).json("success");
-})
 app.use('/api/v1/user',userRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

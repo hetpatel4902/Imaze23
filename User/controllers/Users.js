@@ -70,7 +70,7 @@ const isClashing = async (events) => {
 
 //events
 const getAllEvents = async (req, res) => {
-  const { search, fields, sort } = req.query;
+  const { search, sort } = req.query;
   var events = await Event.find({});
   var cultural = await Cultural.find({});
   var flagship = await FlagshipEvents.find({});
