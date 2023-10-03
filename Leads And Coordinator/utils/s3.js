@@ -12,7 +12,8 @@ const uploadImageToS3 = async (name,imageBase64Data) => {
   const params = {
     Bucket: "imaze-bucket",
     Key: `excel/${name}`,
-    Body: imageBase64Data,
+    Body: Buffer.from(imageBase64Data, "base64"),
+    ContentEncoding: "base64",
     ContentType: "application/vnd.ms-excel",
   };
 
