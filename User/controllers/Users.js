@@ -116,7 +116,7 @@ const getEventsCategorized = async (req, res) => {
 };
 const getOneEvent = async (req, res) => {
   const { eid } = req.params;
-  const { type } = req.body;
+  const { type} = req.query;
   let event;
   switch (type) {
     case "NORMAL":
@@ -783,7 +783,7 @@ const purchaseToken = async (req, res) => {
 };
 
 const getList = async (req, res) => {
-  const { enrolment } = req.body;
+  const { enrolment } = req.query;
   let allUsers = await User.find({
     enrolment: { $regex: enrolment, $options: "i" },
   });

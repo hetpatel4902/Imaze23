@@ -42,7 +42,7 @@ router.route("/forgotpassword").patch(forgotPasswordUsers);
 //events 
 router.route("/events").get(authmiddleware, getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
 router.route("/events/category").get(authmiddleware, getEventsCategorized); //get categorized events
-router.route("/events/:eid").get(authmiddleware, getOneEvent); //get event details [:eid = event id] [req.body = {type:NORMAL/FLAGSHIP/CULTURAL}]
+router.route("/events/:eid").get(authmiddleware, getOneEvent); //get event details [:eid = event id] [?type=NORMAL/FLAGSHIP/CULTURAL]
 router.route("/events/user/:uid").get(authmiddleware, getUserEvents); //get events bought by the user, both combos and individual events [:uid = user id]
 
 //cultural
@@ -52,7 +52,7 @@ router.route("/cultural/participate/group").post(authmiddleware,participateGroup
 router.route("/cultural/submit/group").post(authmiddleware,submitGroup)//req.body  = {eid:event id, team_name:,uid:user id,members:[ids]} :this will be called when team details are to be submitted : this will check if the members are already in a team 
 
 //flagship
-router.route("/flagship/list").get(authmiddleware,getList) //For drop down when selecting team mates,req.body = {enrolment}
+router.route("/flagship/list").get(authmiddleware,getList) //For drop down when selecting team mates,?enrolment=
 //for solo events
 router.route("/flagship/participate/solo").post(authmiddleware,participateFlagshipSolo)//req.body = {eid:event id,uid:user id} :-> called for solo flagship events ie.,workshop
 //for group events
