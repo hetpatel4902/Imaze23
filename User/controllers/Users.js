@@ -121,10 +121,13 @@ const getOneEvent = async (req, res) => {
   switch (type) {
     case "NORMAL":
       event = await Event.findOne({ _id: eid });
+      break;
     case "FLAGSHIP":
       event = await FlagshipEvents.findOne({ _id: eid });
+      break;
     case "CULTURAL":
       event = await Cultural.findOne({ _id: eid });
+      break;
   }
   if (!event) {
     throw new NotFoundError(
