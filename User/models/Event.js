@@ -11,6 +11,10 @@ const EventSchema = new mongoose.Schema({
     type:String,
     default:"NORMAL"
   },
+  type:{
+    type:String,
+    enum:["SOLO","GROUP"]
+  },
   title:{
     type:String
   },
