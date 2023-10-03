@@ -842,13 +842,13 @@ const participateGroup = async (req, res) => {
 };
 const submitGroup = async (req, res) => {
   const { uid, team_name, eid, members } = req.body;
-  console.log(team_name);
   const event = await Cultural.findOne({ _id: eid });
   const participants = event.participants;
   let team_name_flag = false;
   let team_leader_flag = false;
   let team_member_flag = false;
   let member = null;
+  let team = null;
   //checking if the team name already exists
   ///checking if the team leader is already in a team
   for (let i = 0; i < participants.length; i++) {
@@ -858,10 +858,12 @@ const submitGroup = async (req, res) => {
     }
     if (participants[i].team_leader === uid) {
       team_leader_flag = true;
+      team = participants[i];
       break;
     }
-    if (uid in participants[i].members) {
+    if (participants[i].members.includes(uid)) {
       team_leader_flag = true;
+      team = participants[i];
       break;
     }
   }
@@ -883,6 +885,7 @@ const submitGroup = async (req, res) => {
       res: "success",
       flag: false,
       data: "Team leader is already in a team!",
+      team:team
     });
   } else if (team_member_flag) {
     res.status(StatusCodes.OK).json({
