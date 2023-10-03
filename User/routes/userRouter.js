@@ -53,12 +53,12 @@ router.route("/cultural/submit/group").post(authmiddleware,submitGroup)//req.bod
 
 //flagship
 router.route("/flagship/list").get(authmiddleware,getList) //For drop down when selecting team mates,?enrolment=
-//for solo events
+//for solo events -> for workshop
 router.route("/flagship/participate/solo").post(authmiddleware,participateFlagshipSolo)//req.body = {eid:event id,uid:user id} :-> called for solo flagship events ie.,workshop
 //for group events
 router.route("/flagship/participate/group").post(authmiddleware,participateGroup) //req.body = {eid:event id,uid:user id}
 router.route("/flagship/submit/group").post(authmiddleware,submitFlagship) //req.body = {eid:event id,team_name:,uid:user id,members:[ids],poster_url,leader_ID,project_title}
-//for free events ->directly create user event with payment status complete
+//for free events ->directly create user event with payment status complete -> this is for exhibition and social acitivity
 router.route("/flagship/register").post(authmiddleware,registerSoloFlagship) //req.body = {eid:event id,uid:user id}
 
 //purchase tokens
@@ -89,5 +89,7 @@ router.route("/:email/password").patch(updatepassword); //req.body = {password:p
 router.route("/:uid/payment/history").get(authmiddleware, getPaymentHistory); //get the payment history [both individual and combos]
 router.route("/:uid/payment/offline").post(authmiddleware, payOffline); //call this api to generate otp for offline purchase [req.body={orderId:userEventId or comboId, isCombo:true/false}]
 router.route("/:uid/payment/online").post(authmiddleware, payOnline); //call this api after paying online and send the transaction id [req.body = {orderId:userEventId or comboId,transId:'',transUrl:'',isCombo:true/false}]
+
+//winner
 
 module.exports = router;

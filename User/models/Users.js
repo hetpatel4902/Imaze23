@@ -28,7 +28,7 @@ const UsersSchema = new mongoose.Schema({
   },
   year: {
     type: Number,
-    enum: [1, 2, 3, 4],
+    enum: [1, 2, 3, 4,"DIPLOMA"],
     required: [true, "Please provide the year"],
   },
   branch: {
