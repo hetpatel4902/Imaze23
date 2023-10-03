@@ -293,7 +293,6 @@ const checkUserEvent = async (req, res) => {
     }
   }
   events.push(eid);
-  console.log(events);
   const { flag, data } = await isClashing(events);
   if (flag) {
     res.status(StatusCodes.OK).json({ res: "success", flag, data });
@@ -566,6 +565,9 @@ const payOnline = async (req, res) => {
       },
       { new: true }
     );
+    if(!evt){
+      throw new BadRequestError("This order id and user id does not match!");
+    }
     //checking the category
     switch (evt.category) {
       case "NORMAL":

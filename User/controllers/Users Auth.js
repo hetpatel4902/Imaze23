@@ -42,18 +42,18 @@ const forgotPasswordUsers = async (req, res) => {
       ciphers: "SSLv3",
     },
     auth: {
-      user: "hetpatel5542@gmail.com",
-      pass: "xivslyvrfcrgewtb",
+      user: "maze2k23@gmail.com",
+      pass: "rcgsnfhskniwytmr",
     },
   });
 
   const mailOptions = {
-    from: '"Sachivalaya " <ssip69@outlook.com>', // sender address (who sends)
+    from: '"Team Imaze " <imaze2k23@gmail.com>', // sender address (who sends)
     to: `${email}`, // list of receivers (who receives)
     subject: "OTP for Reseting Your User App Password ", // Subject line
     text: `Your OTP for reseting the password for User app is ${otp}, please enter this OTP in your User app to reset your password.
 -Thanks,
-Team Sachivalaya  `, // plaintext body
+Team Imaze  `, // plaintext body
   };
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
