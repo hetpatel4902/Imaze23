@@ -9,11 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1469.0",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.8",
+    "excel4node": "^1.8.2",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^5.5.1",
