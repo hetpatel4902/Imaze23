@@ -706,8 +706,33 @@ const eventAttendedExcel = async (req,res) => {
 }
 
 const getAllCulturalEvents = async(req,res)=>{
-  const cutural = await Cultural.find({})
-  res.status(StatusCodes.OK).json({res:"Success",data:cutural})
+  const culture = await Cultural.find({})
+  details = []
+  let cultural = JSON.parse(JSON.stringify(culture)); 
+  for(let i=0;i<cultural.length;++i){
+    if(cultural[i].type == 'SOLO'){
+      for(let j=0;j<cultural[i].participants.length;++j){
+        const user = await User.findOne({_id:cultural[i].participants[j]})
+        details.push(user)
+      }
+      cultural[i]['details'] = details
+    }
+    else if(cultural[i].type == 'GROUP'){
+      let arr = []
+      for(let j=0;j<cultural[i].participants.length;++j){
+        arr=[]
+        const leader = await User.findOne({_id:cultural[i].participants[j]['team_leader']})
+        cultural[i].participants[j]['team_leader_details'] = leader
+        for(let k=0;k<cultural[i].participants[j]['members'].length;++k){
+          const leader = await User.findOne({_id:cultural[i].participants[j]['members'][k]})
+          arr.push(leader)
+        }
+        cultural[i].participants[j]['team_members_details'] = arr
+      }
+    }
+  }
+  
+  res.status(StatusCodes.OK).json({res:"Success",data:cultural})
 }
 
 const getIndividualCulturalEvent = async(req,res)=>{
