@@ -790,11 +790,14 @@ const purchaseToken = async (req, res) => {
 };
 
 const getList = async (req, res) => {
-  const { enrolment } = req.query;
+  const { enrolment,eid } = req.query;
   let allUsers = await User.find({
     enrolment: { $regex: enrolment, $options: "i" },
   });
-  res.status(StatusCodes.OK).json({ res: "success", data: allUsers });
+  allUsers = allUsers.filter((user)=>{
+    return !(eid in user.teams);
+  })
+  res.status(StatusCodes.OK).json({ res: "success",nhits:allUsers.length, data: allUsers });
 };
 
 //cultural
@@ -1016,7 +1019,23 @@ const registerSoloFlagship = async (req, res) => {
 };
 
 const participateFlagshipSolo = async (req, res) => {
-  console.log("sammmmm");
+  const {uid,eid} = req.body;
+  const event = await FlagshipEvents.findOne({_id:eid});
+  const participants = event.participants;
+  if(participants.includes(uid)){
+    res.status(StatusCodes.OK).json({res:"success",flag:false,data:"You have already registered in this event!"});
+  }
+  else{
+    const user_event = await UserEvent.create({
+      userId:uid,
+      eventid:eid,
+      payment_status:"NEW",
+      payment_mode:"OFFLINE",
+      category:"FLAGSHIP",
+      price:event.price
+    })
+    res.status(StatusCodes.OK).json({res:"success",flag:true,data:user_event});
+  }
 };
 
 module.exports = {

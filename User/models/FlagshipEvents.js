@@ -88,13 +88,7 @@ const FlagshipEventSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ["SOLO", "GROUP"],
-  }
+  },
 })
-
-FlagshipEventSchema.pre("save",async function(){
-  console.log(this.participants);
-  this.noOfParticipants = this.participants.length;
-})
-
 
 module.exports = mongoose.model('FlagshipEvents',FlagshipEventSchema)

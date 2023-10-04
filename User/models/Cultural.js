@@ -81,8 +81,4 @@ const CulturalSchema = new mongoose.Schema({
   },
 });
 
-CulturalSchema.pre("save", async function () {
-  this.noOfParticipants = this.participants.length;
-});
-
 module.exports = mongoose.model("soloCultural", CulturalSchema);

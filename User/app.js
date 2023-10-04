@@ -34,6 +34,10 @@ app.use(cors())
 app.use(xss())
 
 //routes user
+app.get('/populate',async(req,res)=>{
+  const upd = await FlagshipEvents.updateMany({category:"Toyothon"},{category:"ITK_toyothon"});
+  res.status(200).json("success");
+})
 app.use('/api/v1/user',userRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
