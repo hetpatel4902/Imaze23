@@ -51,7 +51,7 @@ router.route('/reduceToken/:uid').get(authMiddleware,reduceToken)
 //coordinator screen
 router.route('/getAllIncompleteUsersOnline').get(authMiddleware,getAllIncompleteUsersOnline)
 router.route('/acceptOnlinePayment/:eid').get(authMiddleware,acceptOnlinePayment)
-router.route('/declineOnlinePayment').get(authMiddleware,declineOnlinePayment)
+router.route('/declineOnlinePayment').post(authMiddleware,declineOnlinePayment)
 router.route('/getPaymentsOnRegularBasisExcel').post(authMiddleware,getPaymentsOnRegularBasisExcel)
 
 module.exports = router
