@@ -25,7 +25,29 @@ const eventFetch = async (req,res) => {
     throw new BadRequestError('Please provide Event id')
   }
   const event = await Event.findOne({_id:eid})
-  res.status(StatusCodes.OK).json({res:'Success',data:event})
+  const events = JSON.parse(JSON.stringify(event))
+  let details = []
+  if(events.type == 'SOLO'){
+    for(let i=0;i<events.participants.length;++i){
+      const user = await User.findOne({_id:events.participants[i]})
+      details.push(user)
+    }
+    events['details'] = details
+  }
+  else if(events.type == 'GROUP'){
+    let arr = []
+    for(let i=0;i<events.participants.length;++i){
+      arr=[]
+      const leader = await User.findOne({_id:events.participants[i]['team_leader']})
+      events.participants[i]['team_leader_details'] = leader
+      for(let j=0;j<events.participants[i]['members'].length;++j){
+        const leader = await User.findOne({_id:events.participants[i]['members'][j]})
+        arr.push(leader)
+      }
+      events.participants[i]['team_members_details'] = arr
+    }
+  }
+  res.status(StatusCodes.OK).json({res:'Success',data:events})
 }
 
 const participantList = async (req,res) => {
