@@ -710,6 +710,7 @@ const getAllCulturalEvents = async(req,res)=>{
   details = []
   let cultural = JSON.parse(JSON.stringify(culture)); 
   for(let i=0;i<cultural.length;++i){
+    details = []
     if(cultural[i].type == 'SOLO'){
       for(let j=0;j<cultural[i].participants.length;++j){
         const user = await User.findOne({_id:cultural[i].participants[j]})
