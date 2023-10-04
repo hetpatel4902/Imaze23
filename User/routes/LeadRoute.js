@@ -1,8 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const authMiddleware = require('../middleware/authentication')
+const authMiddleware = require('../middleware/authmiddleware')
 
-const {eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,showEventOfflineForUser,verifyEventOfflineOTP,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel,verifiedOfflineEvent,rejectOfflineEvent,getIndividualCulturalEvent,getAllCulturalEvents,getCulturalParticipantExcel,getIdeathonEvents,getIndividualFlagshipEvent,getFlagshipAttendance,setFlagshipAttendance,getFlagshipParticipantExcel,getFlagshipAttendanceExcel,getToyothonEvents,getUserDetails,reduceToken,getAllIncompleteUsersOnline,acceptOnlinePayment,declineOnlinePayment,getPaymentsOnRegularBasisExcel} = require('../controller/LeadController')
+const {eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,showEventOfflineForUser,verifyEventOfflineOTP,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel,verifiedOfflineEvent,rejectOfflineEvent,getIndividualCulturalEvent,getAllCulturalEvents,getCulturalParticipantExcel,getIdeathonEvents,getIndividualFlagshipEvent,getFlagshipAttendance,setFlagshipAttendance,getFlagshipParticipantExcel,getFlagshipAttendanceExcel,getToyothonEvents,getUserDetails,reduceToken,getAllIncompleteUsersOnline,acceptOnlinePayment,declineOnlinePayment,getPaymentsOnRegularBasisExcel} = require('../controllers/LeadController')
+const {loginLeads} = require('../controllers/Leads Auth')
+
+//login
+router.route('/loginLeads').post(loginLeads)
 
 router.route('/eventFetch/:eid').get(authMiddleware,eventFetch)
 router.route('/participantList/:eid').get(authMiddleware,participantList)

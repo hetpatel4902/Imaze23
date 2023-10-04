@@ -25,7 +25,29 @@ const eventFetch = async (req,res) => {
     throw new BadRequestError('Please provide Event id')
   }
   const event = await Event.findOne({_id:eid})
-  res.status(StatusCodes.OK).json({res:'Success',data:event})
+  const events = JSON.parse(JSON.stringify(event))
+  let details = []
+  if(events.type == 'SOLO'){
+    for(let i=0;i<events.participants.length;++i){
+      const user = await User.findOne({_id:events.participants[i]})
+      details.push(user)
+    }
+    events['details'] = details
+  }
+  else if(events.type == 'GROUP'){
+    let arr = []
+    for(let i=0;i<events.participants.length;++i){
+      arr=[]
+      const leader = await User.findOne({_id:events.participants[i]['team_leader']})
+      events.participants[i]['team_leader_details'] = leader
+      for(let j=0;j<events.participants[i]['members'].length;++j){
+        const leader = await User.findOne({_id:events.participants[i]['members'][j]})
+        arr.push(leader)
+      }
+      events.participants[i]['team_members_details'] = arr
+    }
+  }
+  res.status(StatusCodes.OK).json({res:'Success',data:events})
 }
 
 const participantList = async (req,res) => {
@@ -151,17 +173,25 @@ const showEventOfflineForUser = async (req,res) => {
   if(!user){
     throw new BadRequestError('Please provide Valid Username')
   }
-  const event = await UserEvent.findOne({userId:user._id,payment_status:'INCOMPLETE',payment_mode:'OFFLINE'})
-  if(!event){
-    throw new BadRequestError('Please provide Valid Details')
-  }
+  const even = await UserEvent.find({userId:user._id,payment_status:'INCOMPLETE',payment_mode:'OFFLINE'})
+  const event = JSON.parse(JSON.stringify(even))
   for(let i=0;i<event.length;++i){
-    const response = await Event.findOne({_id:event[i].eventid})
+    let response = {}
+    if(event[i].category == 'FLAGSHIP'){
+      response = await Flagship.findOne({_id:event[i].eventid})
+    }
+    else if(event[i].category == 'CULTURAL'){
+      response = await Cultural.findOne({_id:event[i].eventid})
+    }
+    else if(event[i].category == 'NORMAL'){
+      response = await Event.findOne({_id:event[i].eventid})
+    }
     event[i].name = response.name
   }
   obj={}
   obj.event = event
-  const combo = await Combos.find({userId:user._id,payment_status:'INCOMPLETE',payment_mode:'OFFLINE'})
+  const comb = await Combos.find({userId:user._id,payment_status:'INCOMPLETE',payment_mode:'OFFLINE'})
+  const combo = JSON.parse(JSON.stringify(comb))
   for(let i=0;i<combo.length;++i){
     let name=[]
     for(let j=0;j<combo[i].event.length;++j){
@@ -171,7 +201,7 @@ const showEventOfflineForUser = async (req,res) => {
     combo[i].name = name
   }
   obj.combo = combo
-  res.status(StatusCodes.OK).json({res:"Success",data:event})
+  res.status(StatusCodes.OK).json({res:"Success",data:obj})
 }
 
 const verifiedOfflineEvent = async(req,res)=>{
@@ -684,8 +714,34 @@ const eventAttendedExcel = async (req,res) => {
 }
 
 const getAllCulturalEvents = async(req,res)=>{
-  const cutural = await Cultural.find({})
-  res.status(StatusCodes.OK).json({res:"Success",data:cutural})
+  const culture = await Cultural.find({})
+  details = []
+  let cultural = JSON.parse(JSON.stringify(culture)); 
+  for(let i=0;i<cultural.length;++i){
+    details = []
+    if(cultural[i].type == 'SOLO'){
+      for(let j=0;j<cultural[i].participants.length;++j){
+        const user = await User.findOne({_id:cultural[i].participants[j]})
+        details.push(user)
+      }
+      cultural[i]['details'] = details
+    }
+    else if(cultural[i].type == 'GROUP'){
+      let arr = []
+      for(let j=0;j<cultural[i].participants.length;++j){
+        arr=[]
+        const leader = await User.findOne({_id:cultural[i].participants[j]['team_leader']})
+        cultural[i].participants[j]['team_leader_details'] = leader
+        for(let k=0;k<cultural[i].participants[j]['members'].length;++k){
+          const leader = await User.findOne({_id:cultural[i].participants[j]['members'][k]})
+          arr.push(leader)
+        }
+        cultural[i].participants[j]['team_members_details'] = arr
+      }
+    }
+  }
+  
+  res.status(StatusCodes.OK).json({res:"Success",data:cultural})
 }
 
 const getIndividualCulturalEvent = async(req,res)=>{

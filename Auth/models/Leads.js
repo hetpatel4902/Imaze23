@@ -23,7 +23,7 @@ const LeadsSchema = new mongoose.Schema({
   },
   type:{
     type:String,
-    required:[true,'Please provide type'],
+    // required:[true,'Please provide type'],
     enum:['CULTURAL','FLAGSHIP','NORMAL']
   }
   

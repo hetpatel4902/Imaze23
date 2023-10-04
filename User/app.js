@@ -17,6 +17,7 @@ const authmiddleware = require('./middleware/authmiddleware')
 
 // routers
 const userRouter =  require('./routes/userRouter')
+const leadRoute = require('./routes/LeadRoute')
 
 
 // error handler
@@ -42,6 +43,7 @@ app.get("/clean",async(req,res)=>{
   res.json({data:use.length})
 })
 app.use('/api/v1/user',userRouter);
+app.use('/api/v1/lead',leadRoute)
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

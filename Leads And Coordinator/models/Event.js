@@ -4,7 +4,25 @@ require('dotenv').config()
 const EventSchema = new mongoose.Schema({
   category:{
     type:String,
+    enum:["Tech","NonTech","Workshop"],
     required:[true,'Please provide Category']
+  },
+  event_type:{
+    type:String,
+    default:"NORMAL"
+  },
+  type:{
+    type:String,
+    enum:["SOLO","GROUP"]
+  },
+  min_members:{
+    type:Number,
+  },
+  max_members:{
+    type:Number,
+  },
+  title:{
+    type:String
   },
   name:{
     type:String,
