@@ -6,6 +6,8 @@ const {BadRequestError,UnauthenticatedError} = require('../errors/index')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const Flagship = require('../models/FlagshipEvents')
+const Event = require('../models/Event')
+const Cultural = require('../models/Cultural')
 
 const registerLeads = async (req,res) => {
   const {name,email,password}=req.body
@@ -31,12 +33,24 @@ const loginLeads = async (req,res) => {
     throw new UnauthenticatedError('Invalid Credentials')
   }
   const token = lead.createJWT()
-  name = ''
-  if(lead?.type=='FLAGSHIP'){
-    const event = await Flagship.findOne({_id:lead?.eventId})
-    name = event.category
+  let type = ''
+  let category = ''
+  if(lead.type == 'NORMAL'){
+    const event = await Event.findOne({_id:lead.eventId})
+    category = 'NORMAL'
+    type = event.type
   }
-  res.status(StatusCodes.CREATED).json({leadid:lead._id,token,type:lead?.type,eid:lead?.eventId,name})
+  else if(lead.type == 'FLAGSHIP'){
+    const event = await Flagship.findOne({_id:lead.eventId})
+    category = 'FLAGSHIP'
+    type = event.type
+  }
+  else if(lead.type == 'CULTURAL'){
+    const event = await Cultural.findOne({_id:lead.eventId})
+    category = 'CULTURAL'
+    type = event.type
+  }
+  res.status(StatusCodes.CREATED).json({leadid:lead._id,token,type,eid:lead?.eventId,category})
 }
 
 module.exports = {
