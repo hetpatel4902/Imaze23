@@ -4,8 +4,21 @@ require('dotenv').config()
 const FlagshipEventSchema = new mongoose.Schema({
   category:{//ideathon , toyothon, 
     type:String,
-    enum:["Ideathon","Toyothon","HappyStreet"],
+    enum:["Ideathon","ITK_toyothon","ITK_workshop","ITK_exhibition","ITK_sa","HappyStreet"],
     required:[true,'Please provide Category']
+  },
+  title:{
+    type:String
+  },
+  event_type:{
+    type:String,
+    default:"FLAGSHIP"
+  },
+  min_members:{
+    type:Number,
+  },
+  max_members:{
+    type:Number,
   },
   tokens:{
     type:Number,
@@ -47,16 +60,17 @@ const FlagshipEventSchema = new mongoose.Schema({
     type:Number,
     required:[true,'Please provide Total Number of Winners']
   },
-  participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}]
-    type:[Object],
+  participants:{//[{team name:,team leader:id,members:[ids],idcard:,poster:}] -> if group
+    //[object id] if  solo
+    type:[],
     default:[]
   },
   winner:{//[{team name:,members:[ids]}]
-    type:[Object],
+    type:[],
     default:[]
   },
   attendance:{//[{team name:,members:[ids]}]
-    type:[Object],
+    type:[],
     default:[]
   },
   maxparticipants:{

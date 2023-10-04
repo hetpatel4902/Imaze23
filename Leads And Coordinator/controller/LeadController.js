@@ -49,12 +49,7 @@ const alreadyAttendedUser = async (req,res) => {
     throw new BadRequestError('Please provide Event id')
   }
   const event = await Event.findOne({_id:eid})
-  const arr=[]
-  for(var i=0;i<event?.attendance.length;++i){
-    const user = await User.findOne({_id:event?.attendance[i]})
-    arr.push(user)
-  }
-  res.status(StatusCodes.OK).json({res:"Success",data:arr})
+  res.status(StatusCodes.OK).json({res:"Success",data:event})
 
 }
 
@@ -185,9 +180,12 @@ const verifiedOfflineEvent = async(req,res)=>{
   if(name == 'COMBO'){
     const d = new Date();
     let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-    const response = await Combos.findOneAndUpdate({_id},{payment_status:'COMPLETED'},{ new: true, runValidators: true })
+    const response = await Combos.findOneAndUpdate({_id},{payment_status:'COMPLETED',date},{ new: true, runValidators: true })
     for(let i=0;i<response.event.length;++i){
       const eventdetails = await Event.findOne({_id:response.event[i]})
+      if(eventdetails.isAvailable == false){
+        throw new BadRequestError("This event is full")
+      }
       if(eventdetails.category == 'Tech'){
         points+=60
       }
@@ -212,10 +210,13 @@ const verifiedOfflineEvent = async(req,res)=>{
   else if(name=='EVENT'){
     const d = new Date();
     let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-    const userevent = await UserEvent.findOneAndUpdate({_id},{payment_status:'COMPLETED'},{ new: true, runValidators: true })
+    const userevent = await UserEvent.findOneAndUpdate({_id},{payment_status:'COMPLETED',date},{ new: true, runValidators: true })
     let points = 0
     if(userevent.category == 'NORMAL'){
       const eventdetails = await Event.findOne({_id:userevent.eventid})
+      if(eventdetails.isAvailable == false){
+        throw new BadRequestError("This event is full")
+      }
       if(eventdetails.category == 'Tech'){
         points=60
       }
@@ -225,22 +226,50 @@ const verifiedOfflineEvent = async(req,res)=>{
       else if(eventdetails.category == 'Workshop'){
         points=80
       }
-      const participants = [...eventdetails.participants,userevent.userId]
-      eventdetails.participants = participants
-      eventdetails.noOfParticipants+=1
-      if(eventdetails.noOfParticipants>=eventdetails.maxparticipants){
-        eventdetails.isAvailable = false
+      if(eventdetails.type == 'SOLO'){
+        const participants = [...eventdetails.participants,userevent.userId]
+        eventdetails.participants = participants
+        eventdetails.noOfParticipants+=1
+        if(eventdetails.noOfParticipants>=eventdetails.maxparticipants){
+          eventdetails.isAvailable = false
+        }
+        const updatedevent = await Event.findOneAndUpdate({_id:userevent.eventid},eventdetails,{ new: true, runValidators: true })
+        const user = await User.findOne({_id:userevent.userId})
+        points += user?.coins ?? 0
+        user.coins=points
+        const updateduser = await User.findOneAndUpdate({_id:userevent.userId},user,{ new: true, runValidators: true })
       }
-      const updatedevent = await Event.findOneAndUpdate({_id:userevent.eventid},eventdetails,{ new: true, runValidators: true })
-      const user = await User.findOne({_id:userevent.userId})
-      points += user?.coins ?? 0
-      user.coins=points
-      const updateduser = await User.findOneAndUpdate({_id:userevent.userId},user,{ new: true, runValidators: true })
+      else{
+        //for leader
+        const leader = await User.findOne({_id:userevent.team['team_leader']})
+        points += leader?.coins ?? 0
+        leader.coins=points
+        leader.teams[userevent.eventid] = userevent.team
+        const updated_leader = await User.findOneAndUpdate({_id:userevent.team['team_leader']},leader,{ new: true, runValidators: true })
+        //for team members
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          points += member?.coins ?? 0
+          member.coins=points
+          member.teams[userevent.eventid] = userevent.team
+          const updated_leader = await User.findOneAndUpdate({_id:userevent.team['members'][i]},member,{ new: true, runValidators: true })
+        }
+        const participants = [...eventdetails.participants,userevent.team]
+        eventdetails.participants = participants
+        eventdetails.noOfParticipants+=1
+        if(eventdetails.noOfParticipants>=eventdetails.maxparticipants){
+          eventdetails.isAvailable = false
+        }
+        const updatedevent = await Event.findOneAndUpdate({_id:userevent.eventid},eventdetails,{ new: true, runValidators: true })
+      }
     }
     else if(userevent.category == 'FLAGSHIP'){
       const flagship = await Flagship.findOne({_id:userevent.eventid})
+      if(flagship.isAvailable == false){
+        throw new BadRequestError("This event is full")
+      }
       points = 80
-      if(Object.keys(userevent.team).length != 0){
+      if(flagship.type == 'GROUP'){
         //for leader
         const leader = await User.findOne({_id:userevent.team['team_leader']})
         points += leader?.coins ?? 0
@@ -257,7 +286,7 @@ const verifiedOfflineEvent = async(req,res)=>{
         }
         let participants = [...flagship.participants,userevent.team]
         flagship.participants = participants
-        flagship.noOfParticipants += userevent.team['members'].length + 1
+        flagship.noOfParticipants += 1
         if(flagship.noOfParticipants>=flagship.maxparticipants){
           flagship.isAvailable = false
         }
@@ -279,9 +308,12 @@ const verifiedOfflineEvent = async(req,res)=>{
     }
     else if(userevent.category == 'CULTURAL'){
       const cultural = await Cultural.findOne({_id:userevent.eventid})
+      if(cultural.isAvailable == false){
+        throw new BadRequestError("This event is full")
+      }
       points = 60
       console.log(Object.keys(userevent.team).length)
-      if( Object.keys(userevent.team).length != 0 ){
+      if( cultural.type == 'GROUP' ){
         //for leader
         const leader = await User.findOne({_id:userevent.team['team_leader']})
         points += leader?.coins ?? 0
@@ -298,7 +330,7 @@ const verifiedOfflineEvent = async(req,res)=>{
         }
         let participants = [...cultural.participants,userevent.team]
         cultural.participants = participants
-        cultural.noOfParticipants += userevent.team['members'].length + 1
+        cultural.noOfParticipants += 1
         if(cultural.noOfParticipants>=cultural.maxparticipants){
           cultural.isAvailable = false
         }
@@ -407,7 +439,8 @@ const eventParticipantExcel = async (req,res) => {
   if(!event){
     throw new BadRequestError('Please provide Valid event id')
   }
-  let arr = [];
+  if(event.type == 'SOLO'){
+    let arr = [];
   let headerColumns = [
     "Name",
     "Email",
@@ -448,6 +481,78 @@ const eventParticipantExcel = async (req,res) => {
     const base64String = buffer.toString('base64');
     url = await uploadImageToS3(`${event.name} participants.xlsx`, base64String);
     console.log(url)
+  }
+  else{
+    let arr = [];
+  let headerColumns = [
+    "Team Name",
+    "Leader Name",
+    "Leader Email",
+    "Leader Phone Number",
+    "Leader Enrollment",
+    "Leader Year",
+    "Leader Branch",
+    "Leader College",
+    "Number of Participants",
+    "Member 1 Name",
+    "Member 1 phone number",
+    "Member 1 email",
+    "Member 2 Name",
+    "Member 2 phone number",
+    "Member 2 email",
+    "Member 3 Name",
+    "Member 3 phone number",
+    "Member 3 email",
+    "Member 4 Name",
+    "Member 4 phone number",
+    "Member 4 email",
+    "Member 5 Name",
+    "Member 5 phone number",
+    "Member 5 email",
+    "Member 6 Name",
+    "Member 6 phone number",
+    "Member 6 email"
+  ];
+  for(var i=0;i<event.participants.length;++i){
+    let obj={}
+    const user = await User.findOne({_id:event.participants[i]['team_leader']})
+    obj.teamname = event.participants[i]?.team_name;
+    obj.leadername=user?.name;
+    obj.leaderemail = user?.email
+    obj.leaderphonenumber = user?.phonenumber;
+    obj.leaderenrollment = user?.enrolment
+    obj.leaderyear = user?.year
+    obj.leaderbranch = user?.branch
+    obj.leadercollege = user?.college
+    obj.numberofparticipants = 1 + event.participants[i]['members'].length
+    for(let j=0;j<event.participants[i]['members'].length;++j){
+      const member = await User.findOne({_id:event.participants[i]['members'][j]})
+      obj[`member_name_${j+1}`] = member?.name
+      obj[`member_phone_number_${j+1}`] = member?.phonenumber
+      obj[`member_email_${j+1}`] = member?.email
+    }
+    arr.push(obj)
+  };
+  
+    const wb = new xl.Workbook();
+    const ws = wb.addWorksheet(event.name+"_participants");
+    let colIndex = 1;
+    headerColumns.forEach((item) => {
+      ws.cell(1, colIndex++).string(item);
+    });
+    let rowIndex = 2;
+    arr.forEach((item) => {
+      let columnIndex = 1;
+      Object.keys(item).forEach((colName) => {
+        ws.cell(rowIndex, columnIndex++).string(item[colName]?.toString());
+      });
+      rowIndex++;
+    });
+    const buffer = await wb.writeToBuffer();
+    const base64String = buffer.toString('base64');
+    url = await uploadImageToS3(`${event.name} participants.xlsx`, base64String);
+    console.log(url)
+  }
     res.status(StatusCodes.OK).json({res:"Success",data:url})
 }
 
@@ -460,7 +565,8 @@ const eventAttendedExcel = async (req,res) => {
   if(!event){
     throw new BadRequestError('Please provide Valid event id')
   }
-  let arr = [];
+  if(event.type == 'SOLO'){
+    let arr = [];
   let headerColumns = [
     "Name",
     "Email",
@@ -485,7 +591,7 @@ const eventAttendedExcel = async (req,res) => {
   };
 
     const wb = new xl.Workbook();
-    const ws = wb.addWorksheet(event.name+"_attendees");
+    const ws = wb.addWorksheet(event.name+"_attendance");
     let colIndex = 1;
     headerColumns.forEach((item) => {
       ws.cell(1, colIndex++).string(item);
@@ -500,9 +606,81 @@ const eventAttendedExcel = async (req,res) => {
     });
     const buffer = await wb.writeToBuffer();
     const base64String = buffer.toString('base64');
-    url = await uploadImageToS3(`${event.name} participants.xlsx`, base64String);
+    url = await uploadImageToS3(`${event.name} attendance.xlsx`, base64String);
     console.log(url)
-    res.status(StatusCodes.OK).json({res:"Success",data:url})
+  }
+  else{
+    let arr = [];
+  let headerColumns = [
+    "Team Name",
+    "Leader Name",
+    "Leader Email",
+    "Leader Phone Number",
+    "Leader Enrollment",
+    "Leader Year",
+    "Leader Branch",
+    "Leader College",
+    "Number of Participants",
+    "Member 1 Name",
+    "Member 1 phone number",
+    "Member 1 email",
+    "Member 2 Name",
+    "Member 2 phone number",
+    "Member 2 email",
+    "Member 3 Name",
+    "Member 3 phone number",
+    "Member 3 email",
+    "Member 4 Name",
+    "Member 4 phone number",
+    "Member 4 email",
+    "Member 5 Name",
+    "Member 5 phone number",
+    "Member 5 email",
+    "Member 6 Name",
+    "Member 6 phone number",
+    "Member 6 email"
+  ];
+  for(var i=0;i<event.attendance.length;++i){
+    let obj={}
+    const user = await User.findOne({_id:event.attendance[i]['team_leader']})
+    obj.teamname = event.attendance[i]?.team_name;
+    obj.leadername=user?.name;
+    obj.leaderemail = user?.email
+    obj.leaderphonenumber = user?.phonenumber;
+    obj.leaderenrollment = user?.enrolment
+    obj.leaderyear = user?.year
+    obj.leaderbranch = user?.branch
+    obj.leadercollege = user?.college
+    obj.numberofparticipants = 1 + event.attendance[i]['members'].length
+    for(let j=0;j<event.attendance[i]['members'].length;++j){
+      const member = await User.findOne({_id:event.attendance[i]['members'][j]})
+      obj[`member_name_${j+1}`] = member?.name
+      obj[`member_phone_number_${j+1}`] = member?.phonenumber
+      obj[`member_email_${j+1}`] = member?.email
+    }
+    arr.push(obj)
+  };
+  
+    const wb = new xl.Workbook();
+    const ws = wb.addWorksheet(event.name+"_attendance");
+    let colIndex = 1;
+    headerColumns.forEach((item) => {
+      ws.cell(1, colIndex++).string(item);
+    });
+    let rowIndex = 2;
+    arr.forEach((item) => {
+      let columnIndex = 1;
+      Object.keys(item).forEach((colName) => {
+        ws.cell(rowIndex, columnIndex++).string(item[colName]?.toString());
+      });
+      rowIndex++;
+    });
+    const buffer = await wb.writeToBuffer();
+    const base64String = buffer.toString('base64');
+    url = await uploadImageToS3(`${event.name} attendance.xlsx`, base64String);
+    console.log(url)
+  }
+  res.status(StatusCodes.OK).json({res:"Success",data:url})
 }
 
 const getAllCulturalEvents = async(req,res)=>{
@@ -611,12 +789,13 @@ const getCulturalParticipantExcel = async(req,res)=>{
     }
     let rowIndex = 2;
 
-    for(let i=0;i<arr.length;++i){
-      let columnIndex = 1
-      for(let j=0;j<Object.keys(arr[i]).length;++j){
-        ws.cell(rowIndex, columnIndex++).string(arr[i][Object.keys(arr[i])[j]]?.toString());
-      }
-    }
+    arr.forEach((item) => {
+      let columnIndex = 1;
+      Object.keys(item).forEach((colName) => {
+        ws.cell(rowIndex, columnIndex++).string(item[colName]?.toString());
+      });
+      rowIndex++;
+    });
     
     const buffer = await wb.writeToBuffer();
     const base64String = buffer.toString('base64');
@@ -676,6 +855,7 @@ const getIndividualFlagshipEvent = async(req,res)=>{
   const {fid} = req.params
   const respond = await Flagship.findOne({_id:fid})
   const response = JSON.parse(JSON.stringify(respond))
+  details = []
   if(response.type == 'SOLO'){
     for(let i=0;i<response.participants.length;++i){
       const user = await User.findOne({_id:response.participants[i]})
@@ -696,7 +876,7 @@ const getIndividualFlagshipEvent = async(req,res)=>{
       response.participants[i]['team_members_details'] = arr
     }
   }
-  res.status(StatusCodes.OK).json({res:"Success"})
+  res.status(StatusCodes.OK).json({res:"Success",data:response})
 }
 
 const getFlagshipAttendance = async(req,res)=>{
@@ -727,6 +907,7 @@ const getFlagshipParticipantExcel = async(req,res)=>{
   let headerColumns = [
     "Team Name",
     "Leader Name",
+    "Project title",
     "Leader Branch",
     "Leader phone number",
     "Leader Year",
@@ -753,6 +934,7 @@ const getFlagshipParticipantExcel = async(req,res)=>{
     const user = await User.findOne({_id:event.participants[i]['team_leader']})
     obj.teamname = event.participants[i]?.team_name;
     obj.leadername=user?.name;
+    obj.title = event.participants[i].project_title
     obj.leaderbranch = user?.branch
     obj.leaderphonenumber = user?.phonenumber;
     obj.leaderyear = user?.year
@@ -766,7 +948,7 @@ const getFlagshipParticipantExcel = async(req,res)=>{
     }
     arr.push(obj)
   };
-
+    console.log(arr)
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet(event.name+"_participants");
     let colIndex = 1;
@@ -776,12 +958,13 @@ const getFlagshipParticipantExcel = async(req,res)=>{
     }
     let rowIndex = 2;
 
-    for(let i=0;i<arr.length;++i){
-      let columnIndex = 1
-      for(let j=0;j<Object.keys(arr[i]).length;++j){
-        ws.cell(rowIndex, columnIndex++).string(arr[i][Object.keys(arr[i])[j]]?.toString());
-      }
-    }
+    arr.forEach((item) => {
+      let columnIndex = 1;
+      Object.keys(item).forEach((colName) => {
+        ws.cell(rowIndex, columnIndex++).string(item[colName]?.toString());
+      });
+      rowIndex++;
+    });
     
     const buffer = await wb.writeToBuffer();
     const base64String = buffer.toString('base64');
@@ -896,12 +1079,13 @@ const getFlagshipAttendanceExcel = async(req,res)=>{
     }
     let rowIndex = 2;
 
-    for(let i=0;i<arr.length;++i){
-      let columnIndex = 1
-      for(let j=0;j<Object.keys(arr[i]).length;++j){
-        ws.cell(rowIndex, columnIndex++).string(arr[i][Object.keys(arr[i])[j]]?.toString());
-      }
-    }
+    arr.forEach((item) => {
+      let columnIndex = 1;
+      Object.keys(item).forEach((colName) => {
+        ws.cell(rowIndex, columnIndex++).string(item[colName]?.toString());
+      });
+      rowIndex++;
+    });
     
     const buffer = await wb.writeToBuffer();
     const base64String = buffer.toString('base64');
@@ -1018,6 +1202,288 @@ const acceptOnlinePayment = async(req,res)=>{
   res.status(StatusCodes.OK).json({res:"Success"})
 }
 
+const declineOnlinePayment = async(req,res)=>{
+  const {name,_id} = req.body
+  let points = 0
+  if(name == 'COMBO'){
+    const response = await Combos.findOneAndDelete({_id})
+    for(let i=0;i<response.event.length;++i){
+      const eventdetails = await Event.findOne({_id:response.event[i]})
+      if(eventdetails.category == 'Tech'){
+        points+=60
+      }
+      else if(eventdetails.category == 'NonTech'){
+        points+=40
+      }
+      else if(eventdetails.category == 'Workshop'){
+        points+=80
+      }
+      let index = eventdetails.participants.indexOf(response.userId);
+      if(index != -1) {
+        eventdetails.participants.splice(index, 1); // remove 1 element from index 
+      }
+      eventdetails.noOfParticipants-=1
+      if(eventdetails.noOfParticipants<eventdetails.maxparticipants){
+        eventdetails.isAvailable = true
+      }
+      const event = await Event.findOneAndUpdate({_id:response.event[i]},eventdetails,{ new: true, runValidators: true })
+    }
+    const userdetails = await User.findOne({_id:response.userId})
+    userdetails.coins-=points
+    if(userdetails.coins<=0){
+      userdetails.coins = 0
+    }
+    const user = await User.findOneAndUpdate({_id:response.userId},userdetails,{ new: true, runValidators: true })
+  }
+  else if(name=='EVENT'){
+    const userevent = await UserEvent.findOneAndDelete({_id})
+    let points = 0
+    if(userevent.category == 'NORMAL'){
+      const eventdetails = await Event.findOne({_id:userevent.eventid})
+      if(eventdetails.category == 'Tech'){
+        points=60
+      }
+      else if(eventdetails.category == 'NonTech'){
+        points=40
+      }
+      else if(eventdetails.category == 'Workshop'){
+        points=80
+      }
+      if(eventdetails.type == 'SOLO'){
+        let index = eventdetails.participants.indexOf(userevent.userId);
+        if(index != -1) {
+          eventdetails.participants.splice(index, 1); // remove 1 element from index 
+        }
+        eventdetails.noOfParticipants-=1
+        if(eventdetails.noOfParticipants<eventdetails.maxparticipants){
+          eventdetails.isAvailable = true
+        }
+        const updatedevent = await Event.findOneAndUpdate({_id:userevent.eventid},eventdetails,{ new: true, runValidators: true })
+        const user = await User.findOne({_id:userevent.userId})
+        user.coins-=points
+        if(user.coins<=0){
+          user.coins = 0
+        }
+        const updateduser = await User.findOneAndUpdate({_id:userevent.userId},user,{ new: true, runValidators: true })
+      }
+      else{
+        //for leader
+        const leader = await User.findOne({_id:userevent.team['team_leader']})
+        leader.coins-=points
+        if(leader.coins<=0){
+          leader.coins = 0
+        }
+        delete leader.teams[userevent.eventid]
+        const updated_leader = await User.findOneAndUpdate({_id:userevent.team['team_leader']},leader,{ new: true, runValidators: true })
+        //for team members
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          member.coins-=points
+          if(member.coins<=0){
+            member.coins = 0
+          }
+          delete member.teams[userevent.eventid]
+          const updated_leader = await User.findOneAndUpdate({_id:userevent.team['members'][i]},member,{ new: true, runValidators: true })
+        }
+        for(let i=0;i<eventdetails.participants.length;++i){
+          if(eventdetails.participants[i]['team_leader'] == userevent.team['team_leader']){
+            eventdetails.participants.splice(i, 1);
+            break;
+          }
+        }
+        eventdetails.noOfParticipants-=1
+        if(eventdetails.noOfParticipants<eventdetails.maxparticipants){
+          eventdetails.isAvailable = true
+        }
+        const updatedevent = await Event.findOneAndUpdate({_id:userevent.eventid},eventdetails,{ new: true, runValidators: true })
+      }
+    }
+    else if(userevent.category == 'FLAGSHIP'){
+      const flagship = await Flagship.findOne({_id:userevent.eventid})
+      points = 80
+      if(flagship.type == 'GROUP'){
+        //for leader
+        const leader = await User.findOne({_id:userevent.team['team_leader']})
+        leader.coins-=points
+        delete leader.teams[userevent.eventid]
+        const updated_leader = await User.findOneAndUpdate({_id:userevent.team['team_leader']},leader,{ new: true, runValidators: true })
+        //for team members
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          member.coins-=points
+          delete member.teams[userevent.eventid]
+          const updated_leader = await User.findOneAndUpdate({_id:userevent.team['members'][i]},member,{ new: true, runValidators: true })
+        }
+        for(let i=0;i<flagship.participants.length;++i){
+          if(flagship.participants[i]['team_leader'] == userevent.team['team_leader']){
+            flagship.participants.splice(i, 1);
+            break;
+          }
+        }
+        flagship.noOfParticipants -= 1
+        if(flagship.noOfParticipants<flagship.maxparticipants){
+          flagship.isAvailable = true
+        }
+        const updated_flagship = await Flagship.findOneAndUpdate({_id:userevent.eventid},flagship,{ new: true, runValidators: true })
+      }
+      else{
+        let index = flagship.participants.indexOf(userevent.userId);
+        if(index != -1) {
+          flagship.participants.splice(index, 1); // remove 1 element from index 
+        }
+        flagship.noOfParticipants-=1
+        if(flagship.noOfParticipants<flagship.maxparticipants){
+          flagship.isAvailable = true
+        }
+        const updatedevent = await Flagship.findOneAndUpdate({_id:userevent.eventid},flagship,{ new: true, runValidators: true })
+        const user = await User.findOne({_id:userevent.userId})
+        user.coins-=points
+        const updateduser = await User.findOneAndUpdate({_id:userevent.userId},user,{ new: true, runValidators: true })
+      }
+    }
+    else if(userevent.category == 'CULTURAL'){
+      const cultural = await Cultural.findOne({_id:userevent.eventid})
+      points = 60
+      if( cultural.type == 'GROUP' ){
+        //for leader
+        const leader = await User.findOne({_id:userevent.team['team_leader']})
+        leader.coins-=points
+        delete leader.teams[userevent.eventid]
+        const updated_leader = await User.findOneAndUpdate({_id:userevent.team['team_leader']},leader,{ new: true, runValidators: true })
+        //for team members
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          member.coins-=points
+          delete member.teams[userevent.eventid]
+          const updated_leader = await User.findOneAndUpdate({_id:userevent.team['members'][i]},member,{ new: true, runValidators: true })
+        }
+        for(let i=0;i<cultural.participants.length;++i){
+          if(cultural.participants[i]['team_leader'] == userevent.team['team_leader']){
+            cultural.participants.splice(i, 1);
+            break;
+          }
+        }
+        cultural.noOfParticipants -= 1
+        if(cultural.noOfParticipants<cultural.maxparticipants){
+          cultural.isAvailable = true
+        }
+        const updated_cultural = await Cultural.findOneAndUpdate({_id:userevent.eventid},cultural,{ new: true, runValidators: true })
+      }
+      else{
+        let index = cultural.participants.indexOf(userevent.userId);
+        if(index != -1) {
+          cultural.participants.splice(index, 1); // remove 1 element from index 
+        }
+        cultural.noOfParticipants-=1
+        if(cultural.noOfParticipants<cultural.maxparticipants){
+          cultural.isAvailable = true
+        }
+        const updatedevent = await Cultural.findOneAndUpdate({_id:userevent.eventid},cultural,{ new: true, runValidators: true })
+        const user = await User.findOne({_id:userevent.userId})
+        user.coins-=points
+        const updateduser = await User.findOneAndUpdate({_id:userevent.userId},user,{ new: true, runValidators: true })
+      }
+    }
+  }
+  res.status(StatusCodes.OK).json({res:"Success"})
+}
+
+const getPaymentsOnRegularBasisExcel = async(req,res)=>{
+  const {date} = req.body
+  const userevent = await UserEvent.find({date})
+  let url = ''
+  let headerColumns = [
+    "Name",
+    "Event",
+    "Enrollment",
+    "Phone number",
+    "Email",
+    "Price",
+    "Payment_mode",
+    "Payment_status",
+    "Purchase_type",
+    "transactionid"
+  ];
+  let arr = []
+  let obj={}
+  for(let i=0;i<userevent.length;++i){
+    obj={}
+    const user = await User.findOne({_id:userevent[i].userId})
+    let event = {}
+    if(userevent[i].category == 'NORMAL'){
+      event = await Event.findOne({_id:userevent[i].eventid})
+    }
+    else if(userevent[i].category == 'FLAGSHIP'){
+      event = await Flagship.findOne({_id:userevent[i].eventid})
+    }
+    else if(userevent[i].category == 'CULTURAL'){
+      event = await Cultural.findOne({_id:userevent[i].eventid})
+    }
+    obj.name = user?.name
+    obj.event = event?.name
+    obj.enrollment = user?.enrolment
+    obj.phoneno = user?.phonenumber
+    obj.email = user?.email
+    obj.price = userevent[i]?.price,
+    obj.payment_mode = userevent[i]?.payment_mode
+    obj.payment_status = userevent[i]?.payment_status
+    obj.purchase_type = 'Event'
+    if(userevent[i]?.payment_mode == 'ONLINE'){
+      obj.transactionid = userevent[i]?.transId
+    }
+    arr.push(obj)
+  }
+  const combos = await Combos.find({date})
+  let event = ''
+  for(let i=0;i<combos.length;++i){
+    obj={}
+    event = ''
+    for(let j=0;j<combos[i].event.length;++j){
+      const events = await Event.findOne({_id:combos[i].event[j]})
+      event += events.name
+      if(j!=combos[i].event.length - 1){
+        event += ','
+      }
+    }
+    const user = await User.findOne({_id:combos[i].userId})
+    obj.name = user?.name
+    obj.event = event
+    obj.enrollment = user?.enrolment
+    obj.phoneno = user?.phonenumber
+    obj.email = user?.email
+    obj.price = combos[i]?.price,
+    obj.payment_mode = combos[i]?.payment_mode
+    obj.payment_status = combos[i]?.payment_status
+    obj.purchase_type = combos[i].combotype + '_COMBO'
+    if(combos[i]?.payment_mode == 'ONLINE'){
+      obj.transactionid = combos[i]?.transId
+    }
+    arr.push(obj)
+  }
+  const wb = new xl.Workbook();
+    const ws = wb.addWorksheet(`${date} transactions`);
+    let colIndex = 1;
+    
+    for(let i=0;i<headerColumns.length;++i){
+      ws.cell(1, colIndex++).string(headerColumns[i]);
+    }
+    let rowIndex = 2;
+
+    arr.forEach((item) => {
+      let columnIndex = 1;
+      Object.keys(item).forEach((colName) => {
+        ws.cell(rowIndex, columnIndex++).string(item[colName]?.toString());
+      });
+      rowIndex++;
+    });
+    
+    const buffer = await wb.writeToBuffer();
+    const base64String = buffer.toString('base64');
+    url = await uploadImageToS3(`${date} transactions.xlsx`, base64String);
+    console.log(url)
+  res.status(StatusCodes.OK).json({res:"Success",data:url})
+}
+
 module.exports = {
-  eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,verifyEventOfflineOTP,showEventOfflineForUser,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel,verifiedOfflineEvent,rejectOfflineEvent,getAllCulturalEvents,getIndividualCulturalEvent,getCulturalParticipantExcel,getIdeathonEvents,getIndividualFlagshipEvent,getFlagshipAttendance,setFlagshipAttendance,getFlagshipParticipantExcel,getFlagshipAttendanceExcel,getToyothonEvents,getUserDetails,reduceToken,getAllIncompleteUsersOnline,acceptOnlinePayment
+  eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,verifyEventOfflineOTP,showEventOfflineForUser,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel,verifiedOfflineEvent,rejectOfflineEvent,getAllCulturalEvents,getIndividualCulturalEvent,getCulturalParticipantExcel,getIdeathonEvents,getIndividualFlagshipEvent,getFlagshipAttendance,setFlagshipAttendance,getFlagshipParticipantExcel,getFlagshipAttendanceExcel,getToyothonEvents,getUserDetails,reduceToken,getAllIncompleteUsersOnline,acceptOnlinePayment,declineOnlinePayment,getPaymentsOnRegularBasisExcel
 }
