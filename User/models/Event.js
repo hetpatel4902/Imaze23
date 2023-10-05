@@ -61,18 +61,15 @@ const EventSchema = new mongoose.Schema({
     required:[true,'Please provide Total Number of Winnners']
   },
   participants:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
+    type:[],
     default:[]
   },
   winner:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
+    type:[],
     default:[]
   },
   attendance:{
-    type:[mongoose.Types.ObjectId],
-    ref:"Users",
+    type:[],
     default:[]
   },
   maxparticipants:{

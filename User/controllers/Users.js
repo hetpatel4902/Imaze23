@@ -719,40 +719,102 @@ const payOnline = async (req, res) => {
     switch (evt.category) {
       case "NORMAL":
         const normal_event = await Event.findOne({ _id: evt.eventid });
-        normal_event.noOfParticipants = normal_event.noOfParticipants + 1;
-        normal_event.participants.push(uid);
-        if (normal_event.noOfParticipants === normal_event.maxparticipants) {
-          normal_event.isAvailable = false;
-        }
-        let add_coins = 0;
-        //update event
-        const upd_event = await Event.findOneAndUpdate(
-          { _id: evt.eventid },
-          normal_event,
-          { new: true }
-        );
+        switch (normal_event.type) {
+          case "SOLO":
+            normal_event.noOfParticipants = normal_event.noOfParticipants + 1;
+            normal_event.participants.push(uid);
+            if (
+              normal_event.noOfParticipants === normal_event.maxparticipants
+            ) {
+              normal_event.isAvailable = false;
+            }
+            let add_coins = 0;
+            //update event
+            const upd_event = await Event.findOneAndUpdate(
+              { _id: evt.eventid },
+              normal_event,
+              { new: true }
+            );
 
-        //adding respective coins to student's profile
-        switch (normal_event.category) {
-          case "Tech":
-            add_coins += 60;
+            //adding respective coins to student's profile
+            switch (normal_event.category) {
+              case "Tech":
+                add_coins += 60;
+                break;
+              case "NonTech":
+                add_coins += 40;
+                break;
+              case "Workshop":
+                add_coins += 80;
+                break;
+            }
+            const student = await User.findOne({ _id: uid });
+            const upd_student = await User.findOneAndUpdate(
+              { _id: uid },
+              {
+                coins: student.coins + add_coins,
+              }
+            );
+            res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
             break;
-          case "NonTech":
-            add_coins += 40;
-            break;
-          case "Workshop":
-            add_coins += 80;
+
+          case "GROUP":
+            const team = evt.team;
+            //adding participants to the event
+            normal_event.participants.push(team);
+            normal_event.noOfParticipants =
+              normal_event.noOfParticipants + 1;
+            if (normal_event.noOfParticipants === normal_event.maxparticipants) {
+              normal_event.isAvailable = false;
+            }
+            const upd_event_group = await Event.findOneAndUpdate(
+              { _id: evt.eventid },
+              normal_event
+            );
+
+            let add_coins_group = 0;
+            //adding coins to all the team members and adding team to teams
+            //adding respective coins to student's profile
+            switch (normal_event.category) {
+              case "Tech":
+                add_coins_group += 60;
+                break;
+              case "NonTech":
+                add_coins_group += 40;
+                break;
+              case "Workshop":
+                add_coins_group += 80;
+                break;
+            }
+            //team leader
+            const group_student = await User.findOne({ _id: uid });
+            let team_obj = group_student.teams;
+            team_obj[evt.eventid] = evt.team;
+            const upd_group_student = await User.findOneAndUpdate(
+              { _id: uid },
+              { coins: group_student.coins + add_coins_group, teams: team_obj },
+              { new: true }
+            );
+            //team members
+            for (let i = 0; i < team.members.length; i++) {
+              const group_student = await User.findOne({
+                _id: team.members[i],
+              });
+              let team_obj = group_student.teams;
+              team_obj[evt.eventid] = evt.team;
+              const upd_group_student = await User.findOneAndUpdate(
+                { _id: team.members[i] },
+                { coins: group_student.coins + add_coins_group, teams: team_obj },
+                { new: true }
+              );
+            }
+            res
+              .status(StatusCodes.OK)
+              .json({ res: "success", data: group_student });
             break;
         }
-        const student = await User.findOne({ _id: uid });
-        const upd_student = await User.findOneAndUpdate(
-          { _id: uid },
-          {
-            coins: student.coins + add_coins,
-          }
-        );
-        res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
         break;
+        
 
       case "FLAGSHIP":
         //there can be 2 categories : solo and group
@@ -1273,13 +1335,11 @@ const submitNormalGroup = async (req, res) => {
   //checking for same team name
   for (let i = 0; i < participants.length; i++) {
     if (participants[i].team_name === team_name) {
-      res
-        .status(StatusCodes.OK)
-        .json({
-          res: "success",
-          flag: false,
-          data: "Team name already exists!",
-        });
+      res.status(StatusCodes.OK).json({
+        res: "success",
+        flag: false,
+        data: "Team name already exists!",
+      });
       return;
     }
   }
