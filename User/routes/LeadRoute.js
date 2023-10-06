@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const authMiddleware = require('../middleware/authmiddleware')
 
-const {eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,showEventOfflineForUser,verifyEventOfflineOTP,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel,verifiedOfflineEvent,rejectOfflineEvent,getIndividualCulturalEvent,getAllCulturalEvents,getCulturalParticipantExcel,getIdeathonEvents,getIndividualFlagshipEvent,getFlagshipAttendance,setFlagshipAttendance,getFlagshipParticipantExcel,getFlagshipAttendanceExcel,getToyothonEvents,getUserDetails,reduceToken,getAllIncompleteUsersOnline,acceptOnlinePayment,declineOnlinePayment,getPaymentsOnRegularBasisExcel} = require('../controllers/LeadController')
+const {eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,showEventOfflineForUser,verifyEventOfflineOTP,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel,verifiedOfflineEvent,rejectOfflineEvent,getIndividualCulturalEvent,getAllCulturalEvents,getCulturalParticipantExcel,getIdeathonEvents,getIndividualFlagshipEvent,getFlagshipAttendance,setFlagshipAttendance,getFlagshipParticipantExcel,getFlagshipAttendanceExcel,getToyothonEvents,getUserDetails,reduceToken,getAllIncompleteUsersOnline,acceptOnlinePayment,declineOnlinePayment,getPaymentsOnRegularBasisExcel,getFlagshipEvent} = require('../controllers/LeadController')
 const {loginLeads} = require('../controllers/Leads Auth')
 
 //login
@@ -44,6 +44,7 @@ router.route('/setFlagshipAttendance/:fid').post(authMiddleware,setFlagshipAtten
 router.route('/getFlagshipParticipantExcel/:fid').get(authMiddleware,getFlagshipParticipantExcel)
 router.route('/getFlagshipAttendanceExcel/:fid').get(authMiddleware,getFlagshipAttendanceExcel)
 router.route('/getToyothonEvents').get(authMiddleware,getToyothonEvents)
+router.route('/getFlagshipEvent/:fid').get(authMiddleware,getFlagshipEvent)
 
 //happy street
 router.route('/reduceToken/:uid').get(authMiddleware,reduceToken)
