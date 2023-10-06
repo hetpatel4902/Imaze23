@@ -33,7 +33,7 @@ const Combos = require("./models/Combos")
 const s3 = require("./utils/s3")
 
 app.use(express.static(`${__dirname}/public`));
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
 app.use(helmet())
 app.use(cors())
 app.use(xss())
