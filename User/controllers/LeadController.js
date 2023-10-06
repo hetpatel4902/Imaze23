@@ -1235,7 +1235,7 @@ const getFlagshipAttendanceExcel = async(req,res)=>{
 }
 
 const getToyothonEvents = async(req,res)=>{
-  const response = await Flagship.find({category:'Toyothon'})
+  const response = await Flagship.find({category:'ITK_toyothon'})
   res.status(StatusCodes.OK).json({res:"Success",data:response})
 }
 
