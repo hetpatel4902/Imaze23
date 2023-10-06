@@ -257,6 +257,11 @@ const verifiedOfflineEvent = async(req,res)=>{
         points=80
       }
       if(eventdetails.type == 'SOLO'){
+        for(let i=0;i<eventdetails.participants.length;++i){
+          if(eventdetails.participants[i] == userevent.userId){
+            throw new BadRequestError("This participant is already registered in this event")
+          }
+        }
         const participants = [...eventdetails.participants,userevent.userId]
         eventdetails.participants = participants
         eventdetails.noOfParticipants+=1
@@ -351,6 +356,11 @@ const verifiedOfflineEvent = async(req,res)=>{
         const updated_flagship = await Flagship.findOneAndUpdate({_id:userevent.eventid},flagship,{ new: true, runValidators: true })
       }
       else{
+        for(let i=0;i<flagship.participants.length;++i){
+          if(flagship.participants[i] == userevent.userId){
+            throw new BadRequestError("This participant is already registered in this event")
+          }
+        }
         const participants = [...flagship.participants,userevent.userId]
         flagship.participants = participants
         flagship.noOfParticipants+=1
@@ -409,6 +419,11 @@ const verifiedOfflineEvent = async(req,res)=>{
         const updated_cultural = await Cultural.findOneAndUpdate({_id:userevent.eventid},cultural,{ new: true, runValidators: true })
       }
       else{
+        for(let i=0;i<cultural.participants.length;++i){
+          if(cultural.participants[i] == userevent.userId){
+            throw new BadRequestError("This participant is already registered in this event")
+          }
+        }
         const participants = [...cultural.participants,userevent.userId]
         cultural.participants = participants
         cultural.noOfParticipants+=1
