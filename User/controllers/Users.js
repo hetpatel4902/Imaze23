@@ -476,7 +476,7 @@ const getCertificate = async (req, res) => {
       `./certificates/certificate-${user.name}-${event.name}.pdf`
     )
   );
-  doc.image(`./${image_url}.jpg`, 0, 0, { width: 620, height: 800 });
+  doc.image(`./templates/${image_url}.jpg`, 0, 0, { width: 620, height: 800 });
   const angle = Math.PI * 28.7;
   doc.rotate(angle, { origin: [300, 248] });
   doc
