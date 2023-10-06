@@ -69,6 +69,11 @@ const UsersSchema = new mongoose.Schema({
   teams:{
     type:{},//{{eventid:{team details}}} the user is a member or a leader
     default:{}
+  },
+  university:{
+    type:String,
+    required:true,
+    default:''
   }
 });
 
