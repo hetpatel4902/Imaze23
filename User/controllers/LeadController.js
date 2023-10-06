@@ -280,6 +280,12 @@ const verifiedOfflineEvent = async(req,res)=>{
         if(userevent.eventid in leader.teams){
           throw new BadRequestError("Players are repeated")
         }
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          if(userevent.eventid in member.teams){
+            throw new BadRequestError("Players are repeated")
+          }
+        }
         points += leader?.coins ?? 0
         leader.coins=points
         leader.teams[userevent.eventid] = userevent.team
@@ -287,9 +293,6 @@ const verifiedOfflineEvent = async(req,res)=>{
         //for team members
         for(let i=0;i<userevent.team['members'].length;++i){
           const member = await User.findOne({_id:userevent.team['members'][i]})
-          if(userevent.eventid in member.teams){
-            throw new BadRequestError("Players are repeated")
-          }
           points += member?.coins ?? 0
           member.coins=points
           member.teams[userevent.eventid] = userevent.team
@@ -321,6 +324,12 @@ const verifiedOfflineEvent = async(req,res)=>{
         if(userevent.eventid in leader.teams){
           throw new BadRequestError("Players are repeated")
         }
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          if(userevent.eventid in member.teams){
+            throw new BadRequestError("Players are repeated")
+          }
+        }
         points += leader?.coins ?? 0
         leader.coins=points
         leader.teams[userevent.eventid] = userevent.team
@@ -328,9 +337,6 @@ const verifiedOfflineEvent = async(req,res)=>{
         //for team members
         for(let i=0;i<userevent.team['members'].length;++i){
           const member = await User.findOne({_id:userevent.team['members'][i]})
-          if(userevent.eventid in member.teams){
-            throw new BadRequestError("Players are repeated")
-          }
           points += member?.coins ?? 0
           member.coins=points
           member.teams[userevent.eventid] = userevent.team
@@ -376,6 +382,12 @@ const verifiedOfflineEvent = async(req,res)=>{
         if(userevent.eventid in leader.teams){
           throw new BadRequestError("Players are repeated")
         }
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          if(userevent.eventid in member.teams){
+            throw new BadRequestError("Players are repeated")
+          }
+        }
         points += leader?.coins ?? 0
         leader.coins=points
         leader.teams[userevent.eventid] = userevent.team
@@ -383,9 +395,6 @@ const verifiedOfflineEvent = async(req,res)=>{
         //for team members
         for(let i=0;i<userevent.team['members'].length;++i){
           const member = await User.findOne({_id:userevent.team['members'][i]})
-          if(userevent.eventid in member.teams){
-            throw new BadRequestError("Players are repeated")
-          }
           points += member?.coins ?? 0
           member.coins=points
           member.teams[userevent.eventid] = userevent.team
