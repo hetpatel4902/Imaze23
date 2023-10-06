@@ -27,6 +27,9 @@ const Users = require('./models/Users');
 const Event = require('./models/Event');
 const Cultural = require('./models/Cultural');
 const FlagshipEvents = require('./models/FlagshipEvents');
+const Leads = require("./models/Leads")
+const UserEvents = require("./models/UserEvent")
+const Combos = require("./models/Combos")
 
 app.use(express.static(`${__dirname}/public`));
 app.use(express.json());
@@ -34,11 +37,12 @@ app.use(helmet())
 app.use(cors())
 app.use(xss())
 
-//routes user
-app.get('/populate',async(req,res)=>{
-  const upd = await FlagshipEvents.updateMany({category:"Toyothon"},{category:"ITK_toyothon"});
-  res.status(200).json("success");
-})
+// //routes user
+// app.get("/clean",async(req,res)=>{
+//   // const upd = await Cultural.updateMany({},{participants:[],noOfParticipants:0});
+//   const d = await  Combos.deleteMany({});
+//   res.json("success")
+// })
 app.use('/api/v1/user',userRouter);
 app.use('/api/v1/lead',leadRoute)
 app.use(notFoundMiddleware);

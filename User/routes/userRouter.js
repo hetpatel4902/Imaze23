@@ -13,7 +13,7 @@ const {
   getEventsCategorized,
   getUserEvents,
   getStaticCombos,
-  checkUserEvent,
+  participateNormalSolo,
   checkCombo,
   buttonVisibility,
   getCertificate,
@@ -26,12 +26,15 @@ const {
   payOnline,
   purchaseToken,
   getList,
-  participateGroup,
+  participateCulturalGroup,
   participateSolo,
   submitGroup,
+  participateFlagshipGroup,
   submitFlagship,
   registerSoloFlagship,
-  participateFlagshipSolo
+  participateFlagshipSolo,
+  participateNormalGroup,
+  submitNormalGroup
 } = require("../controllers/Users");
 
 //auth
@@ -45,18 +48,26 @@ router.route("/events/category").get(authmiddleware, getEventsCategorized); //ge
 router.route("/events/:eid").get(authmiddleware, getOneEvent); //get event details [:eid = event id] [?type=NORMAL/FLAGSHIP/CULTURAL]
 router.route("/events/user/:uid").get(authmiddleware, getUserEvents); //get events bought by the user, both combos and individual events [:uid = user id]
 
-//cultural
-router.route("/cultural/list").get(authmiddleware,getList) //For drop down when selecting team mates,  req.body = {enrolment}
+//normal -> check for clashing
+router.route("/normal/list").get(authmiddleware,getList) //For drop down when selecting team mates, ?enrolment=&eid=
+//making sure that the student only participates in either  valorant or bgmi
+router.route("/normal/participate/solo").post(authmiddleware, participateNormalSolo); //[req.body = {uid:user id,eid:event_Id}] call this api when proceed to pay button is clicked , this will return clashing events if the events are clashing with previously bought events else will create the order
+router.route("/normal/participate/group").post(authmiddleware,participateNormalGroup) //req.body = {eid:event id , uid:user id}
+router.route("/normal/submit/group").post(authmiddleware,submitNormalGroup) //req.body = {eid:event id, team_name:,uid:user id,members:[ids]}
+router.route("/combos/:uid/check").post(authmiddleware, checkCombo); //[req.body={events = [event_id1,event_id2,.....],combotype:STATIC/DYNAMIC,price} check if the combo is valid and if valid then create the combo [for time clashes]
+
+//cultural -> here we don't check for clashing
+router.route("/cultural/list").get(authmiddleware,getList) //For drop down when selecting team mates,  ?enrolment=&eid=
 router.route("/cultural/participate/solo").post(authmiddleware,participateSolo)//req.body = {eid : event id,uid: user id} here it will fail if the user is already in that solo event : if flag is false toast(you are already registered) : if flag is true open payment page
-router.route("/cultural/participate/group").post(authmiddleware,participateGroup) //req.body = {uid:user id ,eid:event id} this will be called when participate button is click : this will check if this used is already in some team : if true open team details page, if false toast(you are already in a team)
+router.route("/cultural/participate/group").post(authmiddleware,participateCulturalGroup) //req.body = {uid:user id ,eid:event id} this will be called when participate button is click : this will check if this used is already in some team : if true open team details page, if false toast(you are already in a team)
 router.route("/cultural/submit/group").post(authmiddleware,submitGroup)//req.body  = {eid:event id, team_name:,uid:user id,members:[ids]} :this will be called when team details are to be submitted : this will check if the members are already in a team 
 
-//flagship
-router.route("/flagship/list").get(authmiddleware,getList) //For drop down when selecting team mates,?enrolment=
+//flagship -> check for clashing
+router.route("/flagship/list").get(authmiddleware,getList) //For drop down when selecting team mates,?enrolment=&eid=
 //for solo events -> for workshop
 router.route("/flagship/participate/solo").post(authmiddleware,participateFlagshipSolo)//req.body = {eid:event id,uid:user id} :-> called for solo flagship events ie.,workshop
 //for group events
-router.route("/flagship/participate/group").post(authmiddleware,participateGroup) //req.body = {eid:event id,uid:user id}
+router.route("/flagship/participate/group").post(authmiddleware,participateFlagshipGroup) //req.body = {eid:event id,uid:user id}
 router.route("/flagship/submit/group").post(authmiddleware,submitFlagship) //req.body = {eid:event id,team_name:,uid:user id,members:[ids],poster_url,leader_ID,project_title}
 //for free events ->directly create user event with payment status complete -> this is for exhibition and social acitivity
 router.route("/flagship/register").post(authmiddleware,registerSoloFlagship) //req.body = {eid:event id,uid:user id}
@@ -67,17 +78,13 @@ router.route("/purchase/tokens/:uid").post(authmiddleware, purchaseToken); //req
 //combos
 router.route("/combos").get(authmiddleware, getStaticCombos); //get all the static combos
 
-//checking validity
-router.route("/combos/:uid/check").post(authmiddleware, checkCombo); //[req.body={events = [event_id1,event_id2,.....],combotype:STATIC/DYNAMIC,price} check if the combo is valid and if valid then create the combo [for time clashes]
-router.route("/events/:uid/check").post(authmiddleware, checkUserEvent); //[req.body = {price,eid:event_Id}] call this api when proceed to pay button is clicked , this will return clashing events if the events are clashing with previously bought events else will create the order
-
 //certificates
 router
   .route("/certificates/:uid/visibility/:eid")
-  .get(authmiddleware, buttonVisibility); //visible only if the user has attended that event ***[req.body = {category:NORMAL/FLAGSHIP/CULTURAL}]
+  .get(authmiddleware, buttonVisibility); //visible only if the user has attended that event [req.body = {type:NORMAL/FLAGSHIP/CULTURAL}]
 router
   .route("/certificates/:uid/event/:eid")
-  .get(authmiddleware, getCertificate); //download certificate [:eid = event id] [:uid = user id]
+  .get( getCertificate); //download certificate ?type=NORMAL/FLAGSHIP/CULTURAL [:eid = event id] [:uid = user id] 
 
 //user
 router.route("/:uid").get(authmiddleware, getUserDetails); // url-> /api/v1/user/${userid}

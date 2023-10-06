@@ -11,14 +11,70 @@ const bcrypt = require("bcrypt");
 const Cultural = require("../models/Cultural");
 const FlagshipEvents = require("../models/FlagshipEvents");
 
-//utility functions
-const isClashing = async (events) => {
+//time clash check
+const isClashing = async (uid, current_event, isCombo, comevents) => {
   var data = [];
   let flag = false;
   var result = {};
+  var events = [];
+  if (isCombo) {
+    for (let i = 0; i < comevents.length; i++) {
+      const temp = await Event.findOne({ _id: combevents[i] });
+      events.push(temp);
+    }
+  }
+  const userEvents = await UserEvent.find({
+    userId: uid,
+    category: ["NORMAL", "FLAGSHIP"],
+    payment_status: ["COMPLETED", "INCOMPLETE"],
+  });
+  const userCombos = await Combo.find({
+    userId: uid,
+    payment_status: ["COMPLETED", "INCOMPLETE"],
+  });
+
+  for (let i = 0; i < userEvents.length; i++) {
+    let evt;
+    switch (userEvents.category) {
+      case "NORMAL":
+        evt = await Event.findOne({ _id: userEvents.eventid, type: "SOLO" });
+        if (evt) events.push(evt);
+        break;
+      case "FLAGSHIP":
+        evt = await FlagshipEvents.findOne({
+          _id: userEvents.eventid,
+          type: "SOLO",
+        });
+        if (evt) events.push(evt);
+        break;
+    }
+  }
+  for (let i = 0; i < userCombos.length; i++) {
+    let combo_events = userCombos[i].event;
+    for (let j = 0; j < combo_events.length; j++) {
+      const temp = await Event.findOne({ _id: combo_events[j] });
+      events.push(temp);
+    }
+  }
+
+  if (current_event) events.push(current_event);
+  //team events
+  const user = await User.findOne({ _id: uid });
+  const user_teams = user.teams;
+  for (let evid in user_teams) {
+    if (user_teams[evid].type === "NORMAL") {
+      const temp = await Event.findOne({ _id: evid });
+      events.push(temp);
+    }
+    if (user_teams[evid].type === "FLAGSHIP") {
+      const temp = await FlagshipEvents.findOne({ _id: evid });
+      events.push(temp);
+    }
+  }
+
   for (let i = 0; i < events.length; i++) {
-    const event = await Event.findOne({ _id: events[i] ,type:"SOLO"});
-    if(!event) continue;
+    const event = events[i];
+    if (!event) continue;
     const event_day = event.date.substring(0, 2);
     const event_time = event.time;
     const event_name = event.name;
@@ -115,7 +171,7 @@ const getEventsCategorized = async (req, res) => {
 };
 const getOneEvent = async (req, res) => {
   const { eid } = req.params;
-  const { type} = req.query;
+  const { type } = req.query;
   let event;
   switch (type) {
     case "NORMAL":
@@ -148,12 +204,10 @@ const getUserEvents = async (req, res) => {
   const pendingCombos = await Combo.find({
     userId: uid,
     payment_status: "INCOMPLETE",
-    payment_mode: "OFFLINE",
   });
   const pendingEvents = await UserEvent.find({
     userId: uid,
     payment_status: "INCOMPLETE",
-    payment_mode: "OFFLINE",
   });
 
   //pending combos
@@ -176,35 +230,101 @@ const getUserEvents = async (req, res) => {
   //pending events
   var individual = [];
   for (let i = 0; i < pendingEvents.length; i++) {
-    const event = await Event.findOne({ _id: pendingEvents[i].eventid });
-    let obj = {};
-    obj.event_details = event;
-    obj.price = pendingEvents[i].price;
-    obj.payment_mode = pendingEvents[i].payment_mode;
-    obj.cash_otp = pendingEvents[i].cashotp;
-    obj.payment_status = pendingEvents[i].payment_status;
-    individual.push(obj);
+    let event;
+    switch (pendingEvents[i].category) {
+      case "NORMAL":
+        event = await Event.findOne({ _id: pendingEvents[i].eventid });
+        individual.push(event);
+      case "CULTURAL":
+        event = await Cultural.findOne({ _id: pendingEvents[i].eventid });
+        individual.push(event);
+      case "FLAGSHIP":
+        event = await FlagshipEvents.findOne({ _id: pendingEvents[i].eventid });
+        individual.push(event);
+    }
   }
 
-  //purchased events + group events in which this user is a team member
-  var event_ids = [];
+  //purchased solo events -> in combos and normal single events
+  var solo_events = [];
   for (let i = 0; i < userEvents.length; i++) {
-    event_ids.push(userEvents[i].eventid);
+    let event;
+    switch (userEvents[i].category) {
+      case "NORMAL":
+        event = await Event.findOne({
+          type: "SOLO",
+          _id: userEvents[i].eventid,
+        });
+        solo_events.push(event);
+      case "CULTURAL":
+        event = await Cultural.findOne({
+          type: "SOLO",
+          _id: userEvents[i].eventid,
+        });
+        solo_events.push(event);
+      case "FLAGSHIP":
+        event = await FlagshipEvents.findOne({
+          type: "SOLO",
+          _id: userEvents[i].eventid,
+        });
+        solo_events.push(event);
+    }
   }
   for (let i = 0; i < userCombos.length; i++) {
     let combo_events = userCombos[i].event;
     for (let j = 0; j < combo_events.length; j++) {
-      event_ids.push(combo_events[j]);
+      let event;
+      switch (combo_events[i].category) {
+        case "NORMAL":
+          event = await Event.findOne({
+            type: "SOLO",
+            _id: combo_events[i].eventid,
+          });
+          solo_events.push(event);
+        case "CULTURAL":
+          event = await Cultural.findOne({
+            type: "SOLO",
+            _id: combo_events[i].eventid,
+          });
+          solo_events.push(event);
+        case "FLAGSHIP":
+          event = await FlagshipEvents.findOne({
+            type: "SOLO",
+            _id: combo_events[i].eventid,
+          });
+          solo_events.push(event);
+      }
     }
   }
-  var events = [];
-  for (let i = 0; i < event_ids.length; i++) {
-    const event = await Event.findOne({ _id: event_ids[i] });
-    events.push(event);
+
+  //teams that the user is a part of : whether the user is a team leader or team member
+  var team_events = [];
+  const user = await User.findOne({ _id: uid });
+  const user_teams = user.teams;
+  for (let teamevent in user_teams) {
+    let team_event = {};
+    switch (user_teams[teamevent]) {
+      case "NORMAL":
+        team_event.event = await Event.findOne({ _id: teamevent });
+        team_event.team_name = user_teams[teamevent].team_name;
+        team_events.push(team_event);
+        break;
+      case "FLAGSHIP":
+        team_event.event = await Event.findOne({ _id: teamevent });
+        team_event.team_name = user_teams[teamevent].team_name;
+        break;
+      case "CULTURAL":
+        team_event.event = await Event.findOne({ _id: teamevent });
+        team_event.team_name = user_teams[teamevent].team_name;
+        break;
+    }
   }
+
   res.status(StatusCodes.OK).json({
     res: "success",
-    data: { purchased_events: events, pending: { combos, individual } },
+    data: {
+      purchased: { solo_events, team_events },
+      pending: { combos, individual },
+    },
   });
 };
 
@@ -231,27 +351,9 @@ const getStaticCombos = async (req, res) => {
 const checkCombo = async (req, res) => {
   const { events, combotype, price } = req.body;
   const { uid } = req.params;
-  var event_ids = [...events];
-  //purchased events + incomplete
-  const userEvents = await UserEvent.find({
-    userId: uid,
-    category:"NORMAL",
-    payment_status: ["COMPLETED", "INCOMPLETE"],
-  });
-  const userCombos = await Combo.find({
-    userId: uid,
-    payment_status: ["COMPLETED", "INCOMPLETE"],
-  });
-  for (let i = 0; i < userEvents.length; i++) {
-    event_ids.push(userEvents[i].eventid);
-  }
-  for (let i = 0; i < userCombos.length; i++) {
-    let combo_events = userCombos[i].event;
-    event_ids = [...event_ids, combo_events];
-  }
 
   //checking for time clashes
-  const { flag, data } = await isClashing(events);
+  const { flag, data } = await isClashing(uid, null, true, events); //uid,current_event,isCombo,events
   if (!flag) {
     // let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
     const create_combo = await Combo.create({
@@ -269,47 +371,25 @@ const checkCombo = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", flag, data });
   }
 };
-const checkUserEvent = async (req, res) => {
-  const { uid } = req.params;
-  const { price, eid } = req.body;
+const participateNormalSolo = async (req, res) => {
+  const { uid, eid } = req.body;
+  const event = await Event.findOne({ _id: eid });
 
-  //purchased events + incomplete status wale events
-  var events = [];
-  const userEvents = await UserEvent.find({
-    userId: uid,
-    category:"NORMAL",
-    payment_status: ["COMPLETED", "INCOMPLETE"],
-  });
-  const userCombos = await Combo.find({
-    userId: uid,
-    payment_status: ["COMPLETED", "INCOMPLETE"],
-  });
-  for (let i = 0; i < userEvents.length; i++) {
-    events.push(userEvents[i].eventid);
-  }
-  for (let i = 0; i < userCombos.length; i++) {
-    let combo_events = userCombos[i].event;
-    for (let j = 0; j < combo_events.length; j++) {
-      events.push(combo_events[j]);
-    }
-  }
-  events.push(eid);
-  const { flag, data } = await isClashing(events);
+  const { flag, data } = await isClashing(uid, event, false);
   if (flag) {
-    res.status(StatusCodes.OK).json({ res: "success", flag, data });
+    res.status(StatusCodes.OK).json({ res: "success", flag: false, data });
   } else {
-    // let date = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
     const create_event = await UserEvent.create({
       userId: uid,
       eventid: eid,
-      price,
+      price: event.price,
       payment_mode: "OFFLINE",
       payment_status: "NEW",
       category: "NORMAL",
     });
     res
       .status(StatusCodes.OK)
-      .json({ res: "success", flag, data: create_event });
+      .json({ res: "success", flag: true, data: create_event });
   }
 };
 
@@ -326,34 +406,91 @@ const buttonVisibility = async (req, res) => {
 };
 const getCertificate = async (req, res) => {
   const { uid, eid } = req.params;
+  const { type } = req.query;
   const user = await User.findOne({ _id: uid });
-  const event = await Event.findOne({ _id: eid });
+  let event;
+  let image_url;
+  let show_event_name = true;
+  let t1_r, t1_c, t1_w;
+  let t2_r, t2_c, t2_w;
+  switch (type) {
+    case "NORMAL":
+      event = await Event.findOne({ _id: eid });
+      if (event.category === "Tech") {
+        image_url = "Tech";
+        t1_r = 280;
+        t1_c = 239;
+        t1_w = 445;
+
+        t2_r = 265;
+        t2_c = 313;
+        t2_w = 365;
+      }
+      if (event.category === "NonTech") {
+        image_url = "NonTech";
+        t1_r = 280;
+        t1_c = 239;
+        t1_w = 445;
+
+        t2_r = 370;
+        t2_c = 309;
+        t2_w = 335;
+      }
+      if (event.category === "Workshop") {
+        image_url = "Workshop";
+        t1_r = 280;
+        t1_c = 239;
+        t1_w = 445;
+
+        t2_r = 227;
+        t2_c = 309;
+        t2_w = 445;
+      }
+      break;
+    case "FLAGSHIP":
+      event = await FlagshipEvents.findOne({ _id: eid });
+      image_url = "FLAGSHIP";
+      t1_r = 280;
+      t1_c = 239;
+      t1_w = 445;
+
+      t2_r = 265;
+      t2_c = 313;
+      t2_w = 365;
+      break;
+    case "CULTURAL":
+      event = await Cultural.findOne({ _id: eid });
+      image_url = "CULTURAL";
+      t1_r = 280;
+      t1_c = 239;
+      t1_w = 430;
+      show_event_name = false;
+      break;
+  }
+
   // Create a document
   const doc = new pdfkit();
-  // Saving the pdf file in root directory.
   doc.pipe(
     fs.createWriteStream(
       `./certificates/certificate-${user.name}-${event.name}.pdf`
     )
   );
-  doc.image("./certificate.jpg", 0, 0, { width: 620, height: 800 });
-  const angle = Math.PI * 28.6;
+  doc.image(`./${image_url}.jpg`, 0, 0, { width: 620, height: 800 });
+  const angle = Math.PI * 28.7;
   doc.rotate(angle, { origin: [300, 248] });
   doc
-    .fontSize(17)
-    .font("./Montserrat/static/Montserrat-BoldItalic.ttf")
-    .text(user.name, 300, 244, {
-      width: 300,
+    .fontSize(31)
+    .font("./Montserrat/static/Montserrat-Bold.ttf")
+    .text(user.name, t1_r, t1_c, {
+      width: t1_w,
       align: "center",
     });
-  doc.fontSize(17).text(event.name, 360, 302, {
-    width: 200,
-    align: "center",
-  });
-  doc.fontSize(15).text("18", 422, 385, {
-    width: 24,
-    align: "center",
-  });
+  if (show_event_name) {
+    doc.fontSize(22).text(event.name, t2_r, t2_c, {
+      width: t2_w,
+      align: "center",
+    });
+  }
   doc.end();
   setTimeout(() => {
     var file = fs.createReadStream(
@@ -435,12 +572,21 @@ const getPaymentHistory = async (req, res) => {
 
   var individual_events = [];
   for (let i = 0; i < userEvents.length; i++) {
-    const event = await Event.findOne({ _id: userEvents[i].eventid });
-    var obj = {};
-    obj.event_details = event;
-    obj.price = userEvents[i].price;
-    obj.payment_mode = userEvents[i].payment_mode;
-    individual_events.push(obj);
+    let event;
+    switch (userEvents[i].category) {
+      case "NORMAL":
+        event = await Event.findOne({ _id: userEvents[i].eventid });
+        individual_events.push(event);
+        break;
+      case "FLAGSHIP":
+        event = await FlagshipEvents.findOne({ _id: userEvents[i].eventid });
+        individual_events.push(event);
+        break;
+      case "CULTURAL":
+        event = await Cultural.findOne({ _id: userEvents[i].eventid });
+        individual_events.push(event);
+        break;
+    }
   }
 
   var combos = [];
@@ -566,47 +712,109 @@ const payOnline = async (req, res) => {
       },
       { new: true }
     );
-    if(!evt){
+    if (!evt) {
       throw new BadRequestError("This order id and user id does not match!");
     }
     //checking the category
     switch (evt.category) {
       case "NORMAL":
         const normal_event = await Event.findOne({ _id: evt.eventid });
-        normal_event.noOfParticipants = normal_event.noOfParticipants + 1;
-        normal_event.participants.push(uid);
-        if (normal_event.noOfParticipants === normal_event.maxparticipants) {
-          normal_event.isAvailable = false;
-        }
-        let add_coins = 0;
-        //update event
-        const upd_event = await Event.findOneAndUpdate(
-          { _id: evt.eventid },
-          normal_event,
-          { new: true }
-        );
+        switch (normal_event.type) {
+          case "SOLO":
+            normal_event.noOfParticipants = normal_event.noOfParticipants + 1;
+            normal_event.participants.push(uid);
+            if (
+              normal_event.noOfParticipants === normal_event.maxparticipants
+            ) {
+              normal_event.isAvailable = false;
+            }
+            let add_coins = 0;
+            //update event
+            const upd_event = await Event.findOneAndUpdate(
+              { _id: evt.eventid },
+              normal_event,
+              { new: true }
+            );
 
-        //adding respective coins to student's profile
-        switch (normal_event.category) {
-          case "Tech":
-            add_coins += 60;
+            //adding respective coins to student's profile
+            switch (normal_event.category) {
+              case "Tech":
+                add_coins += 60;
+                break;
+              case "NonTech":
+                add_coins += 40;
+                break;
+              case "Workshop":
+                add_coins += 80;
+                break;
+            }
+            const student = await User.findOne({ _id: uid });
+            const upd_student = await User.findOneAndUpdate(
+              { _id: uid },
+              {
+                coins: student.coins + add_coins,
+              }
+            );
+            res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
             break;
-          case "NonTech":
-            add_coins += 40;
-            break;
-          case "Workshop":
-            add_coins += 80;
+
+          case "GROUP":
+            const team = evt.team;
+            //adding participants to the event
+            normal_event.participants.push(team);
+            normal_event.noOfParticipants =
+              normal_event.noOfParticipants + 1;
+            if (normal_event.noOfParticipants === normal_event.maxparticipants) {
+              normal_event.isAvailable = false;
+            }
+            const upd_event_group = await Event.findOneAndUpdate(
+              { _id: evt.eventid },
+              normal_event
+            );
+
+            let add_coins_group = 0;
+            //adding coins to all the team members and adding team to teams
+            //adding respective coins to student's profile
+            switch (normal_event.category) {
+              case "Tech":
+                add_coins_group += 60;
+                break;
+              case "NonTech":
+                add_coins_group += 40;
+                break;
+              case "Workshop":
+                add_coins_group += 80;
+                break;
+            }
+            //team leader
+            const group_student = await User.findOne({ _id: uid });
+            let team_obj = group_student.teams;
+            team_obj[evt.eventid] = evt.team;
+            const upd_group_student = await User.findOneAndUpdate(
+              { _id: uid },
+              { coins: group_student.coins + add_coins_group, teams: team_obj },
+              { new: true }
+            );
+            //team members
+            for (let i = 0; i < team.members.length; i++) {
+              const group_student = await User.findOne({
+                _id: team.members[i],
+              });
+              let team_obj = group_student.teams;
+              team_obj[evt.eventid] = evt.team;
+              const upd_group_student = await User.findOneAndUpdate(
+                { _id: team.members[i] },
+                { coins: group_student.coins + add_coins_group, teams: team_obj },
+                { new: true }
+              );
+            }
+            res
+              .status(StatusCodes.OK)
+              .json({ res: "success", data: group_student });
             break;
         }
-        const student = await User.findOne({ _id: uid });
-        const upd_student = await User.findOneAndUpdate(
-          { _id: uid },
-          {
-            coins: student.coins + add_coins,
-          }
-        );
-        res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
         break;
+        
 
       case "FLAGSHIP":
         //there can be 2 categories : solo and group
@@ -668,7 +876,9 @@ const payOnline = async (req, res) => {
             );
             //team members
             for (let i = 0; i < team.members.length; i++) {
-              const group_student = await User.findOne({ _id: team.members[i] });
+              const group_student = await User.findOne({
+                _id: team.members[i],
+              });
               let team_obj = group_student.teams;
               team_obj[evt.eventid] = evt.team;
               const upd_group_student = await User.findOneAndUpdate(
@@ -677,11 +887,13 @@ const payOnline = async (req, res) => {
                 { new: true }
               );
             }
-            res.status(StatusCodes.OK).json({res:"success",data:group_student})
+            res
+              .status(StatusCodes.OK)
+              .json({ res: "success", data: group_student });
             break;
         }
         break;
-        
+
       case "CULTURAL":
         //there can be 2 categories : solo and group
         const cultural_event = await Cultural.findOne({
@@ -742,7 +954,9 @@ const payOnline = async (req, res) => {
             );
             //team members
             for (let i = 0; i < team.members.length; i++) {
-              const group_student = await User.findOne({ _id: team.members[i] });
+              const group_student = await User.findOne({
+                _id: team.members[i],
+              });
               let team_obj = group_student.teams;
               team_obj[evt.eventid] = evt.team;
               const upd_group_student = await User.findOneAndUpdate(
@@ -751,7 +965,9 @@ const payOnline = async (req, res) => {
                 { new: true }
               );
             }
-            res.status(StatusCodes.OK).json({res:"success",data:group_student});
+            res
+              .status(StatusCodes.OK)
+              .json({ res: "success", data: group_student });
 
             break;
         }
@@ -790,14 +1006,16 @@ const purchaseToken = async (req, res) => {
 };
 
 const getList = async (req, res) => {
-  const { enrolment,eid } = req.query;
+  const { enrolment, eid } = req.query;
   let allUsers = await User.find({
     enrolment: { $regex: enrolment, $options: "i" },
   });
-  allUsers = allUsers.filter((user)=>{
+  allUsers = allUsers.filter((user) => {
     return !(eid in user.teams);
-  })
-  res.status(StatusCodes.OK).json({ res: "success",nhits:allUsers.length, data: allUsers });
+  });
+  res
+    .status(StatusCodes.OK)
+    .json({ res: "success", nhits: allUsers.length, data: allUsers });
 };
 
 //cultural
@@ -831,7 +1049,7 @@ const participateSolo = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", flag, data: temp });
   }
 };
-const participateGroup = async (req, res) => {
+const participateCulturalGroup = async (req, res) => {
   const { uid, eid } = req.body;
   const user = await User.findOne({ _id: uid });
   const user_teams = user.teams;
@@ -847,6 +1065,30 @@ const participateGroup = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", flag: true });
   }
 };
+
+const participateFlagshipGroup = async (req, res) => {
+  const { uid, eid } = req.body;
+  const user = await User.findOne({ _id: uid });
+  const event = await FlagshipEvents.findOne({ _id: eid });
+
+  const { flag, data } = await isClashing(uid, event, false);
+  if (flag) {
+    res.status(StatusCodes.OK).json({ res: "success", flag: false, data });
+  } else {
+    const user_teams = user.teams;
+    if (eid in user_teams) {
+      res.status(StatusCodes.OK).json({
+        res: "success",
+        flag: false,
+        data: "You are already in a team",
+        team: user_teams[eid],
+      });
+    } else {
+      res.status(StatusCodes.OK).json({ res: "success", flag: true });
+    }
+  }
+};
+
 const submitGroup = async (req, res) => {
   const { uid, team_name, eid, members } = req.body;
   const event = await Cultural.findOne({ _id: eid });
@@ -892,7 +1134,7 @@ const submitGroup = async (req, res) => {
       res: "success",
       flag: false,
       data: "Team leader is already in a team!",
-      team:team
+      team: team,
     });
   } else if (team_member_flag) {
     res.status(StatusCodes.OK).json({
@@ -906,6 +1148,7 @@ const submitGroup = async (req, res) => {
       team_name: team_name,
       team_leader: uid,
       members: members,
+      type: "CULTURAL",
     };
 
     const temp = await UserEvent.create({
@@ -981,6 +1224,7 @@ const submitFlagship = async (req, res) => {
       leader_ID,
       poster_url,
       project_title,
+      type: "FLAGSHIP",
     };
 
     const temp = await UserEvent.create({
@@ -997,9 +1241,8 @@ const submitFlagship = async (req, res) => {
 };
 const registerSoloFlagship = async (req, res) => {
   const { uid, eid } = req.body;
-  const event = await Event.findOne({ _id: eid });
-  let event_participants = event.participants;
-  event_participants = [...event_participants, uid];
+  const event = await FlagshipEvents.findOne({ _id: eid });
+  event.participants.push(uid);
   const upd = await Event.findOneAndUpdate(
     { _id: eid },
     { participants: event_participants },
@@ -1019,25 +1262,107 @@ const registerSoloFlagship = async (req, res) => {
 };
 
 const participateFlagshipSolo = async (req, res) => {
-  const {uid,eid} = req.body;
-  const event = await FlagshipEvents.findOne({_id:eid});
-  const participants = event.participants;
-  if(participants.includes(uid)){
-    res.status(StatusCodes.OK).json({res:"success",flag:false,data:"You have already registered in this event!"});
-  }
-  else{
+  const { uid, eid } = req.body;
+  const event = await FlagshipEvents.findOne({ _id: eid });
+  const { flag, data } = await isClashing(uid, event, false);
+  if (flag) {
+    res.status(StatusCodes.OK).json({ res: "success", flag: false, data });
+  } else {
     const user_event = await UserEvent.create({
-      userId:uid,
-      eventid:eid,
-      payment_status:"NEW",
-      payment_mode:"OFFLINE",
-      category:"FLAGSHIP",
-      price:event.price
-    })
-    res.status(StatusCodes.OK).json({res:"success",flag:true,data:user_event});
+      userId: uid,
+      eventid: eid,
+      payment_status: "NEW",
+      payment_mode: "OFFLINE",
+      category: "FLAGSHIP",
+      price: event.price,
+    });
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag: true, data: user_event });
   }
 };
 
+const participateNormalGroup = async (req, res) => {
+  const { eid, uid } = req.body;
+  const event = await Event.findOne({ _id: eid });
+  const user = await User.findOne({ _id: uid });
+
+  const { flag, data } = isClashing(uid, event, false);
+  //if clashing
+  if (flag) {
+    res.status(StatusCodes.OK).json({ res: "success", flag: false, data });
+    return;
+  } else {
+    //check for valorant and bgmi
+    const user_teams = user.teams;
+    for (let evid in user_teams) {
+      if (user_teams[evid].type === "NORMAL") {
+        const temp = await Event.findOne({ _id: evid });
+        if (temp.name === "BGMI" && event.name === "Valorant") {
+          res.status(StatusCodes.OK).json({
+            res: "success",
+            flag: false,
+            data: "You can only participate in either Valorant or BGMI!",
+          });
+          return;
+        }
+        if (temp.name === "Valorant" && event.name === "BGMI") {
+          res.status(StatusCodes.OK).json({
+            res: "success",
+            flag: false,
+            data: "You can only participate in either Valorant or BGMI!",
+          });
+          return;
+        }
+      }
+    }
+    //check if the student is already in a team for this event
+    if (eid in user.teams) {
+      res.status(StatusCodes.OK).json({
+        res: "success",
+        flag: false,
+        data: "You are already in a team!",
+      });
+    } else {
+      res.status(StatusCodes.OK).json({ res: "success", flag: true });
+    }
+  }
+};
+const submitNormalGroup = async (req, res) => {
+  const { eid, team_name, uid, members } = req.body;
+  const event = await Event.findOne({ _id: eid });
+  const participants = event.participants;
+  //checking for same team name
+  for (let i = 0; i < participants.length; i++) {
+    if (participants[i].team_name === team_name) {
+      res.status(StatusCodes.OK).json({
+        res: "success",
+        flag: false,
+        data: "Team name already exists!",
+      });
+      return;
+    }
+  }
+
+  //team
+  const team_obj = {
+    team_name: team_name,
+    team_leader: uid,
+    members: members,
+  };
+  const create_event = await UserEvent.create({
+    userId: uid,
+    eventid: eid,
+    payment_mode: "OFFLINE",
+    payment_status: "NEW",
+    price: event.price,
+    category: "NORMAL",
+    team: team_obj,
+  });
+  res
+    .status(StatusCodes.OK)
+    .json({ res: "success", flag: true, data: create_event });
+};
 module.exports = {
   getAllEvents,
   getOneEvent,
@@ -1045,7 +1370,7 @@ module.exports = {
   getUserEvents,
   getStaticCombos,
   checkCombo,
-  checkUserEvent,
+  participateNormalSolo,
   buttonVisibility,
   getCertificate,
   getUserDetails,
@@ -1058,9 +1383,12 @@ module.exports = {
   purchaseToken,
   getList,
   participateSolo,
-  participateGroup,
+  participateCulturalGroup,
   submitGroup,
+  participateFlagshipGroup,
   submitFlagship,
   registerSoloFlagship,
   participateFlagshipSolo,
+  participateNormalGroup,
+  submitNormalGroup,
 };
