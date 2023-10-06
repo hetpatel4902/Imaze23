@@ -30,6 +30,7 @@ const FlagshipEvents = require('./models/FlagshipEvents');
 const Leads = require("./models/Leads")
 const UserEvents = require("./models/UserEvent")
 const Combos = require("./models/Combos")
+const s3 = require("./utils/s3")
 
 app.use(express.static(`${__dirname}/public`));
 app.use(express.json());
@@ -37,12 +38,7 @@ app.use(helmet())
 app.use(cors())
 app.use(xss())
 
-// //routes user
-// app.get("/clean",async(req,res)=>{
-//   // const upd = await Cultural.updateMany({},{participants:[],noOfParticipants:0});
-//   const d = await  Combos.deleteMany({});
-//   res.json("success")
-// })
+//routes user
 app.use('/api/v1/user',userRouter);
 app.use('/api/v1/lead',leadRoute)
 app.use(notFoundMiddleware);

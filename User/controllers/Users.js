@@ -10,6 +10,7 @@ const pdfkit = require("pdfkit");
 const bcrypt = require("bcrypt");
 const Cultural = require("../models/Cultural");
 const FlagshipEvents = require("../models/FlagshipEvents");
+const s3 = require("../utils/s3")
 
 //time clash check
 const isClashing = async (uid, current_event, isCombo, comevents) => {
@@ -19,7 +20,7 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
   var events = [];
   if (isCombo) {
     for (let i = 0; i < comevents.length; i++) {
-      const temp = await Event.findOne({ _id: combevents[i] });
+      const temp = await Event.findOne({ _id: comevents[i] });
       events.push(temp);
     }
   }
@@ -35,14 +36,14 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
 
   for (let i = 0; i < userEvents.length; i++) {
     let evt;
-    switch (userEvents.category) {
+    switch (userEvents[i].category) {
       case "NORMAL":
-        evt = await Event.findOne({ _id: userEvents.eventid, type: "SOLO" });
+        evt = await Event.findOne({ _id: userEvents[i].eventid, type: "SOLO" });
         if (evt) events.push(evt);
         break;
       case "FLAGSHIP":
         evt = await FlagshipEvents.findOne({
-          _id: userEvents.eventid,
+          _id: userEvents[i].eventid,
           type: "SOLO",
         });
         if (evt) events.push(evt);
@@ -366,7 +367,7 @@ const checkCombo = async (req, res) => {
     });
     res
       .status(StatusCodes.OK)
-      .json({ res: "success", flag, data: create_combo });
+      .json({ res: "success", flag:true, data: create_combo });
   } else {
     res.status(StatusCodes.OK).json({ res: "success", flag, data });
   }
@@ -646,13 +647,21 @@ const payOffline = async (req, res) => {
 };
 const payOnline = async (req, res) => {
   const { uid } = req.params;
-  const { orderId, isCombo, transId, transUrl } = req.body;
+  let { orderId, isCombo, transId, transUrl } = req.body;
   if (!transId || !transUrl) {
     throw new BadRequestError("Please provide transaction id and image url!!");
+  }
+  try{
+    transUrl = await s3.uploadImage(transId,transUrl,"payment");
+  }
+  catch(err){
+    console.log("pay online:",err)
+    throw new BadRequestError("screenshot upload failed!");
   }
   const d = new Date();
   let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
   if (isCombo) {
+
     const combo = await Combo.findOneAndUpdate(
       { _id: orderId },
       {
@@ -701,17 +710,8 @@ const payOnline = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
   } else {
     //check the category of the event, add participants , increase number of participants, check isAvailable,add coins to all the members if group event
-    const evt = await UserEvent.findOneAndUpdate(
-      { userId: uid, _id: orderId },
-      {
-        payment_mode: "ONLINE",
-        payment_status: "INCOMPLETE",
-        transId: transId,
-        transaction_image: transUrl,
-        date,
-      },
-      { new: true }
-    );
+    
+    const evt = await UserEvent.findOne({userId:uid,_id:orderId});
     if (!evt) {
       throw new BadRequestError("This order id and user id does not match!");
     }
@@ -754,6 +754,17 @@ const payOnline = async (req, res) => {
               {
                 coins: student.coins + add_coins,
               }
+            );
+            const usrevent_solo = await UserEvent.findOneAndUpdate(
+              { userId: uid, _id: orderId },
+              {
+                payment_mode: "ONLINE",
+                payment_status: "INCOMPLETE",
+                transId: transId,
+                transaction_image: transUrl,
+                date,
+              },
+              { new: true }
             );
             res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
             break;
@@ -808,6 +819,17 @@ const payOnline = async (req, res) => {
                 { new: true }
               );
             }
+            const usrevent_group = await UserEvent.findOneAndUpdate(
+              { userId: uid, _id: orderId },
+              {
+                payment_mode: "ONLINE",
+                payment_status: "INCOMPLETE",
+                transId: transId,
+                transaction_image: transUrl,
+                date,
+              },
+              { new: true }
+            );
             res
               .status(StatusCodes.OK)
               .json({ res: "success", data: group_student });
@@ -842,6 +864,17 @@ const payOnline = async (req, res) => {
             const upd_student = await User.findOneAndUpdate(
               { _id: uid },
               { coins: student.coins + 80 }
+            );
+            const usrevent_solo = await UserEvent.findOneAndUpdate(
+              { userId: uid, _id: orderId },
+              {
+                payment_mode: "ONLINE",
+                payment_status: "INCOMPLETE",
+                transId: transId,
+                transaction_image: transUrl,
+                date,
+              },
+              { new: true }
             );
             res
               .status(StatusCodes.OK)
@@ -887,6 +920,17 @@ const payOnline = async (req, res) => {
                 { new: true }
               );
             }
+            const usrevent_group = await UserEvent.findOneAndUpdate(
+              { userId: uid, _id: orderId },
+              {
+                payment_mode: "ONLINE",
+                payment_status: "INCOMPLETE",
+                transId: transId,
+                transaction_image: transUrl,
+                date,
+              },
+              { new: true }
+            );
             res
               .status(StatusCodes.OK)
               .json({ res: "success", data: group_student });
@@ -920,6 +964,17 @@ const payOnline = async (req, res) => {
             const upd_student = await User.findOneAndUpdate(
               { _id: uid },
               { coins: student.coins + 60 }
+            );
+            const usrevent_solo = await UserEvent.findOneAndUpdate(
+              { userId: uid, _id: orderId },
+              {
+                payment_mode: "ONLINE",
+                payment_status: "INCOMPLETE",
+                transId: transId,
+                transaction_image: transUrl,
+                date,
+              },
+              { new: true }
             );
             res
               .status(StatusCodes.OK)
@@ -965,6 +1020,17 @@ const payOnline = async (req, res) => {
                 { new: true }
               );
             }
+            const usrevent_group = await UserEvent.findOneAndUpdate(
+              { userId: uid, _id: orderId },
+              {
+                payment_mode: "ONLINE",
+                payment_status: "INCOMPLETE",
+                transId: transId,
+                transaction_image: transUrl,
+                date,
+              },
+              { new: true }
+            );
             res
               .status(StatusCodes.OK)
               .json({ res: "success", data: group_student });
@@ -1166,7 +1232,7 @@ const submitGroup = async (req, res) => {
 
 //flagship
 const submitFlagship = async (req, res) => {
-  const { uid, team_name, eid, members, leader_ID, poster_url, project_title } =
+  let { uid, team_name, eid, members, leader_ID, poster_url, project_title } =
     req.body;
   const event = await FlagshipEvents.findOne({ _id: eid });
   const participants = event.participants;
@@ -1217,26 +1283,35 @@ const submitFlagship = async (req, res) => {
       member,
     });
   } else {
-    const obj = {
-      team_name: team_name,
-      team_leader: uid,
-      members: members,
-      leader_ID,
-      poster_url,
-      project_title,
-      type: "FLAGSHIP",
-    };
-
-    const temp = await UserEvent.create({
-      userId: uid,
-      eventid: eid,
-      price: event.price,
-      payment_mode: "OFFLINE",
-      payment_status: "NEW",
-      category: "FLAGSHIP",
-      team: obj,
-    });
-    res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
+    try{
+      poster_url = await s3.uploadImage(team_name+"-poster",poster_url,"team");
+      leader_ID = await s3.uploadImage(team_name+"-leaderID",leader_ID,"team");
+      const obj = {
+        team_name: team_name,
+        team_leader: uid,
+        members: members,
+        leader_ID,
+        poster_url,
+        project_title,
+        type: "FLAGSHIP",
+      };
+  
+      const temp = await UserEvent.create({
+        userId: uid,
+        eventid: eid,
+        price: event.price,
+        payment_mode: "OFFLINE",
+        payment_status: "NEW",
+        category: "FLAGSHIP",
+        team: obj,
+      });
+      res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
+    }
+    catch(err){
+      console.log(err);
+      res.status(StatusCodes.EXPECTATION_FAILED).json({res:"failed",data:err});
+    }
+    
   }
 };
 const registerSoloFlagship = async (req, res) => {
