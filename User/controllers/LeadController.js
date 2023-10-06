@@ -271,7 +271,21 @@ const verifiedOfflineEvent = async(req,res)=>{
       }
       else{
         //for leader
+        for(let i=0;i<eventdetails.participants.length;++i){
+          if(eventdetails.participants[i]['team_name'].trim() == userevent.team['team_name'].trim()){
+            throw new BadRequestError("Team name is repeated")
+          }
+        }
         const leader = await User.findOne({_id:userevent.team['team_leader']})
+        if(userevent.eventid in leader.teams){
+          throw new BadRequestError("Players are repeated")
+        }
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          if(userevent.eventid in member.teams){
+            throw new BadRequestError("Players are repeated")
+          }
+        }
         points += leader?.coins ?? 0
         leader.coins=points
         leader.teams[userevent.eventid] = userevent.team
@@ -301,7 +315,21 @@ const verifiedOfflineEvent = async(req,res)=>{
       points = 80
       if(flagship.type == 'GROUP'){
         //for leader
+        for(let i=0;i<flagship.participants.length;++i){
+          if(flagship.participants[i]['team_name'].trim() == userevent.team['team_name'].trim()){
+            throw new BadRequestError("Team name is repeated")
+          }
+        }
         const leader = await User.findOne({_id:userevent.team['team_leader']})
+        if(userevent.eventid in leader.teams){
+          throw new BadRequestError("Players are repeated")
+        }
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          if(userevent.eventid in member.teams){
+            throw new BadRequestError("Players are repeated")
+          }
+        }
         points += leader?.coins ?? 0
         leader.coins=points
         leader.teams[userevent.eventid] = userevent.team
@@ -345,7 +373,21 @@ const verifiedOfflineEvent = async(req,res)=>{
       console.log(Object.keys(userevent.team).length)
       if( cultural.type == 'GROUP' ){
         //for leader
+        for(let i=0;i<cultural.participants.length;++i){
+          if(cultural.participants[i]['team_name'].trim() == userevent.team['team_name'].trim()){
+            throw new BadRequestError("Team name is repeated")
+          }
+        }
         const leader = await User.findOne({_id:userevent.team['team_leader']})
+        if(userevent.eventid in leader.teams){
+          throw new BadRequestError("Players are repeated")
+        }
+        for(let i=0;i<userevent.team['members'].length;++i){
+          const member = await User.findOne({_id:userevent.team['members'][i]})
+          if(userevent.eventid in member.teams){
+            throw new BadRequestError("Players are repeated")
+          }
+        }
         points += leader?.coins ?? 0
         leader.coins=points
         leader.teams[userevent.eventid] = userevent.team
