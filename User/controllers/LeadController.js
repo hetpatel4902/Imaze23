@@ -995,14 +995,17 @@ const getIndividualFlagshipEvent = async(req,res)=>{
 const getFlagshipAttendance = async(req,res)=>{
   const {fid} = req.params
   const getattendance = await Flagship.findOne({_id:fid})
-  response.status(StatusCodes.OK).json({res:"Success",data:getattendance.attendance})
+  res.status(StatusCodes.OK).json({res:"Success",data:getattendance.attendance})
 }
 
 const setFlagshipAttendance = async(req,res)=>{
   const {fid} = req.params
   const {attendance} = req.body
-  const updateattendance = await Flagship.findOneAndUpdate({_id:fid},{attendance},{ new: true, runValidators: true })
-  response.status(StatusCodes.OK).json({res:"Success"})
+  if(!attendance){
+    throw new BadRequestError("Please provide attendace")
+  }
+  const updateattendance = await Flagship.findOneAndUpdate({_id:fid},req.body,{ new: true, runValidators: true })
+  res.status(StatusCodes.OK).json({res:"Success"})
 }
 
 const getFlagshipParticipantExcel = async(req,res)=>{
