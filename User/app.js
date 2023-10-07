@@ -30,6 +30,7 @@ const Leads = require("./models/Leads");
 const UserEvents = require("./models/UserEvent");
 const Combos = require("./models/Combos");
 const s3 = require("./utils/s3");
+const Invoice = require("./models/Invoice");
 
 app.use(express.static(`${__dirname}/public`));
 app.use(express.json({ limit: "50mb" }));

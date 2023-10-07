@@ -392,7 +392,7 @@ const checkCombo = async (req, res) => {
   }
 };
 const participateNormalSolo = async (req, res) => {
-  const { uid, eid } = req.body;
+  const { uid, eid,price } = req.body;
   const event = await Event.findOne({ _id: eid });
 
   const { flag, data } = await isClashing(uid, event, false);
@@ -402,7 +402,7 @@ const participateNormalSolo = async (req, res) => {
     const create_event = await UserEvent.create({
       userId: uid,
       eventid: eid,
-      price: event.price,
+      price: price,
       payment_mode: "OFFLINE",
       payment_status: "NEW",
       category: "NORMAL",
@@ -1193,7 +1193,7 @@ const getList = async (req, res) => {
 
 //cultural
 const participateSolo = async (req, res) => {
-  const { eid, uid } = req.body;
+  const { eid, uid,price } = req.body;
   const event = await Cultural.findOne({ _id: eid });
   const participants = event.participants;
   let flag = true;
@@ -1214,7 +1214,7 @@ const participateSolo = async (req, res) => {
     const temp = await UserEvent.create({
       userId: uid,
       eventid: eid,
-      price: event.price,
+      price: price,
       payment_mode: "OFFLINE",
       payment_status: "NEW",
       category: "CULTURAL",
@@ -1263,7 +1263,7 @@ const participateFlagshipGroup = async (req, res) => {
 };
 
 const submitGroup = async (req, res) => {
-  const { uid, team_name, eid, members } = req.body;
+  const { uid, team_name, eid, members,price } = req.body;
   const event = await Cultural.findOne({ _id: eid });
   const participants = event.participants;
   let team_name_flag = false;
@@ -1327,7 +1327,7 @@ const submitGroup = async (req, res) => {
     const temp = await UserEvent.create({
       userId: uid,
       eventid: eid,
-      price: event.price,
+      price: price,
       payment_mode: "OFFLINE",
       payment_status: "NEW",
       category: "CULTURAL",
@@ -1339,7 +1339,7 @@ const submitGroup = async (req, res) => {
 
 //flagship
 const submitFlagship = async (req, res) => {
-  let { uid, team_name, eid, members, leader_ID, poster_url, project_title } =
+  let { uid, team_name, eid, members, leader_ID, poster_url, project_title,price } =
     req.body;
   const event = await FlagshipEvents.findOne({ _id: eid });
   const participants = event.participants;
@@ -1425,7 +1425,7 @@ const submitFlagship = async (req, res) => {
       const temp = await UserEvent.create({
         userId: uid,
         eventid: eid,
-        price: event.price,
+        price: price,
         payment_mode: "OFFLINE",
         payment_status: "NEW",
         category: "FLAGSHIP",
@@ -1466,7 +1466,7 @@ const registerSoloFlagship = async (req, res) => {
 };
 
 const participateFlagshipSolo = async (req, res) => {
-  const { uid, eid } = req.body;
+  const { uid, eid,price } = req.body;
   const event = await FlagshipEvents.findOne({ _id: eid });
   const { flag, data } = await isClashing(uid, event, false);
   if (flag) {
@@ -1478,7 +1478,7 @@ const participateFlagshipSolo = async (req, res) => {
       payment_status: "NEW",
       payment_mode: "OFFLINE",
       category: "FLAGSHIP",
-      price: event.price,
+      price: price,
     });
     res
       .status(StatusCodes.OK)
@@ -1533,7 +1533,7 @@ const participateNormalGroup = async (req, res) => {
   }
 };
 const submitNormalGroup = async (req, res) => {
-  const { eid, team_name, uid, members } = req.body;
+  const { eid, team_name, uid, members,price } = req.body;
   const event = await Event.findOne({ _id: eid });
   const participants = event.participants;
   //checking for same team name
@@ -1559,7 +1559,7 @@ const submitNormalGroup = async (req, res) => {
     eventid: eid,
     payment_mode: "OFFLINE",
     payment_status: "NEW",
-    price: event.price,
+    price: price,
     category: "NORMAL",
     team: team_obj,
   });

@@ -8,6 +8,7 @@ const Combos = require("../models/Combos");
 const Cultural = require("../models/Cultural")
 const Event  = require("../models/Event");
 const FlagshipEvents = require("../models/FlagshipEvents")
+const Invoice = require("../models/Invoice")
 const Users = require("../models/Users");
 const s3 = new AWS.S3();
 
@@ -86,7 +87,6 @@ const generateReceipt = async (orderId, type)=>{
   let event_ids = [];
   let transId;
   let amount;
-  let tax = 0;
   let date;
   let event_type ;
   if (type === "combo") {
@@ -126,11 +126,13 @@ const generateReceipt = async (orderId, type)=>{
       align: "center",
     });
 
+  const invoice_num = await Invoice.find({});
+  const update_invoice = await Invoice.findOneAndUpdate({_id:invoice_num[0]._id},{number:invoice_num[0].number+1});
   //invoice number
   doc
     .fontSize(7)
     .font("./Montserrat/static/Montserrat-Bold.ttf")
-    .text("1069", 75, 70, {
+    .text(invoice_num[0].number, 75, 70, {
       width: 60,
       height: 15,
       valign: "center",
@@ -256,7 +258,7 @@ const generateReceipt = async (orderId, type)=>{
     .fillColor("black")
     .fontSize(7)
     .font("./Montserrat/static/Montserrat-Bold.ttf")
-    .text(amount + tax, 170, 273, {
+    .text(`₹ ${amount}`, 170, 273, {
       width: 30,
       height: 10,
       valign: "center",

@@ -13,7 +13,7 @@ const User = require('../models/Users')
 const Lead = require('../models/Leads')
 const UserEvent = require('../models/UserEvent')
 const Combos = require('../models/Combos')
-const { uploadImageToS3 } = require("../utils/s3");
+const { uploadImageToS3,generateReceipt } = require("../utils/s3");
 const fs = require('fs')
 const Flagship = require('../models/FlagshipEvents')
 const Cultural = require('../models/Cultural')
@@ -236,14 +236,13 @@ const verifiedOfflineEvent = async(req,res)=>{
     const userdetails = await User.findOne({_id:response.userId})
     points+=userdetails.coins
     const user = await User.findOneAndUpdate({_id:response.userId},{coins:points},{ new: true, runValidators: true })
+    const res = await generateReceipt(_id,"combo")
   }
   else if(name=='EVENT'){
     const d = new Date();
     let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-    console.log(_id)
     const userevent = await UserEvent.findOneAndUpdate({_id},{payment_status:'COMPLETED',date},{ new: true, runValidators: true })
     let points = 0
-    console.log(userevent)
     if(userevent.category == 'NORMAL'){
       const eventdetails = await Event.findOne({_id:userevent.eventid})
       if(eventdetails.isAvailable == false){
@@ -440,6 +439,7 @@ const verifiedOfflineEvent = async(req,res)=>{
         const updateduser = await User.findOneAndUpdate({_id:userevent.userId},user,{ new: true, runValidators: true })
       }
     }
+    const res = await generateReceipt(_id,"userevent")
   }
   res.status(StatusCodes.OK).json({res:"Success"})
 }
@@ -1316,7 +1316,13 @@ const getAllIncompleteUsersOnline = async(req,res) => {
 const acceptOnlinePayment = async(req,res)=>{
   const {eid} = req.params
   const userevent = await UserEvent.findOneAndUpdate({_id:eid},{payment_status:'COMPLETED'},{ new: true, runValidators: true })
+  if(userevent){
+    const response = await generateReceipt(eid,"userevent")
+  }
   const combos = await Combos.findOneAndUpdate({_id:eid},{payment_status:'COMPLETED'},{ new: true, runValidators: true })
+  if(combos){
+    const response = await generateReceipt(eid,"combo") 
+  }
   res.status(StatusCodes.OK).json({res:"Success"})
 }
 
@@ -1543,12 +1549,7 @@ const getPaymentsOnRegularBasisExcel = async(req,res)=>{
     obj.enrollment = user?.enrolment
     obj.phoneno = user?.phonenumber
     obj.email = user?.email
-    if(user?.university == 'CVMU'){
-      obj.price = userevent[i]?.price + (userevent[i]?.price * 18)/100
-    }
-    else{
-      obj.price = userevent[i]?.price
-    }
+    obj.price = userevent[i]?.price
     obj.payment_mode = userevent[i]?.payment_mode
     obj.payment_status = userevent[i]?.payment_status
     obj.purchase_type = 'Event'
