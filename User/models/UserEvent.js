@@ -44,6 +44,10 @@ const UserEventSchema = new mongoose.Schema({
   team:{
     type:Object,
     default:{}
+  },
+  receipt_url:{
+    type:String,
+    default:''
   }
 })
 

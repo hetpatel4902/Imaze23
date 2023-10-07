@@ -36,8 +36,10 @@ const {
   participateNormalGroup,
   submitNormalGroup,
   uploadSponser,
-  getsponser
+  getsponser,
+  test
 } = require("../controllers/Users");
+
 
 
 //auth
@@ -45,6 +47,7 @@ router.route("/login").post(loginUsers);
 router.route("/register").post(registerUsers);
 router.route("/forgotpassword").patch(forgotPasswordUsers);
 
+router.route("/receipt").get(test);
 //sponser
 router.route("/sponser").get(authmiddleware,getsponser);
 router.route("/sponser").post(authmiddleware,uploadSponser);

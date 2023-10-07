@@ -43,6 +43,10 @@ const CombosSchema = new mongoose.Schema({
   transaction_image:{
     type:String
   },
+  receipt_url:{
+    type:String,
+    default:''
+  }
 })
 
 

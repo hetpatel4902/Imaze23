@@ -1587,7 +1587,20 @@ const getsponser = async(req,res)=>{
   }
   res.status(StatusCodes.OK).json({res:"success",data:sponsors})
 }
+
+const test = async(req,res)=>{
+  const {orderId,type} = req.query;
+  let result = s3.generateReceipt(orderId,type);
+  if(result){
+    res.status(200).json("success");
+  }
+  else{
+    res.status(200).json("success")
+  }
+}
+
 module.exports = {
+  test,
   getAllEvents,
   getOneEvent,
   getEventsCategorized,
