@@ -1446,9 +1446,9 @@ const registerSoloFlagship = async (req, res) => {
   const { uid, eid } = req.body;
   const event = await FlagshipEvents.findOne({ _id: eid });
   event.participants.push(uid);
-  const upd = await Event.findOneAndUpdate(
+  const upd = await FlagshipEvents.findOneAndUpdate(
     { _id: eid },
-    { participants: event_participants },
+    { participants: event.participants },
     { new: true }
   );
   const d = new Date();
@@ -1460,6 +1460,7 @@ const registerSoloFlagship = async (req, res) => {
     date,
     payment_status: "COMPLETED",
     payment_mode: "OFFLINE",
+    category:"FLAGSHIP"
   });
   res.status(StatusCodes.OK).json({ res: "success", data: create_event });
 };
