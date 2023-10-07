@@ -34,13 +34,20 @@ const {
   registerSoloFlagship,
   participateFlagshipSolo,
   participateNormalGroup,
-  submitNormalGroup
+  submitNormalGroup,
+  uploadSponser,
+  getsponser
 } = require("../controllers/Users");
+
 
 //auth
 router.route("/login").post(loginUsers);
 router.route("/register").post(registerUsers);
 router.route("/forgotpassword").patch(forgotPasswordUsers);
+
+//sponser
+router.route("/sponser").get(authmiddleware,getsponser);
+router.route("/sponser").post(authmiddleware,uploadSponser);
 
 //events 
 router.route("/events").get(authmiddleware, getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
@@ -97,6 +104,6 @@ router.route("/:uid/payment/history").get(authmiddleware, getPaymentHistory); //
 router.route("/:uid/payment/offline").post(authmiddleware, payOffline); //call this api to generate otp for offline purchase [req.body={orderId:userEventId or comboId, isCombo:true/false}]
 router.route("/:uid/payment/online").post(authmiddleware, payOnline); //call this api after paying online and send the transaction id [req.body = {orderId:userEventId or comboId,transId:'',transUrl:'',isCombo:true/false}]
 
-//winner
+//announcement
 
 module.exports = router;

@@ -30,7 +30,7 @@ const uploadImageToS3 = async (name,imageBase64Data) => {
 
 
 //image upload
-//type = team or payment
+//type = team or payment or sponser
 const uploadImage = async (id, imageBase64Data,type) => {
   const base64ImageData = imageBase64Data; // Replace with your actual Base64 data
 

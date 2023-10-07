@@ -3,6 +3,7 @@ const Event = require("../models/Event");
 const StaticCombo = require("../models/StaticCombo");
 const UserEvent = require("../models/UserEvent");
 const Combo = require("../models/Combos");
+const Sponser = require("../models/Sponser")
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors/index");
 const fs = require("fs");
@@ -1554,6 +1555,27 @@ const submitNormalGroup = async (req, res) => {
     .status(StatusCodes.OK)
     .json({ res: "success", flag: true, data: create_event });
 };
+
+const uploadSponser = async(req,res)=>{
+  const {img} = req.body;
+  try{
+    let url = await s3.uploadImage(Math.floor(Math.random()*100),img,"sponser");
+    const sponsor = await Sponser.create({url});
+    res.status(StatusCodes.OK).json({res:"success",data:sponsor})
+  }
+  catch(err){
+    console.log("sponser image",err);
+    res.status(StatusCodes.BAD_REQUEST).json({res:"failed",data:"could not upload"})
+  }
+}
+
+const getsponser = async(req,res)=>{
+  const sponsors = await Sponser.find({});
+  if(!sponsors){
+    throw new BadRequestError("no sponsors")
+  }
+  res.status(StatusCodes.OK).json({res:"success",data:sponsors})
+}
 module.exports = {
   getAllEvents,
   getOneEvent,
@@ -1582,4 +1604,6 @@ module.exports = {
   participateFlagshipSolo,
   participateNormalGroup,
   submitNormalGroup,
+  uploadSponser,
+  getsponser
 };
