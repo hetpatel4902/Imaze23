@@ -680,15 +680,15 @@ const getPaymentHistory = async (req, res) => {
     switch (userEvents[i].category) {
       case "NORMAL":
         event = await Event.findOne({ _id: userEvents[i].eventid });
-        individual_events.push(event);
+        individual_events.push({event,receipt:userEvents[i].receipt_url});
         break;
       case "FLAGSHIP":
         event = await FlagshipEvents.findOne({ _id: userEvents[i].eventid });
-        individual_events.push(event);
+        individual_events.push({event,receipt:userEvents[i].receipt_url});
         break;
       case "CULTURAL":
         event = await Cultural.findOne({ _id: userEvents[i].eventid });
-        individual_events.push(event);
+        individual_events.push({event,receipt:userEvents[i].receipt_url});
         break;
     }
   }
@@ -706,6 +706,7 @@ const getPaymentHistory = async (req, res) => {
     obj.price = userCombos[i].price;
     obj.payment_mode = userCombos[i].payment_mode;
     obj.combo_type = userCombos[i].combotype;
+    obj.receipt = userCombos[i].receipt_url;
 
     combos.push(obj);
   }
