@@ -240,8 +240,10 @@ const verifiedOfflineEvent = async(req,res)=>{
   else if(name=='EVENT'){
     const d = new Date();
     let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+    console.log(_id)
     const userevent = await UserEvent.findOneAndUpdate({_id},{payment_status:'COMPLETED',date},{ new: true, runValidators: true })
     let points = 0
+    console.log(userevent)
     if(userevent.category == 'NORMAL'){
       const eventdetails = await Event.findOne({_id:userevent.eventid})
       if(eventdetails.isAvailable == false){
