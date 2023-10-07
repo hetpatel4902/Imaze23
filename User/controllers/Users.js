@@ -413,12 +413,12 @@ const buttonVisibility = async (req, res) => {
       if(event.type === "GROUP"){
         const attendees = event.attendance;
         for(let team in attendees){
-          if(team.team_leader === uid){
+          if(attendees[team].team_leader === uid){
             res.status(StatusCodes.OK).json({res:"success",data:true});
             return;
           }
           else{
-            if(team.members.includes(uid)){
+            if(attendees[team].members.includes(uid)){
               res.status(StatusCodes.OK).json({res:"success",data:true});
               return;
             }
@@ -443,12 +443,12 @@ const buttonVisibility = async (req, res) => {
       if(event.type === "GROUP"){
         const attendees = event.attendance;
         for(let team in attendees){
-          if(team.team_leader === uid){
+          if(attendees[team].team_leader === uid){
             res.status(StatusCodes.OK).json({res:"success",data:true});
             return;
           }
           else{
-            if(team.members.includes(uid)){
+            if(attendees[team].members.includes(uid)){
               res.status(StatusCodes.OK).json({res:"success",data:true});
               return;
             }
@@ -473,12 +473,12 @@ const buttonVisibility = async (req, res) => {
       if(event.type === "GROUP"){
         const attendees = event.participants;
         for(let team in attendees){
-          if(team.team_leader === uid){
+          if(attendees[team].team_leader === uid){
             res.status(StatusCodes.OK).json({res:"success",data:true});
             return;
           }
           else{
-            if(team.members.includes(uid)){
+            if(attendees[team].members.includes(uid)){
               res.status(StatusCodes.OK).json({res:"success",data:true});
               return;
             }
