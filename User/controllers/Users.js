@@ -236,12 +236,15 @@ const getUserEvents = async (req, res) => {
       case "NORMAL":
         event = await Event.findOne({ _id: pendingEvents[i].eventid });
         individual.push(event);
+        break;
       case "CULTURAL":
         event = await Cultural.findOne({ _id: pendingEvents[i].eventid });
         individual.push(event);
+        break;
       case "FLAGSHIP":
         event = await FlagshipEvents.findOne({ _id: pendingEvents[i].eventid });
         individual.push(event);
+        break;
     }
   }
 
@@ -255,19 +258,28 @@ const getUserEvents = async (req, res) => {
           type: "SOLO",
           _id: userEvents[i].eventid,
         });
-        solo_events.push(event);
+        if(event){
+          solo_events.push(event);
+        }
+        break;
       case "CULTURAL":
         event = await Cultural.findOne({
           type: "SOLO",
           _id: userEvents[i].eventid,
         });
-        solo_events.push(event);
+        if(event){
+          solo_events.push(event);
+        }        
+        break;
       case "FLAGSHIP":
         event = await FlagshipEvents.findOne({
           type: "SOLO",
           _id: userEvents[i].eventid,
         });
-        solo_events.push(event);
+        if(event){
+          solo_events.push(event);
+        }
+        break;
     }
   }
   for (let i = 0; i < userCombos.length; i++) {
@@ -281,18 +293,21 @@ const getUserEvents = async (req, res) => {
             _id: combo_events[i].eventid,
           });
           solo_events.push(event);
+          break;
         case "CULTURAL":
           event = await Cultural.findOne({
             type: "SOLO",
             _id: combo_events[i].eventid,
           });
           solo_events.push(event);
+          break;
         case "FLAGSHIP":
           event = await FlagshipEvents.findOne({
             type: "SOLO",
             _id: combo_events[i].eventid,
           });
           solo_events.push(event);
+          break;
       }
     }
   }
@@ -303,20 +318,23 @@ const getUserEvents = async (req, res) => {
   const user_teams = user.teams;
   for (let teamevent in user_teams) {
     let team_event = {};
-    switch (user_teams[teamevent]) {
+    console.log(user_teams[teamevent].type);
+    switch (user_teams[teamevent].type) {
       case "NORMAL":
         team_event.event = await Event.findOne({ _id: teamevent });
         team_event.team_name = user_teams[teamevent].team_name;
         team_events.push(team_event);
         break;
       case "FLAGSHIP":
-        team_event.event = await Event.findOne({ _id: teamevent });
+        team_event.event = await FlagshipEvents.findOne({ _id: teamevent });
         team_event.team_name = user_teams[teamevent].team_name;
         break;
       case "CULTURAL":
-        team_event.event = await Event.findOne({ _id: teamevent });
+        team_event.event = await Cultural.findOne({ _id: teamevent });
         team_event.team_name = user_teams[teamevent].team_name;
         break;
+      default:
+        console.log("old")
     }
   }
 
@@ -369,7 +387,7 @@ const checkCombo = async (req, res) => {
       .status(StatusCodes.OK)
       .json({ res: "success", flag: true, data: create_combo });
   } else {
-    res.status(StatusCodes.OK).json({ res: "success", flag, data });
+    res.status(StatusCodes.OK).json({ res: "success", flag:false, data });
   }
 };
 const participateNormalSolo = async (req, res) => {

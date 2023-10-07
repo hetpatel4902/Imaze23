@@ -138,6 +138,7 @@ const fs = require("fs");
 //     file.pipe(res);
 //   }, 1000);
 // });
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/lead", leadRoute);
 app.use(notFoundMiddleware);
