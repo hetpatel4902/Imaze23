@@ -50,6 +50,7 @@ app.get("/receipt", async (req, res) => {
   let amount;
   let tax = 0;
   let date;
+  let event_type ;
   if (type === "combo") {
     const combo = await Combos.findOne({ _id: orderId });
     transId = combo.transId;
@@ -57,6 +58,7 @@ app.get("/receipt", async (req, res) => {
     userId = combo.userId;
     amount = combo.price;
     date = combo.date;
+    event_type = "Combo"
     category = "NORMAL";
   }
   if (type === "userevent") {
@@ -66,6 +68,7 @@ app.get("/receipt", async (req, res) => {
     userId = usrevent.userId;
     amount = usrevent.price;
     category = usrevent.category;
+    event_type = "Single"
     date = usrevent.date;
   }
   const user = await Users.findOne({ _id: userId });
@@ -118,6 +121,27 @@ app.get("/receipt", async (req, res) => {
       align: "center",
     });
 
+  
+  doc
+    .fontSize(7)
+    .font("./Montserrat/static/Montserrat-Bold.ttf")
+    .text(amount, 165, 120, {
+      width: 40,
+      height: 20,
+      valign: "center",
+      align: "center",
+    });
+  
+  doc
+    .fontSize(7)
+    .font("./Montserrat/static/Montserrat-Bold.ttf")
+    .text(event_type, 115, 120, {
+      width: 40,
+      height: 20,
+      valign: "center",
+      align: "center",
+    });
+
   for (let i = 0; i < event_ids.length; i++) {
     let event;
     switch (category) {
@@ -133,16 +157,6 @@ app.get("/receipt", async (req, res) => {
             align: "center",
           });
         doc.rect(5, 120 + 20 * i, 110, 20).stroke();
-        doc
-          .fontSize(7)
-          .font("./Montserrat/static/Montserrat-Bold.ttf")
-          .text(event.price, 165, 120 + 20 * i, {
-            width: 40,
-            height: 20,
-            valign: "center",
-            align: "center",
-          });
-        doc.rect(165, 120+20*i, 40, 20).stroke();
         break;
 
       case "CULTURAL":
@@ -157,18 +171,6 @@ app.get("/receipt", async (req, res) => {
             align: "center",
           });
         doc.rect(5, 120 + 20 * i, 110, 20).stroke();
-
-        doc
-          .fontSize(7)
-          .font("./Montserrat/static/Montserrat-Bold.ttf")
-          .text(event.price, 165, 120 + 20 * i, {
-            width: 40,
-            height: 20,
-            valign: "center",
-            align: "center",
-          });
-        doc.rect(165, 120 + 20 * i, 40, 20).stroke();
-
         break;
 
       case "FLAGSHIP":
@@ -183,18 +185,6 @@ app.get("/receipt", async (req, res) => {
             align: "center",
           });
         doc.rect(5, 120 + 20 * i, 110, 20).stroke();
-
-        doc
-          .fontSize(7)
-          .font("./Montserrat/static/Montserrat-Bold.ttf")
-          .text(event.price, 165, 120 + 20 * i, {
-            width: 40,
-            height: 20,
-            valign: "center",
-            align: "center",
-          });
-        doc.rect(165, 120 + 20 * i, 40, 20).stroke();
-
         break;
     }
   }

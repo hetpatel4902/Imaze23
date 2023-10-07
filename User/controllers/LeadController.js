@@ -1355,6 +1355,7 @@ const declineOnlinePayment = async(req,res)=>{
   }
   else if(name=='EVENT'){
     const userevent = await UserEvent.findOneAndDelete({_id})
+    console.log(userevent)
     let points = 0
     if(userevent.category == 'NORMAL'){
       const eventdetails = await Event.findOne({_id:userevent.eventid})
@@ -1542,7 +1543,12 @@ const getPaymentsOnRegularBasisExcel = async(req,res)=>{
     obj.enrollment = user?.enrolment
     obj.phoneno = user?.phonenumber
     obj.email = user?.email
-    obj.price = userevent[i]?.price,
+    if(user?.university == 'CVMU'){
+      obj.price = userevent[i]?.price + (userevent[i]?.price * 18)/100
+    }
+    else{
+      obj.price = userevent[i]?.price
+    }
     obj.payment_mode = userevent[i]?.payment_mode
     obj.payment_status = userevent[i]?.payment_status
     obj.purchase_type = 'Event'

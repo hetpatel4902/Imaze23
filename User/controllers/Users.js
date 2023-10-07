@@ -1455,7 +1455,7 @@ const registerSoloFlagship = async (req, res) => {
   let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
   const create_event = await UserEvent.create({
     userId: uid,
-    eventId: eid,
+    eventid: eid,
     price: 0,
     date,
     payment_status: "COMPLETED",
