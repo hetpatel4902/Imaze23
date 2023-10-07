@@ -81,7 +81,7 @@ router.route("/combos").get(authmiddleware, getStaticCombos); //get all the stat
 //certificates
 router
   .route("/certificates/:uid/visibility/:eid")
-  .get(authmiddleware, buttonVisibility); //visible only if the user has attended that event [req.body = {type:NORMAL/FLAGSHIP/CULTURAL}]
+  .get(authmiddleware, buttonVisibility);//visible only if the user has attended that event ?type=NORMAL/FLAGSHIP/CULTURAL 
 router
   .route("/certificates/:uid/event/:eid")
   .get( getCertificate); //download certificate ?type=NORMAL/FLAGSHIP/CULTURAL [:eid = event id] [:uid = user id] 

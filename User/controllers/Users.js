@@ -10,7 +10,7 @@ const pdfkit = require("pdfkit");
 const bcrypt = require("bcrypt");
 const Cultural = require("../models/Cultural");
 const FlagshipEvents = require("../models/FlagshipEvents");
-const s3 = require("../utils/s3")
+const s3 = require("../utils/s3");
 
 //time clash check
 const isClashing = async (uid, current_event, isCombo, comevents) => {
@@ -367,7 +367,7 @@ const checkCombo = async (req, res) => {
     });
     res
       .status(StatusCodes.OK)
-      .json({ res: "success", flag:true, data: create_combo });
+      .json({ res: "success", flag: true, data: create_combo });
   } else {
     res.status(StatusCodes.OK).json({ res: "success", flag, data });
   }
@@ -397,12 +397,97 @@ const participateNormalSolo = async (req, res) => {
 //certificates
 const buttonVisibility = async (req, res) => {
   let { uid, eid } = req.params;
-  const event = await Event.findOne({ _id: eid });
-  const attendees = event.attendance;
-  if (attendees.includes(uid)) {
-    res.status(StatusCodes.OK).json({ res: "success", data: true });
-  } else {
-    res.status(StatusCodes.OK).json({ res: "failed", data: false });
+  const { type } = req.query;
+  let event;
+  switch (type) {
+    case "NORMAL":
+      event = await Event.findOne({ _id: eid });
+      if (event.type === "SOLO") {
+        const attendees = event.attendance;
+        if (attendees.includes(uid)) {
+          res.status(StatusCodes.OK).json({ res: "success", data: true });
+        } else {
+          res.status(StatusCodes.OK).json({ res: "failed", data: false });
+        }
+      }
+      if(event.type === "GROUP"){
+        const attendees = event.attendance;
+        for(let team in attendees){
+          if(team.team_leader === uid){
+            res.status(StatusCodes.OK).json({res:"success",data:true});
+            return;
+          }
+          else{
+            if(team.members.includes(uid)){
+              res.status(StatusCodes.OK).json({res:"success",data:true});
+              return;
+            }
+          }
+        }
+        res.status(StatusCodes.OK).json({res:"failed",data:false});
+      }
+      break;
+    
+    case "FLAGSHIP":
+      event = await FlagshipEvents.findOne({ _id: eid });
+      if (event.type === "SOLO") {
+        const attendees = event.attendance;
+        if (attendees.includes(uid)) {
+          res.status(StatusCodes.OK).json({ res: "success", data: true });
+          return;
+        } else {
+          res.status(StatusCodes.OK).json({ res: "failed", data: false });
+          return;
+        }
+      }
+      if(event.type === "GROUP"){
+        const attendees = event.attendance;
+        for(let team in attendees){
+          if(team.team_leader === uid){
+            res.status(StatusCodes.OK).json({res:"success",data:true});
+            return;
+          }
+          else{
+            if(team.members.includes(uid)){
+              res.status(StatusCodes.OK).json({res:"success",data:true});
+              return;
+            }
+          }
+        }
+        res.status(StatusCodes.OK).json({res:"failed",data:false});
+      }
+      break;
+    
+    case "CULTURAL":
+      event = await Cultural.findOne({ _id: eid });
+      if (event.type === "SOLO") {
+        const attendees = event.participants;
+        if (attendees.includes(uid)) {
+          res.status(StatusCodes.OK).json({ res: "success", data: true });
+          return;
+        } else {
+          res.status(StatusCodes.OK).json({ res: "failed", data: false });
+          return;
+        }
+      }
+      if(event.type === "GROUP"){
+        const attendees = event.participants;
+        for(let team in attendees){
+          if(team.team_leader === uid){
+            res.status(StatusCodes.OK).json({res:"success",data:true});
+            return;
+          }
+          else{
+            if(team.members.includes(uid)){
+              res.status(StatusCodes.OK).json({res:"success",data:true});
+              return;
+            }
+          }
+        }
+        res.status(StatusCodes.OK).json({res:"failed",data:false});
+      }
+      break;
+
   }
 };
 const getCertificate = async (req, res) => {
@@ -651,17 +736,15 @@ const payOnline = async (req, res) => {
   if (!transId || !transUrl) {
     throw new BadRequestError("Please provide transaction id and image url!!");
   }
-  try{
-    transUrl = await s3.uploadImage(transId,transUrl,"payment");
-  }
-  catch(err){
-    console.log("pay online:",err)
+  try {
+    transUrl = await s3.uploadImage(transId, transUrl, "payment");
+  } catch (err) {
+    console.log("pay online:", err);
     throw new BadRequestError("screenshot upload failed!");
   }
   const d = new Date();
   let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
   if (isCombo) {
-
     const combo = await Combo.findOneAndUpdate(
       { _id: orderId },
       {
@@ -710,8 +793,8 @@ const payOnline = async (req, res) => {
     res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
   } else {
     //check the category of the event, add participants , increase number of participants, check isAvailable,add coins to all the members if group event
-    
-    const evt = await UserEvent.findOne({userId:uid,_id:orderId});
+
+    const evt = await UserEvent.findOne({ userId: uid, _id: orderId });
     if (!evt) {
       throw new BadRequestError("This order id and user id does not match!");
     }
@@ -766,16 +849,19 @@ const payOnline = async (req, res) => {
               },
               { new: true }
             );
-            res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
+            res
+              .status(StatusCodes.OK)
+              .json({ res: "success", data: upd_student });
             break;
 
           case "GROUP":
             const team = evt.team;
             //adding participants to the event
             normal_event.participants.push(team);
-            normal_event.noOfParticipants =
-              normal_event.noOfParticipants + 1;
-            if (normal_event.noOfParticipants === normal_event.maxparticipants) {
+            normal_event.noOfParticipants = normal_event.noOfParticipants + 1;
+            if (
+              normal_event.noOfParticipants === normal_event.maxparticipants
+            ) {
               normal_event.isAvailable = false;
             }
             const upd_event_group = await Event.findOneAndUpdate(
@@ -815,7 +901,10 @@ const payOnline = async (req, res) => {
               team_obj[evt.eventid] = evt.team;
               const upd_group_student = await User.findOneAndUpdate(
                 { _id: team.members[i] },
-                { coins: group_student.coins + add_coins_group, teams: team_obj },
+                {
+                  coins: group_student.coins + add_coins_group,
+                  teams: team_obj,
+                },
                 { new: true }
               );
             }
@@ -836,7 +925,6 @@ const payOnline = async (req, res) => {
             break;
         }
         break;
-        
 
       case "FLAGSHIP":
         //there can be 2 categories : solo and group
@@ -1283,9 +1371,17 @@ const submitFlagship = async (req, res) => {
       member,
     });
   } else {
-    try{
-      poster_url = await s3.uploadImage(team_name+"-poster",poster_url,"team");
-      leader_ID = await s3.uploadImage(team_name+"-leaderID",leader_ID,"team");
+    try {
+      poster_url = await s3.uploadImage(
+        team_name + "-poster",
+        poster_url,
+        "team"
+      );
+      leader_ID = await s3.uploadImage(
+        team_name + "-leaderID",
+        leader_ID,
+        "team"
+      );
       const obj = {
         team_name: team_name,
         team_leader: uid,
@@ -1295,7 +1391,7 @@ const submitFlagship = async (req, res) => {
         project_title,
         type: "FLAGSHIP",
       };
-  
+
       const temp = await UserEvent.create({
         userId: uid,
         eventid: eid,
@@ -1305,13 +1401,15 @@ const submitFlagship = async (req, res) => {
         category: "FLAGSHIP",
         team: obj,
       });
-      res.status(StatusCodes.OK).json({ res: "success", flag: true, data: temp });
-    }
-    catch(err){
+      res
+        .status(StatusCodes.OK)
+        .json({ res: "success", flag: true, data: temp });
+    } catch (err) {
       console.log(err);
-      res.status(StatusCodes.EXPECTATION_FAILED).json({res:"failed",data:err});
+      res
+        .status(StatusCodes.EXPECTATION_FAILED)
+        .json({ res: "failed", data: err });
     }
-    
   }
 };
 const registerSoloFlagship = async (req, res) => {
