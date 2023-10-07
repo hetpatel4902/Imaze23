@@ -1390,26 +1390,37 @@ const submitFlagship = async (req, res) => {
       member,
     });
   } else {
+    let obj;
     try {
-      poster_url = await s3.uploadImage(
-        team_name + "-poster",
-        poster_url,
-        "team"
-      );
-      leader_ID = await s3.uploadImage(
-        team_name + "-leaderID",
-        leader_ID,
-        "team"
-      );
-      const obj = {
-        team_name: team_name,
-        team_leader: uid,
-        members: members,
-        leader_ID,
-        poster_url,
-        project_title,
-        type: "FLAGSHIP",
-      };
+      if(poster_url && leader_ID){
+        poster_url = await s3.uploadImage(
+          team_name + "-poster",
+          poster_url,
+          "team"
+        );
+        leader_ID = await s3.uploadImage(
+          team_name + "-leaderID",
+          leader_ID,
+          "team"
+        );
+         obj = {
+          team_name: team_name,
+          team_leader: uid,
+          members: members,
+          leader_ID,
+          poster_url,
+          project_title,
+          type: "FLAGSHIP",
+        };
+      }
+      else{
+        obj = {
+          team_name: team_name,
+          team_leader: uid,
+          members: members,
+          type: "FLAGSHIP",
+        };
+      }
 
       const temp = await UserEvent.create({
         userId: uid,
