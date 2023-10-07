@@ -50,7 +50,7 @@ router.route('/getFlagshipEvent/:fid').get(authMiddleware,getFlagshipEvent)
 router.route('/reduceToken/:uid').get(reduceToken)
 
 //coordinator screen
-router.route('/getAllIncompleteUsersOnline').get(authMiddleware,getAllIncompleteUsersOnline)
+router.route('/getAllIncompleteUsersOnline').get(getAllIncompleteUsersOnline)
 router.route('/acceptOnlinePayment/:eid').get(authMiddleware,acceptOnlinePayment)
 router.route('/declineOnlinePayment').post(authMiddleware,declineOnlinePayment)
 router.route('/getPaymentsOnRegularBasisExcel').post(authMiddleware,getPaymentsOnRegularBasisExcel)
