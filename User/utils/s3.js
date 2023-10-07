@@ -54,7 +54,26 @@ const uploadImage = async (id, imageBase64Data,type) => {
   }
 };
 
+const uploadPdf = async(name,stream,type)=>{
+
+  const params = {
+    Bucket: `imaze-bucket`,
+    Key: `user-${type}/${name}`,
+    Body:stream,
+    ContentType: "application/pdf",
+  };
+
+  try {
+    const data = await s3.upload(params).promise();
+    console.log(data.Location);
+    return data.Location; // URL of the uploaded image in S3
+  } catch (error) {
+    console.error("Error uploading image to S3:", error);
+    throw error;
+  }
+}
 module.exports = {
   uploadImageToS3,
-  uploadImage
+  uploadImage,
+  uploadPdf
 };

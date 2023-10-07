@@ -577,7 +577,7 @@ const getCertificate = async (req, res) => {
   const doc = new pdfkit();
   doc.pipe(
     fs.createWriteStream(
-      `./certificates/certificate-${user.name}-${event.name}.pdf`
+      `./certificates/${user.name}-${event.name}.pdf`
     )
   );
   doc.image(`./templates/${image_url}.jpg`, 0, 0, { width: 620, height: 800 });
@@ -597,20 +597,19 @@ const getCertificate = async (req, res) => {
     });
   }
   doc.end();
-  setTimeout(() => {
-    var file = fs.createReadStream(
-      `./certificates/certificate-${user.name}-${event.name}.pdf`
-    );
-    var stat = fs.statSync(
-      `./certificates/certificate-${user.name}-${event.name}.pdf`
-    );
-    res.setHeader("Content-Length", stat.size);
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=participation_certificate.pdf"
-    );
-    file.pipe(res);
+  setTimeout(async() => {
+    try{
+      var file = fs.createReadStream(`./certificates/${user.name}-${event.name}.pdf`);
+      let url = await s3.uploadPdf(`${user.name}-${event.name}.pdf`,file,"certificate");
+      fs.unlink(`./certificates/${user.name}-${event.name}.pdf`,(err)=>{
+        if(err) console.log(err);
+      })
+      res.status(StatusCodes.OK).json({res:"success",data:url});
+    }
+    catch(err){
+      console.log("certificate upload error",err);
+      throw new BadRequestError("could not generate certificate");
+    }
   }, 1000);
 };
 
