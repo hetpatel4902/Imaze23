@@ -72,7 +72,6 @@ const UsersSchema = new mongoose.Schema({
   },
   university:{
     type:String,
-    required:true,
     default:''
   }
 });
