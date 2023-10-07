@@ -236,15 +236,15 @@ const getUserEvents = async (req, res) => {
     switch (pendingEvents[i].category) {
       case "NORMAL":
         event = await Event.findOne({ _id: pendingEvents[i].eventid });
-        individual.push(event);
+        individual.push({event,cashotp:pendingEvents[i].cashotp});
         break;
       case "CULTURAL":
         event = await Cultural.findOne({ _id: pendingEvents[i].eventid });
-        individual.push(event);
+        individual.push({event,cashotp:pendingEvents[i].cashotp});
         break;
       case "FLAGSHIP":
         event = await FlagshipEvents.findOne({ _id: pendingEvents[i].eventid });
-        individual.push(event);
+        individual.push({event,cashotp:pendingEvents[i].cashotp});
         break;
     }
   }
