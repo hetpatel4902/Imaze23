@@ -29,7 +29,7 @@ router.route('/verifiedOfflineEvent').post(verifiedOfflineEvent)
 router.route('/rejectOfflineEvent').post(rejectOfflineEvent)
 
 //get user details
-router.route('/getUserDetails/:uid').get(authMiddleware,getUserDetails)
+router.route('/getUserDetails/:uid').get(getUserDetails)
 
 //cultural screens
 router.route('/getAllCulturalEvents').get(authMiddleware,getAllCulturalEvents)
@@ -47,7 +47,7 @@ router.route('/getToyothonEvents').get(authMiddleware,getToyothonEvents)
 router.route('/getFlagshipEvent/:fid').get(authMiddleware,getFlagshipEvent)
 
 //happy street
-router.route('/reduceToken/:uid').get(authMiddleware,reduceToken)
+router.route('/reduceToken/:uid').get(reduceToken)
 
 //coordinator screen
 router.route('/getAllIncompleteUsersOnline').get(authMiddleware,getAllIncompleteUsersOnline)
