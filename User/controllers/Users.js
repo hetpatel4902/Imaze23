@@ -319,7 +319,6 @@ const getUserEvents = async (req, res) => {
   const user_teams = user.teams;
   for (let teamevent in user_teams) {
     let team_event = {};
-    console.log(user_teams[teamevent].type);
     switch (user_teams[teamevent].type) {
       case "NORMAL":
         team_event.event = await Event.findOne({ _id: teamevent });
@@ -334,8 +333,9 @@ const getUserEvents = async (req, res) => {
         team_event.event = await Cultural.findOne({ _id: teamevent });
         team_event.team_name = user_teams[teamevent].team_name;
         break;
-      default:
-        console.log("old")
+    }
+    if(Object.keys(team_event).length !== 0){
+      team_events.push(team_event);
     }
   }
 
