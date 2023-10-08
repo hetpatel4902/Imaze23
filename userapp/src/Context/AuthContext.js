@@ -24,8 +24,11 @@ const AuthContextProvider = ({children}) => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [price, setPrice] = useState(0);
+  const [cvmu, setCvmu] = useState('');
+  const [college, setCollege] = useState('');
   // const [name,setName] = useState()
   let jsonValue;
+  let jsonValue1;
   let favourite;
   let Arr;
   useEffect(() => {
@@ -52,6 +55,8 @@ const AuthContextProvider = ({children}) => {
   const getData = async () => {
     setLoginPending(true);
     const value = await AsyncStorage.getItem('userDetail');
+    // const collegeDetail = await AsyncStorage.getItem('collegeDetail');
+    // jsonValue1 = JSON.parse(collegeDetail);
     jsonValue = JSON.parse(value);
     if (value != null) {
       console.log('user in auth context:', jsonValue);
@@ -60,9 +65,12 @@ const AuthContextProvider = ({children}) => {
       setTokens(jsonValue?.token);
       setName(jsonValue?.name);
       setDbUser(jsonValue);
+      // setCvmu(jsonValue1?.cvmuStudent);
+      // setCollege(jsonValue1?.college);
     } else {
       setUser(false);
     }
+
     setLoginPending(false);
   };
 
@@ -101,6 +109,8 @@ const AuthContextProvider = ({children}) => {
         Arr,
         price,
         setPrice,
+        // cvmu,
+        // college,
       }}>
       {children}
       {loginPending ? <SearchLoader /> : null}

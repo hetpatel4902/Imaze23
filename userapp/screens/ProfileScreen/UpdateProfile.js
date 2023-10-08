@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
   TextInput,
   Pressable,
+  Animated,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 // import {useForm} from 'react-hook-form';
@@ -32,6 +33,7 @@ const UpdateProfile = () => {
   const [name, setName] = useState('');
   // const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
+  const scrollY = new Animated.Value(0);
 
   useEffect(() => {
     getUserData();
@@ -49,7 +51,7 @@ const UpdateProfile = () => {
           },
         );
         // console.log(response.data.data);
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setName(response.data.data.name);
         setEmail(response.data.data.email);
         setDetails(response.data.data);
@@ -97,33 +99,62 @@ const UpdateProfile = () => {
   };
   return (
     <>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{backgroundColor: 'white', flex: 1, padding: 14}}>
-        <View style={styles.root}>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1,
+          backgroundColor: '#1655BC',
+          height: 60,
+          alignSelf: 'center',
+          borderBottomRightRadius: 25,
+          borderBottomLeftRadius: 25,
+          paddingTop: 5,
+
+          opacity: scrollY.interpolate({
+            inputRange: [0, 70],
+            outputRange: [1, 0],
+            extrapolate: 'clamp',
+          }),
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
+          }}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
+              marginTop: 10,
             }}>
             <FontAwesome5
               name="user-edit"
               size={15}
-              color={'#000000'}
+              color={'#ffffff'}
               style={{marginRight: 3}}
             />
             <Text
               style={{
                 marginLeft: 3,
-                color: '#000000',
-                fontFamily: 'Poppins-Regular',
+                color: '#ffffff',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 16,
               }}>
               Update Your Profile
             </Text>
           </View>
-
+        </View>
+      </Animated.View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{backgroundColor: 'white', flex: 1, padding: 14, marginTop: 35}}>
+        <View style={styles.root}>
           <Text
             style={{
               color: 'black',
@@ -178,8 +209,8 @@ const UpdateProfile = () => {
             style={{
               alignContent: 'center',
               alignSelf: 'center',
-              marginTop: 10,
-              backgroundColor: COLOR,
+              marginTop: 20,
+              backgroundColor: '#1655BC',
               paddingVertical: 9,
               borderRadius: 20,
               width: width - 50,

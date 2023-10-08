@@ -7,9 +7,11 @@ import {createStackNavigator} from '@react-navigation/stack';
 // import HistoryScreen from '../screens/MyEvents';
 import ProfileScreen from '../screens/ProfileScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+// import Ionicons from 'react-native-vector-icons/Font';
 import HomeScreen from '../screens/HomeScreen';
 // import BasketScreen from '../screens/BasketScreen';
 import TechEvents from '../screens/HomeScreen/TechEvents';
+import RegisterTeam from '../screens/HomeScreen/RegisterTeam';
 import NonTechEvents from '../screens/HomeScreen/NonTechEvents';
 import CulturalEvents from '../screens/HomeScreen/CulturalEvents';
 import Workshop from '../screens/HomeScreen/Workshop';
@@ -30,6 +32,11 @@ import DownloadCertificate from '../screens/ProfileScreen/DownloadCertificate';
 import Itk from '../screens/Itk';
 import HappyStreet from '../screens/HappyStreet';
 import Ideathon from '../screens/Ideathon';
+import BuyTokenScreen from '../screens/HomeScreen/BuyTokenScreen';
+import Toyathon from '../screens/HomeScreen/Toyathon';
+import WorkshopItk from '../screens/HomeScreen/WorkshopItk';
+import SocialActivity from '../screens/HomeScreen/SocialActivity';
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -37,8 +44,8 @@ const BottomTabNav = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarInactiveTintColor: '#e0fcff',
-        tabBarActiveTintColor: '#000000',
+        tabBarInactiveTintColor: '#e3edfc',
+        tabBarActiveTintColor: '#1655BC',
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           height: 50,
@@ -61,7 +68,7 @@ const BottomTabNav = () => {
             marginTop: -8,
             marginBottom: 2,
             fontSize: 9,
-            color: 'black',
+            // color: 'black',
           },
           tabBarIcon: ({color}) => (
             <Entypo name="home" size={18} color={color} />
@@ -82,13 +89,13 @@ const BottomTabNav = () => {
       />
       <Tab.Screen
         component={MyEventStack}
-        name="My Events"
+        name="Cart"
         options={{
           unmountOnBlur: true,
           headerShown: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
-            <FontAwesome5 name="history" size={18} color={color} />
+            <FontAwesome5 name="shopping-cart" size={18} color={color} />
           ),
         }}
       />
@@ -154,6 +161,7 @@ const ProfileScreenStack = () => {
         component={DownloadCertificate}
         name="DownloadCertificate"
       />
+      <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
     </Stack.Navigator>
   );
 };
@@ -168,10 +176,15 @@ const HomeStack = () => {
       <Stack.Screen component={CulturalEvents} name="CulturalEvents" />
       <Stack.Screen component={Workshop} name="Workshop" />
       <Stack.Screen component={EventDetailScreen} name="EventDetailScreen" />
+      <Stack.Screen component={RegisterTeam} name="RegisterTeam" />
       <Stack.Screen component={SearchScreen} name="SearchScreen" />
       <Stack.Screen component={Ideathon} name="Ideathon" />
       <Stack.Screen component={HappyStreet} name="HappyStreet" />
       <Stack.Screen component={Itk} name="Itk" />
+      <Stack.Screen component={BuyTokenScreen} name="BuyTokenScreen" />
+      <Stack.Screen component={Toyathon} name="Toyathon" />
+      <Stack.Screen component={WorkshopItk} name="WorkshopItk" />
+      <Stack.Screen component={SocialActivity} name="SocialActivity" />
     </Stack.Navigator>
   );
 };

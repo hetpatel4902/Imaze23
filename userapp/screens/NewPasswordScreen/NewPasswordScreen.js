@@ -82,7 +82,8 @@ const NewPasswordScreen = () => {
             }}>
             Reset Password
           </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
             <Feather
               name="lock"
               size={20}
@@ -101,11 +102,11 @@ const NewPasswordScreen = () => {
                 flex: 1,
                 borderBottomWidth: 1,
                 borderColor: '#d1cfcf',
-                marginTop: 5,
+
                 borderRadius: 8,
                 paddingHorizontal: 10,
                 paddingBottom: 9,
-                fontSize: 13,
+                fontSize: 15,
                 fontFamily: 'Poppins-Medium',
                 color: '#212121',
               }}></TextInput>
@@ -168,7 +169,7 @@ const NewPasswordScreen = () => {
             <Pressable
               onPress={onSubmitPressed}
               style={{
-                shadowColor: '#4b2be3',
+                shadowColor: '#1655BC',
                 // shadowColor: '#19347d',
                 shadowOffset: {
                   width: 0,
@@ -180,7 +181,7 @@ const NewPasswordScreen = () => {
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 25,
-                backgroundColor: '#6949ff',
+                backgroundColor: '#1655BC',
                 // backgroundColor: '#19347d',
                 paddingVertical: 10,
                 borderRadius: 13,

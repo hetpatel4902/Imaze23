@@ -43,7 +43,7 @@ const DynamicWorkshopSelectScreen = () => {
           Workshops 🎉
         </Text>
       </View>
-      <Text style={styles.subTitle}>Note: You can select only 1 Workshop</Text>
+      <Text style={styles.subTitle}>*Note: You can select only 1 Workshop</Text>
       <FlatList
         style={{marginBottom: 30, marginTop: 5}}
         data={event}
@@ -68,8 +68,9 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontFamily: 'Poppins-Regular',
-    color: '#393939 ',
-    fontSize: 14,
+    color: 'grey',
+    fontSize: 12,
+    marginHorizontal: 31,
   },
 });
 export default DynamicWorkshopSelectScreen;

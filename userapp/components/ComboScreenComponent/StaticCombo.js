@@ -8,69 +8,179 @@ import {
   Image,
   Dimensions,
   Alert,
+  ScrollView,
+  TextInput,
+  Linking,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import ComboDetail from './ComboDetail';
+import {launchImageLibrary} from 'react-native-image-picker';
+import Octicons from 'react-native-vector-icons/Octicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useAuthContext} from '../../src/Context/AuthContext';
 import {USER_IP} from '@env';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-import Entypo from 'react-native-vector-icons/Entypo';
+// import Entypo from 'react-native-vector-icons/Entypo';
 import {COLOR} from '@env';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Feather from 'react-native-vector-icons/Feather';
 
-const StaticCombo = ({data, pending}) => {
+const StaticCombo = ({data, pending, bought}) => {
   const width = Dimensions.get('screen').width;
   const [events, setEvents] = useState(data?.events);
   const {tokens, users} = useAuthContext();
   const navigation = useNavigation();
   const [modal, setModal] = useState(false);
   const [checkDetail, setCheckDetail] = useState(null);
+  const [modal1, setModal1] = useState(null);
+  const [image, setImage] = useState(null);
+  const [transId, setTransId] = useState('');
+  const openImagePicker = async () => {
+    // console.log(image);
+    const options = {
+      mediaType: 'photo',
+      includeBase64: true, // Set this to true to include base64 data
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
 
-  const showToastWithGravityAndOffset = async () => {
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+      } else {
+        let imageUri = response.uri || response.assets?.[0]?.uri;
+        const base64Image = response.base64; // Get the base64 representation
+
+        // console.log(response.assets[0].base64);
+        setImage(response.assets[0].base64); // Log the base64 data
+        // setImage(imageUri);
+      }
+    });
+  };
+  const showToastWithGravityAndOffset = async msg => {
     ToastAndroid.showWithGravityAndOffset(
-      'Provide this otp at Registration desk!',
+      msg,
       ToastAndroid.LONG,
       ToastAndroid.BOTTOM,
       25,
       50,
     );
   };
-  const onBuyPressed = async () => {
-    await check();
+  const onlineTransaction = async () => {
+    // console.log({
+    //   orderId: checkDetail?.data._id,
+    //   transId,
+    //   transUrl: 'data:image/jpeg;base64' + image,
+    //   isCombo: true,
+    // });
+    const res = await axios.post(
+      `http://${USER_IP}/api/v1/user/${users}/payment/online`,
+      {
+        orderId: checkDetail?.data._id,
+        transId,
+        transUrl: 'data:image/jpeg;base64' + image,
+        isCombo: true,
+      },
+      {headers: {Authorization: `Bearer ${tokens}`}},
+    );
+    if (res.data.res == 'success') {
+      setModal(false);
+      setModal1(false);
+      showToastWithGravityAndOffset(
+        'Partially Registered,Your payment will be verified soon...',
+      );
+      navigation.goBack();
+      navigation.goBack();
+    }
   };
-  const payOnline = () => {};
+
+  const payOnline = () => {
+    setModal(true);
+    // console.log(eventDetail);
+  };
+  const scrollToTop = () => {
+    setShow(true);
+  };
   const payOffline = async () => {
+    // console.log(checkDetail.data._id);
     const res = await axios.post(
       `http://${USER_IP}/api/v1/user/${users}/payment/offline`,
       {orderId: checkDetail?.data._id, isCombo: true},
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    // console.log('event detail:', res.data);
-    setModal(false);
-    showToastWithGravityAndOffset();
+    setModal1(false);
+    showToastWithGravityAndOffset('Show this otp at registration desk.');
     navigation.navigate('MyEvents');
   };
+  const onBuyPressed = async () => {
+    await check();
+  };
+  const downloadReceipt = () => {
+    // console.log(tech);
+    if (data?.receipt == '') {
+      Alert.alert('Receipt not yet generated.Sorry for inconvenience.');
+    } else {
+      Linking.openURL(`${data?.receipt}`);
+    }
+  };
+  // const payOnline = () => {};
+  // const payOffline = async () => {
+  //   const res = await axios.post(
+  //     `http://${USER_IP}/api/v1/user/${users}/payment/offline`,
+  //     {orderId: checkDetail?.data._id, isCombo: true},
+  //     {headers: {Authorization: `Bearer ${tokens}`}},
+  //   );
+  //   // console.log('event detail:', res.data);
+  //   setModal(false);
+  //   showToastWithGravityAndOffset();
+  //   navigation.navigate('MyEvents');
+  // };
   const check = async () => {
     const checkEvent = async () => {
       // console.log('event_id:', data._id);
       const response = await axios.post(
         `http://${USER_IP}/api/v1/user/combos/${users}/check`,
-        {price: data?.price, events: data.events, combotype: 'STATIC'},
+        {events: data.events, combotype: 'STATIC', price: data?.price},
         {headers: {Authorization: `Bearer ${tokens}`}},
       );
       // console.log(response.data);
       setCheckDetail(response.data);
-      if (response.data.flag == true) {
-        Alert.alert(`Your event timings are clashing.`);
+      if (response.data.flag) {
+        setModal1(true);
       } else {
-        setModal(true);
+        Alert.alert(`Your event timings are clashing.`);
       }
     };
     await checkEvent();
   };
   return (
     <>
-      <View style={{backgroundColor: '#ffffff'}}>
+      <View
+        style={{
+          backgroundColor: '#ffffff',
+          shadowColor: '#000000',
+          shadowOffset: {
+            width: 0,
+            height: 7,
+          },
+          shadowOpacity: 0.41,
+          shadowRadius: 9.11,
+          elevation: 5,
+          margin: 6,
+          // padding: 10,
+          paddingHorizontal: 10,
+          // paddingVertical: 15,
+          paddingBottom: 15,
+          borderRadius: 20,
+          marginTop: 15,
+        }}>
         <Text
           style={{
             fontFamily: 'Poppins-Medium',
@@ -86,22 +196,12 @@ const StaticCombo = ({data, pending}) => {
           keyExtractor={item => item._id}
           showsVerticalScrollIndicator={false}
         />
-        <Text
-          style={{
-            color: 'grey',
-            alignSelf: 'center',
-            fontFamily: 'Poppins-Regular',
-            fontSize: 11,
-            marginVertical: 10,
-          }}>
-          Please provide this OTP at Registration Desk for Verifying your
-          Payment.
-        </Text>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-around',
+            marginTop: 10,
           }}>
           <Text
             style={{
@@ -113,50 +213,87 @@ const StaticCombo = ({data, pending}) => {
             Rs. {data.price}
           </Text>
           {/* {pending && ( */}
-          <Pressable
-            onPress={onBuyPressed}
-            disabled={pending}
-            style={{
-              shadowColor: '#4b2be3',
-              shadowOffset: {
-                width: 0,
-                height: 7,
-              },
-              shadowOpacity: 0.41,
-              shadowRadius: 9.11,
-              elevation: 14,
-              alignContent: 'center',
-              alignSelf: 'center',
-              backgroundColor: COLOR,
-              paddingVertical: 8,
-              borderRadius: 14,
-            }}>
-            <Text
+          {!bought && (
+            <Pressable
+              onPress={onBuyPressed}
+              disabled={pending}
               style={{
-                color: 'white',
+                shadowColor: '#1655BC',
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 14,
+                alignContent: 'center',
                 alignSelf: 'center',
-                fontFamily: 'Poppins-SemiBold',
-                fontSize: 14,
-                marginHorizontal: 30,
+                backgroundColor: '#1655BC',
+                paddingVertical: 8,
+                borderRadius: 14,
               }}>
-              {pending ? `OTP : ${data.cash_otp}` : 'Buy Now'}
-            </Text>
-          </Pressable>
+              <Text
+                style={{
+                  color: 'white',
+                  alignSelf: 'center',
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 14,
+                  marginHorizontal: 30,
+                }}>
+                {pending
+                  ? data.payment_mode == 'ONLINE'
+                    ? 'Pending'
+                    : `OTP : ${data.cash_otp}`
+                  : 'Buy Now'}
+              </Text>
+            </Pressable>
+          )}
+          {bought && (
+            <Pressable
+              onPress={downloadReceipt}
+              // disabled={pending}
+              style={{
+                shadowColor: '#1655BC',
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 14,
+                alignContent: 'center',
+                alignSelf: 'center',
+                backgroundColor: '#1655BC',
+                paddingVertical: 8,
+                borderRadius: 14,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  alignSelf: 'center',
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 14,
+                  marginHorizontal: 30,
+                }}>
+                Download Receipt
+              </Text>
+            </Pressable>
+          )}
           {/* )} */}
         </View>
-        {!pending && (
-          <View
-            style={{
-              height: 0.5,
-              marginVertical: 16,
-              backgroundColor: 'grey',
-              paddingHorizontal: 40,
-            }}></View>
-        )}
+        {/* {!pending && (
+          // <View
+          //   style={{
+          //     height: 0.5,
+          //     marginVertical: 16,
+          //     backgroundColor: 'grey',
+          //     paddingHorizontal: 40,
+          //   }}></View>
+        )} */}
       </View>
       <Modal transparent={true} visible={modal} animationType={'slide'}>
         <View style={{flex: 1, backgroundColor: '#000000aa'}}>
-          <View style={{height: 175, alignItems: 'center'}}>
+          <View style={{height: 145, alignItems: 'center'}}>
             <Pressable
               onPress={() => setModal(false)}
               style={{
@@ -166,12 +303,222 @@ const StaticCombo = ({data, pending}) => {
                 padding: 7,
                 borderRadius: 17,
                 alignItems: 'center',
-                marginTop: 90,
+                marginTop: 60,
               }}>
               <Entypo name="cross" size={21} color={'#000000'} />
             </Pressable>
           </View>
-          <View
+          <ScrollView
+            style={{
+              backgroundColor: '#ffffff',
+              height: '100%',
+              borderTopLeftRadius: 50,
+              borderTopRightRadius: 50,
+              padding: 20,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Medium',
+                  color: '#191919',
+                  fontSize: 17,
+                  textAlign: 'center',
+                  marginTop: 6,
+                }}>
+                Pay{'  '}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-SemiBold',
+                  color: '#1655BC',
+                  fontSize: 19,
+                  textAlign: 'center',
+                  marginTop: 6,
+                }}>
+                {'\u20B9'} {data?.price}
+                {'  '}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Medium',
+                  color: '#191919',
+                  fontSize: 17,
+                  textAlign: 'center',
+                  marginTop: 6,
+                }}>
+                Online
+              </Text>
+            </View>
+            <Image
+              source={{
+                uri: 'https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/qrcode.jpeg',
+              }}
+              style={{
+                height: 225,
+                width: 267,
+                alignSelf: 'center',
+                marginTop: 0,
+                resizeMode: 'contain',
+              }}
+            />
+            {/* <Button title="Pick Image" onPress={openImagePicker} /> */}
+            <Text
+              style={{
+                fontFamily: 'Poppins-Regular',
+                fontSize: 12,
+                color: '#000000',
+              }}>
+              *Note: Your payment will be verified by accouts team, in case of
+              any discrepancies found ,serious action will be taken against you.
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: 10,
+              }}>
+              <MaterialCommunityIcons
+                name="cash"
+                size={20}
+                color={'#757575'}
+                style={{marginRight: 3}}
+              />
+              <TextInput
+                onChangeText={setTransId}
+                placeholderTextColor="grey"
+                placeholder="Transaction ID"
+                value={transId}
+                style={{
+                  height: 40,
+                  marginLeft: 4,
+                  flex: 1,
+                  borderBottomWidth: 1,
+                  borderColor: '#d1cfcf',
+                  marginVertical: 5,
+                  borderRadius: 8,
+                  paddingHorizontal: 10,
+                  paddingBottom: 9,
+                  fontSize: 13,
+                  fontFamily: 'Poppins-Medium',
+                  color: '#212121',
+                }}
+              />
+            </View>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Regular',
+                fontSize: 12,
+                color: '#000000',
+              }}>
+              *Note: Transaction ID should be visible in your screenshot
+            </Text>
+            <View style={{}}>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Medium',
+                  fontSize: 14,
+                  color: '#000000',
+                }}>
+                Transaction Image:
+              </Text>
+              {image && (
+                <Image
+                  source={{uri: `data:image/jpeg;base64,${image}`}}
+                  style={{
+                    width: 200,
+                    height: 200,
+                    alignSelf: 'center',
+                    resizeMode: 'contain',
+                  }}
+                />
+              )}
+              <Pressable
+                onPress={openImagePicker}
+                style={{
+                  height: 38,
+                  width: 205,
+                  borderRadius: 5,
+                  backgroundColor: '#1655BC',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  marginTop: 15,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'Poppins-Medium',
+                    fontSize: 14,
+                    color: 'white',
+                    textAlign: 'center',
+                  }}>
+                  {image ? 'Update Image' : 'Upload Image'}
+                </Text>
+                <Feather
+                  name="upload"
+                  size={20}
+                  color={'white'}
+                  style={{marginLeft: 8}}
+                />
+              </Pressable>
+            </View>
+            <Pressable
+              onPress={onlineTransaction}
+              style={{
+                shadowColor: '#ff9600',
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 8,
+                alignContent: 'center',
+                alignSelf: 'center',
+                marginTop: 25,
+                backgroundColor: '#ff9600',
+                paddingVertical: 10,
+                borderRadius: 13,
+                maxWidth: width,
+                width: width - 46,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  alignSelf: 'center',
+                  fontFamily: 'Poppins-SemiBold',
+                  fontSize: 15,
+                }}>
+                Submit
+              </Text>
+            </Pressable>
+            <View style={{height: 40}}></View>
+          </ScrollView>
+        </View>
+      </Modal>
+      <Modal transparent={true} visible={modal1} animationType={'slide'}>
+        <View style={{flex: 1, backgroundColor: '#000000aa'}}>
+          <View style={{height: 175, alignItems: 'center'}}>
+            <Pressable
+              onPress={() => setModal1(false)}
+              style={{
+                backgroundColor: 'white',
+                height: 35,
+                width: 35,
+                padding: 7,
+                borderRadius: 17,
+                alignItems: 'center',
+                marginTop: 60,
+              }}>
+              <Entypo name="cross" size={21} color={'#000000'} />
+            </Pressable>
+          </View>
+          <ScrollView
             style={{
               backgroundColor: '#ffffff',
               height: '100%',
@@ -201,18 +548,18 @@ const StaticCombo = ({data, pending}) => {
             <Pressable
               onPress={payOffline}
               style={{
-                shadowColor: COLOR,
+                shadowColor: '#1655BC',
                 shadowOffset: {
                   width: 0,
                   height: 7,
                 },
                 shadowOpacity: 0.41,
                 shadowRadius: 9.11,
-                elevation: 14,
+                elevation: 8,
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 25,
-                backgroundColor: COLOR,
+                backgroundColor: '#1655BC',
                 paddingVertical: 10,
                 borderRadius: 13,
                 maxWidth: width,
@@ -252,7 +599,7 @@ const StaticCombo = ({data, pending}) => {
             <Pressable
               onPress={payOnline}
               style={{
-                shadowColor: '#53c2f0',
+                shadowColor: '#ff9600',
                 // shadowColor: '#19347d',
                 shadowOffset: {
                   width: 0,
@@ -260,11 +607,11 @@ const StaticCombo = ({data, pending}) => {
                 },
                 shadowOpacity: 0.41,
                 shadowRadius: 9.11,
-                elevation: 14,
+                elevation: 8,
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 25,
-                backgroundColor: '#53c2f0',
+                backgroundColor: '#ff9600',
                 // backgroundColor: '#19347d',
                 paddingVertical: 10,
                 borderRadius: 13,
@@ -279,10 +626,11 @@ const StaticCombo = ({data, pending}) => {
                   fontFamily: 'Poppins-SemiBold',
                   fontSize: 15,
                 }}>
-                Paytm
+                Pay Online
               </Text>
             </Pressable>
-          </View>
+            <View style={{height: 40}}></View>
+          </ScrollView>
         </View>
       </Modal>
     </>

@@ -5,7 +5,10 @@ import {USER_IP} from '@env';
 const SearchComponent = ({searchResult}) => {
   const navigation = useNavigation();
   const onPress = () => {
-    navigation.navigate('EventDetailScreen', {eventId: searchResult._id});
+    navigation.navigate('EventDetailScreen', {
+      eventId: searchResult._id,
+      type: searchResult.event_type,
+    });
   };
   return (
     <Pressable
@@ -19,7 +22,7 @@ const SearchComponent = ({searchResult}) => {
       }}>
       <View style={{padding: 10}}>
         <Image
-          source={{uri: `http://${USER_IP}/${searchResult?.image}`}}
+          source={{uri: searchResult?.image}}
           style={{height: 56, width: 56, alignSelf: 'center', borderRadius: 28}}
         />
       </View>

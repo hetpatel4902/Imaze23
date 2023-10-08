@@ -40,15 +40,16 @@ const DynamicNonTechSelectScreen = () => {
             fontFamily: 'Poppins-Medium',
             fontSize: 17,
             marginLeft: 5,
+            // textAlign: 'center',
           }}>
           Non-Tech Events 🎉
         </Text>
       </View>
       <Text style={styles.subTitle}>
-        Note: You can select only 1 Non-Tech events
+        *Note: You can select only 1 Non-Tech events
       </Text>
       <FlatList
-        style={{marginBottom: 30, marginTop: 5}}
+        style={{marginBottom: 30, marginTop: 0}}
         data={event}
         renderItem={({item}) => <DynamicNonTechEventComponent tech={item} />}
         keyExtractor={item => item._id}
@@ -71,8 +72,9 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontFamily: 'Poppins-Regular',
-    color: '#393939 ',
-    fontSize: 14,
+    color: 'grey',
+    fontSize: 12,
+    marginLeft: 31,
   },
 });
 export default DynamicNonTechSelectScreen;

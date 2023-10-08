@@ -41,11 +41,11 @@ const DynamicTechSelectScreen = () => {
             fontSize: 17,
             marginLeft: 5,
           }}>
-          Tech Events 🎉
+          Tech Events
         </Text>
       </View>
       <Text style={styles.subTitle}>
-        Note: You can select only 2 Tech events
+        *Note: You can select only 2 Tech events
       </Text>
       <FlatList
         style={{marginBottom: 30, marginTop: 5}}
@@ -71,8 +71,9 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontFamily: 'Poppins-Regular',
-    color: '#393939 ',
-    fontSize: 14,
+    color: 'grey',
+    fontSize: 12,
+    marginHorizontal: 31,
   },
 });
 export default DynamicTechSelectScreen;

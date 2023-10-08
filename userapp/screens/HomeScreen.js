@@ -9,9 +9,13 @@ import {
   FlatList,
   Animated,
   TextInput,
+  ImageBackground,
+  useWindowDimensions,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import axios from 'axios';
+import Entypo from 'react-native-vector-icons/Entypo';
+
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImageCarousel from '../components/HomeScreenComponent/ImageCarousel';
@@ -24,16 +28,23 @@ import MainEventComponent from '../components/MainEventsComponent/MainEventCompo
 import LinearGradient from 'react-native-linear-gradient';
 import FlagshipEventComponent from '../components/FlagshipEventComponents/FlagshipEventComponent';
 import * as Animatable from 'react-native-animatable';
+import {USER_IP} from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
+  // #ED3F36 red
+  // #262161 dark blue
+  // #FAAD41 yellow
+  // #1655BC blue
+  // #deeaff light blue background
+  const {width} = useWindowDimensions();
   const {name, loading, setLoading} = useAuthContext();
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-
   useEffect(() => {
     const scrollInterval = setInterval(() => {
       // Calculate the next index to scroll to
       const nextIndex = (currentIndex + 1) % data.length;
-      const nextOffset = nextIndex * 181; // Replace ITEM_WIDTH with the width of your list item
+      const nextOffset = nextIndex * 110; // Replace ITEM_WIDTH with the width of your list item
 
       // Scroll to the next item
       flatListRef.current.scrollToOffset({offset: nextOffset, animated: true});
@@ -47,52 +58,59 @@ const HomeScreen = () => {
   }, [currentIndex]);
 
   const flatListRef2 = useRef(null);
-  const [currentIndex2, setCurrentIndex2] = useState(0);
+  // const [currentIndex2, setCurrentIndex2] = useState(0);
 
-  useEffect(() => {
-    const scrollInterval = setInterval(() => {
-      // Calculate the next index to scroll to
-      const nextIndex = (currentIndex2 + 1) % flagshipData.length;
-      const nextOffset = nextIndex * 181; // Replace ITEM_WIDTH with the width of your list item
+  // useEffect(() => {
+  //   const scrollInterval = setInterval(() => {
+  //     // Calculate the next index to scroll to
+  //     const nextIndex = (currentIndex2 + 1) % flagshipData.length;
+  //     const nextOffset = nextIndex * 45; // Replace ITEM_WIDTH with the width of your list item
 
-      // Scroll to the next item
-      flatListRef2.current.scrollToOffset({
-        offset: nextOffset,
-        animated: true,
-      });
+  //     // Scroll to the next item
+  //     flatListRef2.current.scrollToOffset({
+  //       offset: nextOffset,
+  //       animated: true,
+  //     });
 
-      // Update the current index
-      setCurrentIndex2(nextIndex);
-    }, 2550); // Replace AUTO_SCROLL_INTERVAL with the interval in milliseconds (e.g., 3000 for 3 seconds)
+  //     // Update the current index
+  //     setCurrentIndex2(nextIndex);
+  //   }, 2550); // Replace AUTO_SCROLL_INTERVAL with the interval in milliseconds (e.g., 3000 for 3 seconds)
 
-    // Clear the interval when the component unmounts
-    return () => clearInterval(scrollInterval);
-  }, [currentIndex2]);
+  //   // Clear the interval when the component unmounts
+  //   return () => clearInterval(scrollInterval);
+  // }, [currentIndex2]);
 
   const data = [
     {
       redirect: 'TechEvents',
-      image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/tech+(2).png`,
+      // image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/tech+(2).png`,
+      image: require('../data/card2.jpg'),
       name: 'Tech Events',
       colors: ['#BDD6FE', '#D9D6FB', '#F2D4F6'],
+      // colors: ['#EEFDFD', '#C8FBF2', '#C7E1FC', '#C1D4FF'],
     },
     {
       redirect: 'NonTechEvents',
-      image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/nontech.png`,
-      name: 'Non Tech Events',
+      // image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/nontech.png`,
+      image: require('../data/nontech.jpg'),
+      name: 'Non-Tech Events',
       colors: ['#EEFDFD', '#C8FBF2', '#C7E1FC', '#C1D4FF'],
     },
     {
       redirect: 'CulturalEvents',
-      image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/cultural.png`,
+      // image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/cultural.png`,
+      image: require('../data/culturalcard.jpg'),
       name: 'Cultural Events',
       colors: ['#FBECD7', '#FADFD1', '#F7D2CC', '#F6CBCA'],
+      // colors: ['#EEFDFD', '#C8FBF2', '#C7E1FC', '#C1D4FF'],
     },
     {
       redirect: 'Workshop',
-      image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/Vocational.png`,
+      // image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/Vocational.png`,
+      image: require('../data/workshopcard.jpg'),
       name: 'Vocational',
       colors: ['#CDFAD9', '#D8F8C9', '#E6F2B6', '#F0F0A8'],
+      // colors: ['#EEFDFD', '#C8FBF2', '#C7E1FC', '#C1D4FF'],
     },
   ];
   const flagshipData = [
@@ -103,7 +121,10 @@ const HomeScreen = () => {
       colors: ['#B1802F', '#D0B144', '#ECE4AE', '#C19B45'],
     },
     {
-      redirect: 'HappyStreet',
+      // redirect: 'EventDetailScreen',
+      redirect: 'EventDetailScreen',
+      eventId: '6519b0bbf1a6ee373c2e6216',
+      type: 'FLAGSHIP',
       image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/happystreet.png`,
       name: 'Happy Street',
       colors: ['#B1802F', '#D0B144', '#ECE4AE', '#C19B45'],
@@ -115,6 +136,9 @@ const HomeScreen = () => {
       colors: ['#B1802F', '#D0B144', '#ECE4AE', '#C19B45'],
     },
   ];
+  const BuyTokens = () => {
+    navigation.navigate('BuyTokenScreen');
+  };
   // const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const techEvents = () => {
@@ -142,9 +166,71 @@ const HomeScreen = () => {
       return 'Good Night!';
     }
   };
+  // let json;
+  // useEffect(() => {
+  //   getUserDetails();
+  // }, []);
+  // const getUserDetails = async () => {
+  //   json = await AsyncStorage.getItem('userDetail');
+  //   console.log('yo json here:', json);
+  // };
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     fetchUserDetail();
+  //   }, 500);
+  // }, []);
+  // const fetchUserDetail = async () => {
+  //   // setLoginPending(true);
+  //   console.log(json.userID);
+  //   const response = await axios.get(
+  //     `http://${USER_IP}/api/v1/user/${json?.userID}`,
+  //     {
+  //       headers: {Authorization: `Bearer ${json?.token}`},
+  //     },
+  //   );
+  //   console.log(response.data.data);
+  //   // setDetails(response.data.data);
+  //   // jsonValue = (response.data.data);
+  //   // setLoginPending(false);
+  // };
+  // let json;
+  const [details, setDetails] = useState(null);
+  useEffect(() => {
+    async function fetchData() {
+      // Retrieve data from AsyncStorage
+      let trial = await AsyncStorage.getItem('userDetail');
+      json = JSON.parse(trial);
+      console.log('yo json here:', json);
+
+      // Call fetchUserDetail after retrieving data
+      await fetchUserDetail();
+    }
+
+    fetchData();
+  }, []);
+
+  const fetchUserDetail = async () => {
+    if (json) {
+      console.log(json.name);
+      const response = await axios.get(
+        `http://${USER_IP}/api/v1/user/${json.userID}`,
+        {
+          headers: {Authorization: `Bearer ${json.token}`},
+        },
+      );
+      console.log(response.data.data);
+      setDetails(response.data.data);
+      // jsonValue = (response.data.data);
+      // setLoginPending(false);
+    } else {
+      console.log('json is undefined');
+    }
+  };
 
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef(null);
+  // const names = name?.split(' ')[0];
+  const names = name;
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -232,8 +318,9 @@ const HomeScreen = () => {
           left: 0,
           right: 0,
           zIndex: 1,
-          backgroundColor: 'white',
-          height: 72,
+          // backgroundColor: '#fafcff',
+          backgroundColor: '#1655BC',
+          height: 70,
           alignSelf: 'center',
           borderBottomRightRadius: 25,
           borderBottomLeftRadius: 25,
@@ -245,18 +332,23 @@ const HomeScreen = () => {
             extrapolate: 'clamp',
           }),
         }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          {/* <Image
             source={require('../data/top.png')}
             resizeMode={'contain'}
-            style={{width: 120, height: 50, marginLeft: 25, marginRight: -25}}
-          />
+            style={{width: 110, height: 48, marginLeft: 25, marginRight: -25}}
+          /> */}
           <Image
-            source={require('../data/imazelogot.png')}
+            source={require('../data/HorizontalWhite.png')}
             resizeMode={'contain'}
             style={{
-              width: 160,
-              height: 66,
+              width: 150,
+              height: 62,
               marginLeft: 0,
               alignSelf: 'center',
             }}
@@ -271,8 +363,8 @@ const HomeScreen = () => {
           left: 0,
           right: 0,
           zIndex: 2,
-          backgroundColor: 'white',
-          height: 67,
+          backgroundColor: '#1655BC',
+          height: 65,
           alignSelf: 'center',
           borderBottomRightRadius: 25,
           borderBottomLeftRadius: 25,
@@ -283,160 +375,253 @@ const HomeScreen = () => {
           }),
         }}>
         <Image
-          source={require('../data/imazelogot.png')}
+          source={require('../data/HorizontalWhite.png')}
           resizeMode={'contain'}
-          style={{width: 160, height: 66, alignSelf: 'center'}}
+          style={{width: 130, height: 70, alignSelf: 'center'}}
         />
       </Animated.View>
       <ScrollView
-        style={{backgroundColor: 'white', flex: 1, marginTop: 24}}
+        style={{backgroundColor: '#fafcff', flex: 1, marginTop: 24}}
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll} // Attach the scroll event handler
         scrollEventThrottle={16} // Adjust the throttle value as needed
       >
-        <View style={{marginLeft: 0, marginTop: 45}}>
-          <ImageCarousel />
-        </View>
-
-        <Pressable
-          style={styles.searchSection}
-          onPress={() => navigation.navigate('SearchScreen')}>
-          <Ionicons
-            style={styles.searchIcon}
-            name="ios-search"
-            size={18}
-            color="#000000"
-          />
-          <View style={styles.input}>
-            <Text
-              style={{
-                fontFamily: 'Poppins-Regular',
-                fontSize: 13,
-                color: '#303030',
-              }}>
-              Search Events...
-            </Text>
-          </View>
-        </Pressable>
-        <View>
-          <Text
-            style={{
-              color: '#000000',
-              fontFamily: 'Poppins-Medium',
-              fontSize: 16,
-              paddingHorizontal: 20,
-              marginTop: 20,
-            }}>
-            Event Categories...
-          </Text>
-          <FlatList
-            ref={flatListRef}
-            data={data}
-            horizontal
-            style={{marginBottom: 0, marginTop: 2, marginLeft: 10}}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            renderItem={({item}) => <MainEventComponent tech={item} />}
-            keyExtractor={item => item.name}
-          />
-        </View>
         <View
           style={{
-            marginHorizontal: 22,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#fffced',
-            borderRadius: 15,
-            padding: 1,
-            paddingHorizontal: 15,
-            shadowColor: 'grey',
-            shadowOffset: {
-              width: 0,
-              height: 7,
-            },
-            shadowOpacity: 0.41,
-            shadowRadius: 9.11,
-            elevation: 7,
-            marginTop: 5,
+            borderBottomRightRadius: 100,
+            backgroundColor: '#1655BC',
+            height: 175.9,
           }}>
-          <View style={{}}>
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: 'Poppins-Medium',
-                fontSize: 14,
-              }}>
-              Hey {name},
-            </Text>
-            <Text
-              style={{
-                color: '#424242',
-                fontSize: 12,
-                // marginTop: -3,
-                marginLeft: -5,
-                fontFamily: 'Poppins-Regular',
-              }}>
-              {' '}
-              {greeting()}
-            </Text>
-          </View>
-
-          <View style={{alignContent: 'center', alignItems: 'center'}}>
-            {/* <FontAwesome5 name="coins" size={26} color={'#fad505'} /> */}
+          <View
+            style={{
+              backgroundColor: '#1655BC',
+              paddingBottom: 30,
+              borderBottomRightRadius: 50,
+              // borderBottomLeftRadius: 30,
+              // marginBottom: 300,
+              // height: 170,
+            }}>
             <View
               style={{
-                height: 45,
-                width: 45,
-                marginTop: 6,
-                borderRadius: 23,
-                backgroundColor: '#fffced',
-                alignContent: 'center',
+                marginHorizontal: 22,
+                flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
+                backgroundColor: '#fffced',
+                borderRadius: 15,
+                padding: 1,
+                paddingHorizontal: 15,
+                // width: 200,
+                shadowColor: 'grey',
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 7,
+                marginTop: 50,
+                // borderBottomRightRadius: 10,
               }}>
-              <FontAwesome5
-                name="coins"
-                size={26}
-                color={'#fad505'}
-                style={{margin: 1}}
-              />
+              <View style={{}}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontFamily: 'Poppins-Medium',
+                    fontSize: 16,
+                  }}>
+                  Hey {names},
+                </Text>
+                <Text
+                  style={{
+                    color: '#424242',
+                    fontSize: 12,
+                    // marginTop: -3,
+                    // marginLeft: -5,
+                    fontFamily: 'Poppins-Regular',
+                  }}>
+                  {/* {' '} */}
+                  {greeting()}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  alignContent: 'center',
+                  alignItems: 'center',
+                  marginRight: 10,
+                }}>
+                {/* <FontAwesome5 name="coins" size={26} color={'#fad505'} /> */}
+                <View
+                  style={{
+                    height: 45,
+                    width: 45,
+                    marginTop: 6,
+                    borderRadius: 23,
+                    backgroundColor: '#fffced',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <FontAwesome5
+                    name="coins"
+                    size={26}
+                    color={'#eecb37'}
+                    style={{margin: 1}}
+                  />
+                </View>
+                <Text
+                  style={{
+                    color: '#202020',
+                    fontFamily: 'Poppins-Medium',
+                    fontSize: 11,
+                    marginTop: -3,
+                    marginBottom: 8,
+                  }}>
+                  {details?.coins} coins
+                </Text>
+              </View>
             </View>
-            <Text
-              style={{
-                color: '#202020',
-                fontFamily: 'Poppins-Medium',
-                fontSize: 11,
-                marginTop: -3,
-                marginBottom: 8,
-              }}>
-              100 coins
-            </Text>
           </View>
         </View>
-        <View>
-          <Text
+        {/* <ImageBackground
+          source={require('../data/doodle.jpg')}
+          style={{height: '100%', width: '100%'}}
+          resizeMode="contain" resizeMethod=''> */}
+        <View
+          style={{
+            borderTopLeftRadius: 36,
+            backgroundColor: '#fafcff',
+
+            // backgroundColor: 'blue',
+            marginTop: -20,
+            // borderTopRightRadius: 30,
+          }}>
+          <Pressable
+            style={styles.searchSection}
+            onPress={() => navigation.navigate('SearchScreen')}>
+            <Ionicons
+              style={styles.searchIcon}
+              name="ios-search"
+              size={18}
+              color="#1655BC"
+            />
+            <View style={styles.input}>
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  fontSize: 13,
+                  color: '#000000',
+                }}>
+                Search Events...
+              </Text>
+            </View>
+          </Pressable>
+          <Pressable
+            onPress={BuyTokens}
             style={{
-              color: '#000000',
-              fontFamily: 'Poppins-Medium',
-              fontSize: 16,
-              paddingHorizontal: 20,
-              marginTop: 15,
+              alignContent: 'center',
+              alignSelf: 'center',
+              marginBottom: -5,
+              marginTop: 20,
+              paddingVertical: 10,
+              height: 45,
+              borderRadius: 13,
+              maxWidth: width,
+              width: width - 46,
+              borderRadius: 13,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#1655BC',
             }}>
-            Flagship Events
-          </Text>
-          <FlatList
-            ref={flatListRef2}
-            data={flagshipData}
-            horizontal
-            style={{marginBottom: 0, marginTop: 5, marginLeft: 10}}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            renderItem={({item}) => <FlagshipEventComponent tech={item} />}
-            keyExtractor={item => item.name}
-          />
-        </View>
-        {/* <View style={styles.searchContainer}>
+            <Text
+              style={{
+                color: '#ffffff',
+                alignSelf: 'center',
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: 15,
+              }}>
+              Buy Token
+            </Text>
+            <Entypo
+              name="500px-with-circle"
+              size={20}
+              color={'#ffffff'}
+              style={{marginLeft: 5}}
+            />
+          </Pressable>
+          <View
+            style={{
+              backgroundColor: 'white',
+              marginHorizontal: 20,
+              borderRadius: 20,
+              borderWidth: 1,
+              borderColor: '#ededed',
+              marginVertical: 20,
+              marginTop: 25,
+            }}>
+            <Text
+              style={{
+                color: '#000000',
+                fontFamily: 'Poppins-Medium',
+                fontSize: 15,
+                paddingHorizontal: 20,
+                marginTop: 20,
+              }}>
+              Event Categories
+            </Text>
+            <FlatList
+              ref={flatListRef}
+              data={data}
+              horizontal
+              style={{marginBottom: -5, marginVertical: 5, marginLeft: 0}}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item}) => <MainEventComponent tech={item} />}
+              keyExtractor={item => item.name}
+            />
+          </View>
+
+          <View
+            style={{
+              backgroundColor: 'white',
+              marginHorizontal: 20,
+              borderRadius: 20,
+              borderWidth: 1,
+              borderColor: '#ededed',
+              marginVertical: 5,
+              // paddingHorizontal: 10,
+            }}>
+            <Text
+              style={{
+                color: '#000000',
+                fontFamily: 'Poppins-Medium',
+                fontSize: 15,
+                paddingHorizontal: 20,
+                marginTop: 15,
+              }}>
+              Flagship Events
+            </Text>
+            <FlatList
+              // ref={flatListRef2}
+              data={flagshipData}
+              horizontal
+              style={{
+                marginBottom: 0,
+                marginVertical: 5,
+                // paddingHorizontal: 25,
+              }}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item}) => <FlagshipEventComponent tech={item} />}
+              keyExtractor={item => item.name}
+            />
+          </View>
+          <View style={{marginLeft: 0, marginTop: 45}}>
+            <ImageCarousel />
+          </View>
+          {/* <View style={styles.searchContainer}>
           <Animatable.View
             animation={isFocused ? 'slideInLeft' : 'slideOutRight'}
             duration={300}
@@ -452,9 +637,11 @@ const HomeScreen = () => {
             onBlur={handleBlur}
           />
         </View> */}
-        <View style={{marginBottom: 40, marginTop: -17}}>
-          <FamousEvents />
+          <View style={{marginBottom: 40, marginTop: -35}}>
+            <FamousEvents />
+          </View>
         </View>
+        {/* </ImageBackground> */}
       </ScrollView>
       {loading ? <PartyLoader /> : null}
     </>
@@ -468,13 +655,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    marginTop: 10,
+    marginTop: 20,
     marginBottom: -5,
     borderRadius: 30,
     marginHorizontal: 20,
-    marginVertical: 8,
+    marginVertical: 0,
     borderColor: '#ededed',
     borderWidth: 1,
+    paddingVertical: 0,
   },
   searchIcon: {
     padding: 7,

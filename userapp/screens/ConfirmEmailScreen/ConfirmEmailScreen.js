@@ -199,6 +199,7 @@ import {
   TextInput,
   Pressable,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 // import CustomInput from '../../components/CustomInput';
 // import CustomButton from '../../components/CustomButton';
@@ -211,10 +212,16 @@ import AppLoader from '../../components/AppLoader';
 import {useAuthContext} from '../../src/Context/AuthContext';
 import {USER_IP} from '@env';
 import Feather from 'react-native-vector-icons/Feather';
+import {
+  CodeField,
+  Cursor,
+  useBlurOnFulfill,
+  useClearByFocusCell,
+} from 'react-native-confirmation-code-field';
 // import OTPInput from '../../components/ForgotPasswordScreenComponent/OTPInput';
 // import {PAYMENT_IP} from '@env';
 // import {Auth} from 'aws-amplify';
-
+const CELL_COUNT = 4;
 const ConfirmEmailScreen = () => {
   const route = useRoute();
   const {users, jsonValue} = useAuthContext();
@@ -223,18 +230,23 @@ const ConfirmEmailScreen = () => {
   const [check, setCheck] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
-
+  const [value, setValue] = useState('');
+  const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
+  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+    value,
+    setValue,
+  });
   const navigation = useNavigation();
 
   const onConfirmPressed = async data => {
     try {
       setLoading(true);
-      console.log(otp);
+      console.log('otp:', value);
       const response = await axios.post(
         `http://${USER_IP}/api/v1/user/${email}/validateOTP`,
-        {otp: otp},
+        {otp: value},
       );
-      console.log(response);
+      console.log(response.data);
       navigation.navigate('NewPasswordScreen', {email});
       setLoading(false);
     } catch (e) {
@@ -281,7 +293,28 @@ const ConfirmEmailScreen = () => {
             }}>
             A 4-digit code has been sent to your email.
           </Text>
-          <View
+          <SafeAreaView style={{padding: 20}}>
+            <CodeField
+              ref={ref}
+              {...props}
+              // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
+              value={value}
+              onChangeText={setValue}
+              cellCount={CELL_COUNT}
+              rootStyle={styles.codeFieldRoot}
+              keyboardType="number-pad"
+              textContentType="oneTimeCode"
+              renderCell={({index, symbol, isFocused}) => (
+                <Text
+                  key={index}
+                  style={[styles.cell, isFocused && styles.focusCell]}
+                  onLayout={getCellOnLayoutHandler(index)}>
+                  {symbol || (isFocused ? <Cursor /> : null)}
+                </Text>
+              )}
+            />
+          </SafeAreaView>
+          {/* <View
             style={{flexDirection: 'row', alignItems: 'center', marginTop: 30}}>
             <Feather
               name="unlock"
@@ -309,31 +342,7 @@ const ConfirmEmailScreen = () => {
                 color: '#212121',
               }}
             />
-          </View>
-          {/* <Text
-            style={{
-              color: 'black',
-              fontSize: 14,
-              fontFamily: 'Fredoka-Regular',
-            }}>
-            OTP:
-          </Text>
-          <TextInput
-            onChangeText={setOtp}
-            value={otp}
-            keyboardType={'numeric'}
-            style={{
-              height: 36,
-              borderWidth: 0.5,
-              borderColor: '#d1cfcf',
-              marginTop: 5,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              fontSize: 13,
-              fontFamily: 'Fredoka-Regular',
-              color: 'black',
-            }}
-          /> */}
+          </View> */}
 
           <View style={{alignContent: 'flex-start'}}>
             <Text
@@ -357,7 +366,7 @@ const ConfirmEmailScreen = () => {
             <Pressable
               onPress={onConfirmPressed}
               style={{
-                shadowColor: '#4b2be3',
+                shadowColor: '#1655BC',
                 // shadowColor: '#19347d',
                 shadowOffset: {
                   width: 0,
@@ -369,7 +378,7 @@ const ConfirmEmailScreen = () => {
                 alignContent: 'center',
                 alignSelf: 'center',
                 marginTop: 25,
-                backgroundColor: '#6949ff',
+                backgroundColor: '#1655BC',
                 // backgroundColor: '#19347d',
                 paddingVertical: 10,
                 borderRadius: 13,
@@ -421,7 +430,7 @@ const ConfirmEmailScreen = () => {
               alignSelf: 'center',
               marginTop: 20,
             }}>
-            <Text style={{color: 'black', fontFamily: 'Fredoka-Regular'}}>
+            <Text style={{color: 'black', fontFamily: 'Poppins-Medium'}}>
               Back to Sign in
             </Text>
           </Pressable>
@@ -451,6 +460,22 @@ const styles = StyleSheet.create({
   },
   link: {
     color: '#FDB075',
+  },
+  codeFieldRoot: {marginTop: 20},
+  cell: {
+    width: 40,
+    height: 40,
+    lineHeight: 38,
+    fontSize: 18,
+    borderWidth: 1,
+    borderColor: '#1655BC',
+    textAlign: 'center',
+    color: '#101010',
+    borderRadius: 8,
+  },
+  focusCell: {
+    borderColor: '#1655BC',
+    color: '#101010',
   },
 });
 

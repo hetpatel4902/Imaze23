@@ -30,7 +30,7 @@ const FamousEvents = () => {
       `http://${USER_IP}/api/v1/user/events/?sort=noOfParticipants`,
       {headers: {Authorization: `Bearer ${jsonValue.token}`}},
     );
-    console.table(response.data.data);
+    // console.table(response.data.data);
     setEvent(response.data.data);
     setLoading(false);
   };

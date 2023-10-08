@@ -5,6 +5,7 @@ import {
   RefreshControl,
   ScrollView,
   Image,
+  Animated,
 } from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import {useAuthContext} from '../src/Context/AuthContext';
@@ -15,6 +16,7 @@ import SearchLoader from '../components/SearchLoader';
 import PendingEventComponent from '../components/MyEventsScreenComponent/PendingEventComponent';
 import PendingComboComponent from '../components/MyEventsScreenComponent/PendingComboComponent';
 import StaticCombo from '../components/ComboScreenComponent/StaticCombo';
+import TeamEventComponent from '../components/MyEventsScreenComponent/TeamEventComponent';
 const MyEvents = () => {
   const {tokens, users} = useAuthContext();
   const [event, setEvent] = useState([]);
@@ -38,17 +40,61 @@ const MyEvents = () => {
       `http://${USER_IP}/api/v1/user/events/user/${users}`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    console.log(response.data.data);
+    console.log(response.data.data.purchased.team_events);
     setEvent(response.data.data);
     setLoading(false);
   };
+  const scrollY = new Animated.Value(0);
+
   return (
     <>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1,
+          backgroundColor: '#1655BC',
+          height: 60,
+          alignSelf: 'center',
+          borderBottomRightRadius: 25,
+          borderBottomLeftRadius: 25,
+          paddingTop: 5,
+
+          opacity: scrollY.interpolate({
+            inputRange: [0, 70],
+            outputRange: [1, 0],
+            extrapolate: 'clamp',
+          }),
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              color: '#ffffff',
+              fontFamily: 'Poppins-Medium',
+              fontSize: 17,
+              // marginLeft: 5,
+              textAlign: 'center',
+              marginTop: 12,
+            }}>
+            Cart
+          </Text>
+        </View>
+      </Animated.View>
+
       <ScrollView
         style={{backgroundColor: 'white', flex: 1, padding: 15}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
+        <View style={{marginTop: 55}}></View>
         {event?.pending?.combos?.length > 0 && (
           <>
             <Text
@@ -56,11 +102,12 @@ const MyEvents = () => {
                 fontFamily: 'Poppins-Medium',
                 color: '#191919',
                 fontSize: 16,
+                // marginTop: 55,
               }}>
-              Combos Pending to Verify
+              Combos Pending to Verify:
             </Text>
             <FlatList
-              style={{marginBottom: 20}}
+              style={{marginBottom: 20, marginTop: 5}}
               data={event.pending?.combos}
               renderItem={({item}) => (
                 <StaticCombo data={item} pending={true} />
@@ -78,10 +125,13 @@ const MyEvents = () => {
                 color: '#191919',
                 fontSize: 16,
               }}>
-              Events Pending to Verify
+              Events Pending to Verify:
             </Text>
             <FlatList
-              style={{marginBottom: 15}}
+              style={{
+                marginBottom:
+                  event?.purchased?.team_events?.length > 0 ? 10 : 70,
+              }}
               data={event.pending?.individual}
               renderItem={({item}) => <PendingEventComponent tech={item} />}
               keyExtractor={item => item._id}
@@ -89,7 +139,8 @@ const MyEvents = () => {
             />
           </>
         )}
-        {event?.purchased_events?.length > 0 && (
+
+        {event?.purchased?.team_events?.length > 0 && (
           <>
             <Text
               style={{
@@ -97,19 +148,19 @@ const MyEvents = () => {
                 color: '#191919',
                 fontSize: 16,
               }}>
-              Purchased Events
+              Your Teams:
             </Text>
             <FlatList
               style={{marginBottom: 80, marginTop: 5}}
-              data={event.purchased_events}
-              renderItem={({item}) => <MyEventsComponent tech={item} />}
+              data={event.purchased.team_events}
+              renderItem={({item}) => <TeamEventComponent tech={item} />}
               keyExtractor={item => item._id}
               showsVerticalScrollIndicator={false}
             />
           </>
         )}
-        {event?.purchased_events?.length == 0 &&
-          event?.pending?.individual?.length == 0 &&
+        {/* {event?.purchased?.length == 0 && */}
+        {event?.pending?.individual?.length == 0 &&
           event?.pending?.combos?.length == 0 && (
             <>
               <Image
