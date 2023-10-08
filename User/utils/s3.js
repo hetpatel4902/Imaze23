@@ -88,6 +88,9 @@ const generateReceipt = async (orderId, type)=>{
   let amount;
   let date;
   let event_type ;
+  const invoice_num = await Invoice.find({});
+  let invoice_number = invoice_num[0].number;
+  const update_invoice = await Invoice.findOneAndUpdate({_id:invoice_num[0]._id},{number:invoice_num[0].number+1});
   if (type === "combo") {
     const combo = await Combos.findOne({ _id: orderId });
     transId = combo.transId;
@@ -111,7 +114,7 @@ const generateReceipt = async (orderId, type)=>{
   const user = await Users.findOne({ _id: userId });
 
   const doc = new pdfkit({ size: "A7" });
-  doc.pipe(fs.createWriteStream(`./receipts/${transId}.pdf`));
+  doc.pipe(fs.createWriteStream(`./receipts/${invoice_number}.pdf`));
   doc.image(`./templates/LetterHead.jpg`, 0, 0, { width: 210, height: 300 });
 
   //name
@@ -125,13 +128,12 @@ const generateReceipt = async (orderId, type)=>{
       align: "center",
     });
 
-  const invoice_num = await Invoice.find({});
-  const update_invoice = await Invoice.findOneAndUpdate({_id:invoice_num[0]._id},{number:invoice_num[0].number+1});
+  
   //invoice number
   doc
     .fontSize(7)
     .font("./Montserrat/static/Montserrat-Bold.ttf")
-    .text(invoice_num[0].number, 75, 70, {
+    .text(invoice_number, 75, 70, {
       width: 60,
       height: 15,
       valign: "center",
@@ -265,11 +267,11 @@ const generateReceipt = async (orderId, type)=>{
     });
 
   doc.end();
-  setTimeout(async() => {
+
     try{
-      var file = fs.createReadStream(`./receipts/${transId}.pdf`);
-      let url = await uploadPdf(`${transId}.pdf`,file,"receipt");
-      fs.unlink(`./receipts/${transId}.pdf`,(err)=>{
+      var file = fs.createReadStream(`./receipts/${invoice_number}.pdf`);
+      let url = await uploadPdf(`${invoice_number}.pdf`,file,"receipt");
+      fs.unlink(`./receipts/${invoice_number}.pdf`,(err)=>{
         if(err) console.log(err);
       })
       return url;
@@ -278,7 +280,7 @@ const generateReceipt = async (orderId, type)=>{
       console.log("receipt error",err);
       throw err;
     }
-  }, 1000);
+
 }
 
 module.exports = {
