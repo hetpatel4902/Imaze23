@@ -269,7 +269,7 @@ const generateReceipt = async (orderId, type)=>{
   setTimeout(async() => {
     try{
       var file = fs.createReadStream(`./receipts/${transId}.pdf`);
-      let url = await uploadPdf(`${transId}.pdf`,file,"certificate");
+      let url = await uploadPdf(`${transId}.pdf`,file,"receipt");
       fs.unlink(`./receipts/${transId}.pdf`,(err)=>{
         if(err) console.log(err);
       })
