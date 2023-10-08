@@ -638,8 +638,8 @@ const validateUserOtp = async (req, res) => {
     throw new BadRequestError("Please provide otp in the body");
   } else {
     const user = await User.findOne({ email: email });
-    if (user.otp !== otp) {
-      res.status(StatusCodes.OK).json({ res: "failed", data: "Invalid otp" });
+    if (String(otp) !== String(user.otp)) {
+      throw new BadRequestError("Invalid otp")
     } else {
       res.status(StatusCodes.OK).json({ res: "success", data: "valid otp" });
     }
