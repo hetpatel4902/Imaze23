@@ -1,4 +1,4 @@
-import {View, Text, Image, Pressable} from 'react-native';
+import {View, Text, Image, Pressable, Animated} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {USER_IP, COLOR} from '@env';
@@ -10,54 +10,78 @@ const ComboDetail = ({info}) => {
     navigation.navigate('EventDetailScreen', {
       eventId: info?._id,
       selected: true,
+      type: info?.event_type,
     });
   };
   return (
-    <View
-      style={{flexDirection: 'row', alignItems: 'center', marginVertical: 7}}>
-      <View style={{flex: 1}}>
-        <Image
-          source={{uri: `http://${USER_IP}/${info.image}`}}
-          style={{height: 49.5, width: 49.5, borderRadius: 25}}
-        />
+    <>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginVertical: 9,
+          paddingHorizontal: 5,
+        }}>
+        <View
+          style={{
+            flex: 1,
+            // backgroundColor: 'black',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 30,
+            // height: 53,
+            // width: 52,
+          }}>
+          <Image
+            source={{uri: info?.image}}
+            style={{height: 55, width: 55, borderRadius: 28}}
+          />
+        </View>
+        <View style={{flex: 3, paddingHorizontal: 8}}>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Medium',
+              color: '#191919',
+              fontSize: 13,
+            }}>
+            {info.name}
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Regular',
+              color: '#383838',
+              fontSize: 11,
+            }}>
+            {info.category}
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Regular',
+              color: '#191919',
+              fontSize: 11,
+            }}>
+            {participants.length} participants
+          </Text>
+        </View>
+        <Pressable
+          style={{
+            flex: 1,
+            alignContent: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={onPress}>
+          <Text
+            style={{
+              color: '#000000',
+              fontFamily: 'Poppins-Medium',
+              fontSize: 12,
+            }}>
+            View
+          </Text>
+        </Pressable>
       </View>
-      <View style={{flex: 4}}>
-        <Text
-          style={{
-            fontFamily: 'Poppins-Medium',
-            color: '#191919',
-            fontSize: 13,
-          }}>
-          {info.name}
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'Poppins-Regular',
-            color: '#383838',
-            fontSize: 12,
-          }}>
-          {info.category}
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'Poppins-Regular',
-            color: '#191919',
-            fontSize: 12,
-          }}>
-          {participants.length} participants
-        </Text>
-      </View>
-      <Pressable style={{flex: 1, alignContent: 'center'}} onPress={onPress}>
-        <Text
-          style={{
-            color: COLOR,
-            fontFamily: 'Poppins-Medium',
-            fontSize: 12,
-          }}>
-          View Detail
-        </Text>
-      </Pressable>
-    </View>
+    </>
   );
 };
 

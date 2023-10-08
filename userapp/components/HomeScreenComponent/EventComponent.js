@@ -3,21 +3,38 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {USER_IP} from '@env';
-const EventComponent = ({tech}) => {
+const EventComponent = ({tech, type}) => {
   const navigation = useNavigation();
 
   const onPress = () => {
-    navigation.navigate('EventDetailScreen', {eventId: tech._id});
+    // console.log(tech);
+    navigation.navigate('EventDetailScreen', {eventId: tech._id, type: type});
   };
 
   const participants = tech?.participants;
   return (
     <Pressable onPress={onPress} style={styles.mainView}>
-      <View style={styles.imageView}>
-        <Image
-          source={{uri: `http://${USER_IP}/${tech.image}`}}
-          style={styles.image}
-        />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Image
+            source={{uri: tech?.image}}
+            style={{
+              height: 60,
+              width: 60,
+              borderRadius: 30,
+              backgroundColor: 'black',
+            }}
+          />
+        </View>
       </View>
       <View style={styles.nameView}>
         <Text style={styles.name}>{tech.name}</Text>
@@ -25,7 +42,7 @@ const EventComponent = ({tech}) => {
           <MaterialCommunityIcons
             name="calendar-week"
             size={16}
-            color={'#05fa9c'}
+            color={'#000000'}
           />
           <View style={styles.subContainer}>
             <Text style={styles.subContainerDate}>{tech?.date} </Text>
@@ -59,11 +76,11 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
-    height: 58,
-    width: 58,
-    borderRadius: 30,
+    height: 46,
+    width: 46,
+    borderRadius: 23,
   },
-  nameView: {flex: 3, paddingHorizontal: 5},
+  nameView: {flex: 3, paddingHorizontal: 10},
   name: {
     color: 'black',
     fontFamily: 'Poppins-Regular',
@@ -95,14 +112,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   priceContainer: {
-    backgroundColor: '#05fa9c',
-    // backgroundColor: '#05fa9c',
+    backgroundColor: '#1655BC',
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
     paddingVertical: 3.5,
     borderRadius: 18,
-    shadowColor: '#05fa9c',
+    shadowColor: '#1655BC',
     shadowOffset: {
       width: 0,
       height: 7,

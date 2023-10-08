@@ -16,10 +16,7 @@ const PendingComboComponent = ({tech}) => {
   return (
     <Pressable onPress={onPress} style={styles.mainView}>
       {/* <View style={styles.imageView}> */}
-      <Image
-        source={{uri: `http://${USER_IP}/${tech?.event_details.image}`}}
-        style={styles.image}
-      />
+      <Image source={{uri: tech?.event_details.image}} style={styles.image} />
       {/* </View> */}
       <View style={styles.nameView}>
         <Text style={styles.name}>{tech?.event_details.name}</Text>
@@ -27,7 +24,7 @@ const PendingComboComponent = ({tech}) => {
           <MaterialCommunityIcons
             name="calendar-week"
             size={16}
-            color={'#05fa9c'}
+            color={'#ff9600'}
           />
           <View style={styles.subContainer}>
             <Text style={styles.subContainerDate}>

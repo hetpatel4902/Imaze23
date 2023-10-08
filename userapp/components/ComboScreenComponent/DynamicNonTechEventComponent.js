@@ -11,6 +11,7 @@ const DynamicNonTechEventComponent = ({tech}) => {
     navigation.navigate('EventDetailScreen', {
       eventId: tech._id,
       selected: true,
+      type: 'NORMAL',
     });
   };
   const participants = tech?.participants;
@@ -71,18 +72,40 @@ const DynamicNonTechEventComponent = ({tech}) => {
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 5,
+        marginVertical: 2,
         borderRadius: 20,
         padding: 10,
         paddingHorizontal: selected ? 15 : 10,
         borderWidth: selected ? 1 : 0,
-        borderColor: selected ? '#05fa9c' : '#ffffff',
+        borderColor: selected ? '#1655BC' : '#ffffff',
+        // marginBottom: -10,
       }}>
-      <View style={styles.imageView}>
-        <Image
-          source={{uri: `http://${USER_IP}/${tech.image}`}}
-          style={styles.image}
-        />
+      <View
+        style={{
+          flex: selected ? 1.15 : 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          // backgroundColor: 'blue',
+          // height: 55,
+          // width: 55,
+          // backgroundColor: 'black',
+          // borderRadius: 27,
+        }}>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Image
+            source={{uri: tech?.image}}
+            style={{
+              height: 60,
+              width: 60,
+              borderRadius: 30,
+              backgroundColor: 'black',
+            }}
+          />
+        </View>
       </View>
       <View style={styles.nameView}>
         <Text style={styles.name}>{tech.name}</Text>
@@ -97,12 +120,12 @@ const DynamicNonTechEventComponent = ({tech}) => {
       </View>
       <Pressable
         style={{
-          backgroundColor: selected ? 'red' : '#05fa9c',
+          backgroundColor: selected ? 'red' : '#1655BC',
           alignItems: 'center',
           justifyContent: 'center',
           paddingVertical: 3.5,
           borderRadius: 18,
-          shadowColor: '#05fa9c',
+          shadowColor: '#1655BC',
           shadowOffset: {
             width: 0,
             height: 7,
@@ -152,12 +175,12 @@ const styles = StyleSheet.create({
   priceText: {
     fontFamily: 'Poppins-Medium',
     color: '#242424',
-    fontSize: 13,
+    fontSize: 12,
   },
   subContainerTime: {
     fontFamily: 'Poppins-Regular',
     color: '#242424',
-    fontSize: 12,
+    fontSize: 11,
   },
   participants: {
     color: '#454545',

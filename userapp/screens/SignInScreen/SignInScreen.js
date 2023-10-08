@@ -51,7 +51,7 @@ const SignInScreen = () => {
             },
           });
           const response = await GitHubClient.post('/api/v1/user/login', {
-            email: changeText,
+            email: changeText.toLowerCase(),
             password: password,
           });
           // console.log(response.data);
@@ -91,18 +91,19 @@ const SignInScreen = () => {
         style={{backgroundColor: 'white', padding: 20}}>
         <View style={{}}>
           <Image
-            source={require('../../data/login.jpg')}
+            source={require('../../data/login.png')}
             style={{
-              height: 232,
-              width: 232,
+              height: 310,
+              width: 310,
               borderRadius: 20,
               marginTop: 20,
+              resizeMode: 'contain',
               alignSelf: 'center',
             }}
           />
           <View
             style={{
-              marginVertical: 20,
+              // marginVertical: 20,
               marginBottom: 10,
             }}>
             <Text
@@ -137,7 +138,7 @@ const SignInScreen = () => {
               borderRadius: 8,
               paddingHorizontal: 10,
               paddingBottom: 9,
-              fontSize: 13,
+              fontSize: 15,
               fontFamily: 'Poppins-Medium',
               color: '#212121',
             }}
@@ -175,7 +176,7 @@ const SignInScreen = () => {
               borderRadius: 8,
               paddingHorizontal: 10,
               paddingBottom: 9,
-              fontSize: 13,
+              fontSize: 15,
               fontFamily: 'Poppins-Medium',
               color: '#212121',
             }}></TextInput>
@@ -195,7 +196,7 @@ const SignInScreen = () => {
           }}>
           <Text
             style={{
-              color: '#6268fc',
+              color: '#000000',
               // color: '#19347d',
               fontFamily: 'Poppins-Medium',
               fontSize: 13,
@@ -207,7 +208,7 @@ const SignInScreen = () => {
           <Pressable
             onPress={onSignInPressed}
             style={{
-              shadowColor: '#4b2be3',
+              shadowColor: 'gray',
               // shadowColor: '#19347d',
               shadowOffset: {
                 width: 0,
@@ -219,7 +220,7 @@ const SignInScreen = () => {
               alignContent: 'center',
               alignSelf: 'center',
               marginTop: 25,
-              backgroundColor: '#6268fc',
+              backgroundColor: '#1655BC',
               // backgroundColor: '#19347d',
               paddingVertical: 8,
               borderRadius: 13,
@@ -230,7 +231,7 @@ const SignInScreen = () => {
             }}>
             <Text
               style={{
-                color: 'white',
+                color: '#ffffff',
                 alignSelf: 'center',
                 fontFamily: 'Poppins-SemiBold',
                 fontSize: 15,
@@ -264,7 +265,7 @@ const SignInScreen = () => {
             </Text>
             <Text
               style={{
-                color: '#6268fc',
+                color: '#1655BC',
                 // color: '#19347d',
                 fontFamily: 'Poppins-SemiBold',
                 marginLeft: 5,

@@ -17,7 +17,7 @@ const MyEventsComponent = ({tech}) => {
     <Pressable onPress={onPress} style={styles.mainView}>
       {/* <View style={styles.imageView}> */}
       <Image
-        source={{uri: `http://${USER_IP}/${tech.image}`}}
+        source={{uri: tech?.image}}
         // resizeMode={'stretch'}
         style={styles.image}
       />
@@ -28,7 +28,7 @@ const MyEventsComponent = ({tech}) => {
           <MaterialCommunityIcons
             name="calendar-week"
             size={16}
-            color={'#05fa9c'}
+            color={'#ff9600'}
           />
           <View style={styles.subContainer}>
             <Text style={styles.subContainerDate}>{tech?.date} </Text>

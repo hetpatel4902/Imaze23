@@ -6,6 +6,8 @@ import {
   StyleSheet,
   FlatList,
   Image,
+  ScrollView,
+  Animated,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -36,75 +38,86 @@ const SearchScreen = () => {
       setSearchResult(null);
     }
   };
-  // const today = new Date();
-  // const greeting = () => {
-  //   if (today.getHours() < 12 && today.getHours() > 6) {
-  //     return 'Good Morning';
-  //   } else if (today.getHours() > 12 && today.getHours() < 16) {
-  //     return 'Good Afternoon!';
-  //   } else if (today.getHours() > 16 && today.getHours() < 23) {
-  //     return 'Good Evening!';
-  //   } else {
-  //     return 'Good Night!';
-  //   }
-  // };
+
+  const scrollY = new Animated.Value(0);
+
   return (
-    <View style={{padding: 15, backgroundColor: 'white', flex: 1}}>
-      {/* <View
+    <>
+      <Animated.View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}></View> */}
-      {/* <View style={{flexDirection: 'row', marginTop: 14}}>
-        <Text
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1,
+          backgroundColor: '#1655BC',
+          height: 60,
+          alignSelf: 'center',
+          borderBottomRightRadius: 25,
+          borderBottomLeftRadius: 25,
+          paddingTop: 5,
+
+          opacity: scrollY.interpolate({
+            inputRange: [0, 70],
+            outputRange: [1, 0],
+            extrapolate: 'clamp',
+          }),
+        }}>
+        <View
           style={{
-            color: 'black',
-            fontSize: 15,
-            fontFamily: 'Fredoka-Regular',
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
           }}>
-          Hey {dbUser?.name},
-        </Text>
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 15,
-            fontFamily: 'Fredoka-Medium',
-          }}>
-          {greeting()}
-        </Text>
-      </View> */}
-      <Image
-        source={require('../../data/imazelogot1.png')}
-        resizeMode={'contain'}
-        style={{width: 270, height: 80, alignSelf: 'center'}}
-      />
-      <View style={styles.searchSection}>
-        <Ionicons
-          style={styles.searchIcon}
-          name="ios-search"
-          size={20}
-          color="gray"
-        />
-        <TextInput
-          style={styles.input}
-          value={search}
-          onChangeText={setSearch}
-          onTextInput={onPress}
-          placeholder="Search Events..."
-          placeholderTextColor={'grey'}
-          underlineColorAndroid="transparent"
-        />
-      </View>
-      <View>
-        <FlatList
-          data={searchResult}
-          renderItem={({item}) => <SearchComponent searchResult={item} />}
-          keyExtractor={item => item._id}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    </View>
+          <Text
+            style={{
+              color: '#ffffff',
+              fontFamily: 'Poppins-Medium',
+              fontSize: 17,
+              // marginLeft: 5,
+              textAlign: 'center',
+              marginTop: 12,
+            }}>
+            Search Events
+          </Text>
+        </View>
+      </Animated.View>
+
+      <ScrollView
+        style={{padding: 15, backgroundColor: 'white', flex: 1, marginTop: 55}}>
+        {/* <Image
+          source={require('../../data/imazelogot1.png')}
+          resizeMode={'contain'}
+          style={{width: 270, height: 80, alignSelf: 'center'}}
+        /> */}
+        <View style={styles.searchSection}>
+          <Ionicons
+            style={styles.searchIcon}
+            name="ios-search"
+            size={20}
+            color="gray"
+          />
+          <TextInput
+            style={styles.input}
+            value={search}
+            onChangeText={setSearch}
+            onTextInput={onPress}
+            placeholder="Search Events..."
+            placeholderTextColor={'grey'}
+            underlineColorAndroid="transparent"
+          />
+        </View>
+        <View>
+          <FlatList
+            data={searchResult}
+            renderItem={({item}) => <SearchComponent searchResult={item} />}
+            keyExtractor={item => item._id}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      </ScrollView>
+    </>
   );
 };
 const styles = StyleSheet.create({
@@ -140,6 +153,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: '#fff',
     color: '#424242',
+    fontFamily: 'Poppins-Regular',
+    paddingTop: 12,
   },
 });
 export default SearchScreen;

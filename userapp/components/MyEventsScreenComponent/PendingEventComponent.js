@@ -7,39 +7,37 @@ const PendingEventComponent = ({tech}) => {
   const navigation = useNavigation();
   const onPress = () => {
     navigation.navigate('EventDetailScreen', {
-      eventId: tech.event_details._id,
+      eventId: tech.event._id,
       pending: true,
-      otp: tech.cash_otp,
+      otp: tech.cashotp,
+      type: tech.event.event_type,
     });
   };
   const participants = tech?.participants;
   return (
     <Pressable onPress={onPress} style={styles.mainView}>
       {/* <View style={styles.imageView}> */}
-      <Image
-        source={{uri: `http://${USER_IP}/${tech?.event_details.image}`}}
-        style={styles.image}
-      />
+      <Image source={{uri: tech?.event.image}} style={styles.image} />
       {/* </View> */}
       <View style={styles.nameView}>
-        <Text style={styles.name}>{tech?.event_details.name}</Text>
+        <Text style={styles.name}>{tech?.event.name}</Text>
         <View style={styles.container}>
           <MaterialCommunityIcons
             name="calendar-week"
             size={16}
-            color={'#05fa9c'}
+            color={'#ff9600'}
           />
           <View style={styles.subContainer}>
-            <Text style={styles.subContainerDate}>
-              {tech?.event_details.date}{' '}
-            </Text>
-            <Text style={styles.subContainerTime}>
-              ({tech?.event_details.time})
-            </Text>
+            <Text style={styles.subContainerDate}>{tech?.event.date} </Text>
+            <Text style={styles.subContainerTime}>({tech?.event.time})</Text>
           </View>
         </View>
         <View>
-          <Text style={styles.participants}>Otp: {tech?.cash_otp}</Text>
+          <Text style={styles.participants}>
+            {tech?.cashotp == 0
+              ? 'Verification Pending'
+              : `Otp: ${tech?.cashotp}`}
+          </Text>
         </View>
       </View>
     </Pressable>
@@ -61,7 +59,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
-    flex: 1,
+    flex: 1.1,
     height: 56,
     width: 56,
     borderRadius: 29,

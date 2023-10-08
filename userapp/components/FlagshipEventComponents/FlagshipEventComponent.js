@@ -1,10 +1,10 @@
 import React, {useRef, useEffect} from 'react';
 import {View, Text, Image, Animated, Easing, Pressable} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-
+import {useNavigation} from '@react-navigation/native';
 const FlagshipEventComponent = ({tech}) => {
   const shineAnimation = useRef(new Animated.Value(0)).current;
-
+  const navigation = useNavigation();
   //   useEffect(() => {
   //     const startShineAnimation = () => {
   //       Animated.loop(
@@ -26,17 +26,20 @@ const FlagshipEventComponent = ({tech}) => {
   //   });
 
   const onPress = () => {
-    navigation.navigate(`${tech.redirect}`);
+    navigation.navigate(`${tech.redirect}`, {
+      eventId: tech?.eventId,
+      type: tech?.type,
+    });
   };
 
   return (
-    <Pressable onPress={onPress} style={{marginTop: 8}}>
+    <Pressable onPress={onPress} style={{marginVertical: 8}}>
       <View
         style={{
-          marginHorizontal: 12,
+          marginHorizontal: 8,
           marginBottom: 18,
-          width: 150,
-          height: 196,
+          width: 110,
+          height: 140,
           borderRadius: 20,
           overflow: 'hidden',
         }}>
@@ -55,21 +58,22 @@ const FlagshipEventComponent = ({tech}) => {
             uri: `${tech.image}`,
           }}
           style={{
-            height: 130,
-            width: 130,
+            height: 85,
+            width: 85,
             alignSelf: 'center',
             marginBottom: 7,
             marginTop: 20,
             resizeMode: 'contain',
+            paddingHorizontal: 8,
           }}
         />
         <Text
           numberOfLines={2}
           style={{
             fontFamily: 'Poppins-Medium',
-            fontSize: 13,
+            fontSize: 12.5,
             color: '#000000', // Text color
-            marginTop: -25,
+            marginTop: -22,
             alignSelf: 'center',
             textAlign: 'center',
           }}>

@@ -8,7 +8,13 @@ const FamousEventsComponent = ({tech}) => {
   const navigation = useNavigation();
 
   const onPress = () => {
-    navigation.navigate('EventDetailScreen', {eventId: tech._id});
+    // console.warn(tech._id);
+    // console.log(tech);
+    // console.log(tech);
+    navigation.navigate('EventDetailScreen', {
+      eventId: tech._id,
+      type: tech.event_type,
+    });
   };
 
   return (
@@ -19,37 +25,58 @@ const FamousEventsComponent = ({tech}) => {
         // width: 160,
         backgroundColor: 'white',
         borderRadius: 22,
-        shadowColor: '#000000',
-        shadowOffset: {
-          width: 0,
-          height: 7,
-        },
-        shadowOpacity: 0.41,
-        shadowRadius: 9.11,
-        elevation: 5,
-        marginTop: 5,
+        // shadowColor: '#000000',
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 7,
+        // },
+        // shadowOpacity: 0.41,
+        // shadowRadius: 9.11,
+        // elevation: 5,
+        marginTop: 2,
         marginBottom: 15,
         marginHorizontal: 15,
         paddingHorizontal: 13,
         flexDirection: 'row',
         paddingHorizontal: 10,
         paddingVertical: 14,
+        borderWidth: 1,
+        borderColor: '#ededed',
       }}>
       {/* 2a4173 */}
-      <View style={{flex: 1}}>
-        <View style={{backgroundColor: 'black', padding: 7, borderRadius: 30}}>
+      <View
+        style={{
+          flex: 1,
+          // justifyContent: 'center',
+          // alignItems: 'center',
+          // backgroundColor: 'blue',
+          // height: 56,
+          // width: 56,
+          // backgroundColor: 'black',
+          // borderRadius: 28,
+          // alignContent: 'center',
+        }}>
+        <View
+          style={{
+            //  padding: 7,
+            //  borderRadius: 30
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
           <Image
-            source={{uri: `http://${USER_IP}/${tech?.image}`}}
+            source={{uri: `${tech?.image}`}}
+            // source={require('../../data/groupSinging.png')}
             style={{
-              height: 44,
-              width: 44,
-              borderRadius: 10,
-              // backgroundColor: 'black',
-              // padding: 10,
-              // alignSelf: 'center',
-              // position: 'relative',
-              // marginBottom: 33,
-              // marginTop: 10,
+              height: 55,
+              width: 55,
+              borderRadius: 27,
+              backgroundColor: '#f2f2f2',
+              padding: 10,
+
+              alignSelf: 'center',
+              position: 'relative',
+              marginBottom: 33,
+              marginTop: 10,
             }}
           />
         </View>
@@ -86,7 +113,7 @@ const FamousEventsComponent = ({tech}) => {
             <MaterialCommunityIcons
               name="calendar-week"
               size={15}
-              color={'#00e4ff'}
+              color={'#000000'}
             />
           </View>
           <View
@@ -118,7 +145,7 @@ const FamousEventsComponent = ({tech}) => {
       <View style={{flex: 1, justifyContent: 'center'}}>
         <View
           style={{
-            backgroundColor: '#000000',
+            backgroundColor: '#1655BC',
             paddingHorizontal: 8,
             alignItems: 'center',
             justifyContent: 'center',

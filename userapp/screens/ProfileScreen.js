@@ -54,6 +54,7 @@ import {
   RefreshControl,
   Linking,
   Dimensions,
+  Animated,
 } from 'react-native';
 import {useEffect, useState, useCallback} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -67,7 +68,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Foundation from 'react-native-vector-icons/Foundation';
 import {USER_IP} from '@env';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {COLOR} from '@env';
+// import {'#1655BC'} from '@env';
 export default function ProfileScreen() {
   // const {users,tokens} = useAuthContext();
   const navigation = useNavigation();
@@ -117,6 +118,7 @@ export default function ProfileScreen() {
     setTimeout(() => setUser(false), 500);
     setLoginPending(false);
   };
+  const scrollY = new Animated.Value(0);
 
   // const walletDetail = async () => {
   //   const response = await axios.get(
@@ -136,11 +138,51 @@ export default function ProfileScreen() {
   // };
   return (
     <>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1,
+          backgroundColor: '#1655BC',
+          height: 60,
+          alignSelf: 'center',
+          borderBottomRightRadius: 25,
+          borderBottomLeftRadius: 25,
+          paddingTop: 5,
+
+          opacity: scrollY.interpolate({
+            inputRange: [0, 70],
+            outputRange: [1, 0],
+            extrapolate: 'clamp',
+          }),
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              color: '#ffffff',
+              fontFamily: 'Poppins-Medium',
+              fontSize: 18,
+              // marginLeft: 5,
+              textAlign: 'center',
+              marginTop: 12,
+            }}>
+            Profile
+          </Text>
+        </View>
+      </Animated.View>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        style={{backgroundColor: 'white'}}>
+        style={{backgroundColor: 'white', marginTop: 40}}>
         <View style={styles.container}>
           <View
             style={{
@@ -174,14 +216,13 @@ export default function ProfileScreen() {
                 color: 'black',
                 fontSize: 16,
               }}>
-              Current Points:
-              {details?.points}
+              Coins: {details?.coins}
             </Text>
           </View>
 
           <View style={{marginHorizontal: 18, marginTop: 5}}>
             <Pressable
-              onPress={() => navigation.navigate('MyEvents')}
+              onPress={() => navigation.navigate('PaymentHistory')}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -190,7 +231,7 @@ export default function ProfileScreen() {
               <Ionicons
                 name="wallet-outline"
                 size={21}
-                color={COLOR}
+                color={'#1655BC'}
                 style={{}}
               />
               <Text style={styles.textcolour}>Purchase History</Text>
@@ -205,7 +246,7 @@ export default function ProfileScreen() {
               <MaterialCommunityIcons
                 name="certificate-outline"
                 size={21}
-                color={COLOR}
+                color={'#1655BC'}
                 style={{}}
               />
               <Text style={styles.textcolour}>Download Certificate</Text>
@@ -222,7 +263,7 @@ export default function ProfileScreen() {
                 size={21}
                 color=""
               /> */}
-              <FontAwesome5 name="user-edit" size={17} color={COLOR} />
+              <FontAwesome5 name="user-edit" size={17} color={'#1655BC'} />
               <Text style={styles.textcolour}>Update Profile</Text>
             </Pressable>
             <Pressable
@@ -235,7 +276,7 @@ export default function ProfileScreen() {
               <Ionicons
                 name="information-circle-outline"
                 size={21}
-                color={COLOR}
+                color={'#1655BC'}
               />
               <Text style={styles.textcolour}>About</Text>
             </Pressable>
@@ -246,7 +287,7 @@ export default function ProfileScreen() {
               style={styles.textcolour}
               onPress={() =>
                 Linking.openURL(
-                  'https://play.google.com/store/apps/details?id=com.ssip.governmentsachivalay',
+                  'https://play.google.com/store/apps/details?id=com.user.imaze',
                 )
               }>
               Give Feedback
@@ -255,14 +296,14 @@ export default function ProfileScreen() {
               style={styles.textcolour}
               onPress={() =>
                 Linking.openURL(
-                  'https://play.google.com/store/apps/details?id=com.ssip.governmentsachivalay',
+                  'https://play.google.com/store/apps/details?id=com.user.imaze',
                 )
               }>
               Rate Us On PlayStore
             </Text>
             <TouchableOpacity
               style={{
-                backgroundColor: COLOR,
+                backgroundColor: '#1655BC',
                 borderRadius: 15,
                 marginTop: 50,
                 padding: 9,
@@ -270,6 +311,10 @@ export default function ProfileScreen() {
                 alignItems: 'center',
                 width: width - 48,
                 alignSelf: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginVertical: 7,
+                // alignItems
               }}
               onPress={logout}>
               <Text
@@ -278,9 +323,16 @@ export default function ProfileScreen() {
                   fontWeight: '500',
                   fontSize: 15,
                   fontFamily: 'Poppins-SemiBold',
+                  marginRight: 5,
                 }}>
                 Logout
               </Text>
+              <MaterialIcons
+                name="logout"
+                size={23}
+                color={'white'}
+                style={{marginLeft: 5}}
+              />
             </TouchableOpacity>
           </View>
         </View>
