@@ -210,7 +210,13 @@ const verifiedOfflineEvent = async(req,res)=>{
   if(name == 'COMBO'){
     const d = new Date();
     let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-    const response = await Combos.findOneAndUpdate({_id},{payment_status:'COMPLETED',date},{ new: true, runValidators: true })
+    try{
+      const res = await generateReceipt(_id,"combo")
+      const response = await Combos.findOneAndUpdate({_id},{payment_status:'COMPLETED',date,receipt_url:res},{ new: true, runValidators: true })
+    }
+    catch(err){
+      throw new BadRequestError("could not upload receipt")
+    }
     for(let i=0;i<response.event.length;++i){
       const eventdetails = await Event.findOne({_id:response.event[i]})
       if(eventdetails.isAvailable == false){
@@ -236,13 +242,19 @@ const verifiedOfflineEvent = async(req,res)=>{
     const userdetails = await User.findOne({_id:response.userId})
     points+=userdetails.coins
     const user = await User.findOneAndUpdate({_id:response.userId},{coins:points},{ new: true, runValidators: true })
-    const res = await generateReceipt(_id,"combo")
+    
   }
   else if(name=='EVENT'){
     const d = new Date();
     let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-    const userevent = await UserEvent.findOneAndUpdate({_id},{payment_status:'COMPLETED',date},{ new: true, runValidators: true })
-    let points = 0
+    try{
+      const res = await generateReceipt(_id,"combo")
+      const userevent = await UserEvent.findOneAndUpdate({_id},{payment_status:'COMPLETED',date,receipt_url:res},{ new: true, runValidators: true })
+    }
+    catch(err){
+      throw new BadRequestError("could not upload receipt")
+    }
+        let points = 0
     if(userevent.category == 'NORMAL'){
       const eventdetails = await Event.findOne({_id:userevent.eventid})
       if(eventdetails.isAvailable == false){
