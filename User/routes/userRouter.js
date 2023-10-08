@@ -47,15 +47,14 @@ router.route("/login").post(loginUsers);
 router.route("/register").post(registerUsers);
 router.route("/forgotpassword").patch(forgotPasswordUsers);
 
-router.route("/receipt").get(test);
 //sponser
 router.route("/sponser").get(authmiddleware,getsponser);
 router.route("/sponser").post(authmiddleware,uploadSponser);
 
 //events 
-router.route("/events").get(authmiddleware, getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
-router.route("/events/category").get(authmiddleware, getEventsCategorized); //get categorized events
-router.route("/events/:eid").get(authmiddleware, getOneEvent); //get event details [:eid = event id] [?type=NORMAL/FLAGSHIP/CULTURAL]
+router.route("/events").get(getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
+router.route("/events/category").get( getEventsCategorized); //get categorized events
+router.route("/events/:eid").get( getOneEvent); //get event details [:eid = event id] [?type=NORMAL/FLAGSHIP/CULTURAL]
 router.route("/events/user/:uid").get(authmiddleware, getUserEvents); //get events bought by the user, both combos and individual events [:uid = user id]
 
 //normal -> check for clashing
