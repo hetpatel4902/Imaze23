@@ -1315,13 +1315,25 @@ const getAllIncompleteUsersOnline = async(req,res) => {
 
 const acceptOnlinePayment = async(req,res)=>{
   const {eid} = req.params
-  const userevent = await UserEvent.findOneAndUpdate({_id:eid},{payment_status:'COMPLETED'},{ new: true, runValidators: true })
+  const userevent = await UserEvent.findOne({_id:eid});
   if(userevent){
-    const response = await generateReceipt(eid,"userevent")
+    try{
+      const response = await generateReceipt(eid,"userevent");
+      const upd = await UserEvent.findOneAndUpdate({_id:eid},{receipt_url:response,payment_status:"COMPLETED"})
+    }
+    catch(err){
+      throw new BadRequestError("Could not generate receipt")
+    }
   }
-  const combos = await Combos.findOneAndUpdate({_id:eid},{payment_status:'COMPLETED'},{ new: true, runValidators: true })
+  const combos = await Combos.findOne({_id:eid})
   if(combos){
-    const response = await generateReceipt(eid,"combo") 
+    try{
+      const response = await generateReceipt(eid,"combo") 
+      const upd = await Combos.findOneAndUpdate({_id:eid},{receipt_url:response,payment_status:"COMPLETED"})
+    }
+    catch(err){
+      throw new BadRequestError("Could not generate receipt")
+    }
   }
   res.status(StatusCodes.OK).json({res:"Success"})
 }

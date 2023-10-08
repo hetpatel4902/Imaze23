@@ -63,11 +63,10 @@ const uploadImage = async (id, imageBase64Data,type) => {
 };
 
 const uploadPdf = async(name,stream,type)=>{
-
   const params = {
     Bucket: `imaze-bucket`,
     Key: `user-${type}/${name}`,
-    Body:stream,
+    Body: stream,
     ContentType: "application/pdf",
   };
 
@@ -273,20 +272,11 @@ const generateReceipt = async (orderId, type)=>{
       fs.unlink(`./receipts/${transId}.pdf`,(err)=>{
         if(err) console.log(err);
       })
-
-      if(type === "userevent"){
-        const upd = await UserEvent.findOneAndUpdate({_id:orderId},{receipt_url:url});
-        return true;
-      }
-      if(type === "combo"){
-        const upd = await Combos.findOneAndUpdate({_id:orderId},{receipt_url:url});
-        return true;
-
-      }
+      return url;
     }
     catch(err){
-      console.log("certificate upload error",err);
-      return false;
+      console.log("receipt error",err);
+      throw err;
     }
   }, 1000);
 }
