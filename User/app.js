@@ -38,14 +38,12 @@ const staticcombos = require("./models/StaticCombo")
 // const ws =require("./Workshops.json")
 const cult = require("./cultural_solo.json");
 const Cultural = require("./models/Cultural");
+const FlagshipEvents = require("./models/FlagshipEvents");
+const cmbs = require("./combos.json")
 //routes user
 app.get("/clean",async(req,res)=>{
-  const delstat = await staticcombos.deleteMany({});
-  // const del_non = await Event.deleteMany({category:"NonTech"});
-  // const nontech = await Event.create(non_tech_events);
-  const del_cult = await Cultural.deleteMany({});
-  const cultu = await Cultural.create(cult);
-
+ 
+  const upd = await staticcombos.create(cmbs);
   res.json("success")
 })
 app.use("/api/v1/user", userRouter);

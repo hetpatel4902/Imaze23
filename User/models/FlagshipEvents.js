@@ -4,7 +4,7 @@ require('dotenv').config()
 const FlagshipEventSchema = new mongoose.Schema({
   category:{//ideathon , toyothon, 
     type:String,
-    enum:["Ideathon","ITK_toyothon","ITK_workshop","ITK_exhibition","ITK_sa","HappyStreet"],
+    enum:["Ideathon","ITK_toyothon","ITK_exhibition","ITK_sa","HappyStreet"],
     required:[true,'Please provide Category']
   },
   title:{
