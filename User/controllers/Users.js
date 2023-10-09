@@ -72,10 +72,10 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
     const event_name = event.name;
     if (event_day in result) {
       //3 hour clashing check
-      let x =Number(event_time.substring(0,2));
+      let x = Number(event_time.substring(0, 2));
       let count = 0;
-      for(x;x<=19;x++){
-        if(count==3) break;
+      for (x; x <= 19; x++) {
+        if (count == 3) break;
         result[event_day][x].push(event_name);
         count++;
       }
@@ -93,12 +93,15 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
         17: [],
         18: [],
         19: [],
+        20: [],
+        21: [],
+        22: [],
       };
       result[event_day] = time_div;
-      let x =Number(event_time.substring(0,2));
+      let x = Number(event_time.substring(0, 2));
       let count = 0;
-      for(x;x<=19;x++){
-        if(count==3) break;
+      for (x; x <= 19; x++) {
+        if (count == 3) break;
         result[event_day][x].push(event_name);
         count++;
       }
@@ -1485,7 +1488,10 @@ const participateNormalGroup = async (req, res) => {
     for (let evid in user_teams) {
       if (user_teams[evid].type === "NORMAL") {
         const temp = await Event.findOne({ _id: evid });
-        if (temp.name === "Valclassico 2.0 (Valorant)" && event.name === "Valclassico 2.0 (BGMI)") {
+        if (
+          temp.name === "Valclassico 2.0 (Valorant)" &&
+          event.name === "Valclassico 2.0 (BGMI)"
+        ) {
           res.status(StatusCodes.OK).json({
             res: "success",
             flag: false,
@@ -1493,7 +1499,10 @@ const participateNormalGroup = async (req, res) => {
           });
           return;
         }
-        if (temp.name === "Valclassico 2.0 (BGMI)" && event.name === "Valclassico 2.0 (Valorant)") {
+        if (
+          temp.name === "Valclassico 2.0 (BGMI)" &&
+          event.name === "Valclassico 2.0 (Valorant)"
+        ) {
           res.status(StatusCodes.OK).json({
             res: "success",
             flag: false,
