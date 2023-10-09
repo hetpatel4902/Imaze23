@@ -4,10 +4,6 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const LeadsSchema = new mongoose.Schema({
-  name:{
-    type:String,
-    required:[true,'Please provide valid Name']
-  },
   eventId:{
     type:mongoose.Types.ObjectId
   },

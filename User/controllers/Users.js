@@ -164,6 +164,7 @@ const getEventsCategorized = async (req, res) => {
   const result = groupby(allevents, findEl);
   res.status(StatusCodes.OK).json({ res: "success", data: result });
 };
+
 const getOneEvent = async (req, res) => {
   const { eid } = req.params;
   const { type } = req.query;
