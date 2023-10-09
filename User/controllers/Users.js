@@ -1173,16 +1173,15 @@ const purchaseToken = async (req, res) => {
 
 const getList = async (req, res) => {
   const { enrolment, eid } = req.query;
-  let userid = req.user;
-  console.log(userid)
+  let {userId} = req.user;
   let allUsers = await User.find({
     enrolment: { $regex: enrolment, $options: "i" },
-  });
+  })
   allUsers = allUsers.filter((user) => {
     return !(eid in user.teams);
   });
   allUsers = allUsers.filter((user)=>{
-    return userid !== user._id;
+    return userId !== user._id;
   })
   res
     .status(StatusCodes.OK)

@@ -22,6 +22,12 @@ const leadRoute = require("./routes/LeadRoute");
 // error handler
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
+const UserEvent = require("./models/UserEvent");
+const Combos = require("./models/Combos");
+const Event = require("./models/Event");
+const FlagshipEvents = require("./models/FlagshipEvents");
+const Cultural = require("./models/Cultural");
+const Users = require("./models/Users");
 
 
 app.use(express.static(`${__dirname}/public`));
@@ -31,6 +37,14 @@ app.use(cors());
 app.use(xss());
 
 //routes user
+app.get("/clean",async(req,res)=>{
+  // const upd = await Event.updateMany({},{participants:[],noOfParticipants:0});
+  // const flags = await FlagshipEvents.updateMany({},{participants:[],noOfParticipants:0});
+  // const cul = await Cultural.updateMany({},{participants:[],noOfParticipants:0});
+
+  const us = await Users.deleteMany({email:{$ne:"cosmoetic011@gmail.com"}});
+  res.status(200).json({res:us.length});
+})
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/lead", leadRoute);
 app.use(notFoundMiddleware);
