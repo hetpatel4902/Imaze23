@@ -1,0 +1,161 @@
+[
+  {
+    "event_type": "CULTURAL",
+    "event_coordinator": [
+      {
+        "name": "Gitel Panwar",
+        "phoneno": "9313497469"
+      },
+      {
+        "name": "Mihir Chavda",
+        "phoneno": "9408872393"
+      }
+    ],
+    "category": "CULTURAL",
+    "name": "Solo Dance",
+    "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/Solo_Dance.JPG    ",
+    "date": "13-12-2023",
+    "time": "18:00",
+    "price": 50,
+    "description": "Bring out your best performance - dance, sing, act and make the stage your spotlight.\nRound 1: auditions.\nRound 2: Stage performance \n1. Minimum and maximum time limit for the performance shall be defined after the audition round.\n2. Minimum time to be performed for audition is 2 minutes. \n3. A rule book after the auditions shall be circulated. ",
+    "venue": "Front lawn",
+    "totalwinners": 2,
+    "type": "SOLO",
+    "maxparticipants": 1500,
+    "title": "Dance to the rhythm of your soul, be it classical, semiclassical, hip-hop, break dance or a category you want to invent yourself."
+  },
+
+  {
+    "event_type": "CULTURAL",
+    "event_coordinator": [
+      {
+        "name": "Gitel Panwar",
+        "phoneno": "9313497469"
+      },
+      {
+        "name": "Mihir Chavda",
+        "phoneno": "9408872393"
+      }
+    ],
+    "category": "CULTURAL",
+    "name": "Solo Singing",
+    "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/solo+singing.jpg",
+    "date": "13-12-2023",
+    "time": "18:00",
+    "price": 50,
+    "description": "Bring out your best performance - dance, sing, act and make the stage your spotlight.\nRound 1: auditions.\nRound 2: Stage performance\n1. Minimum and maximum time limit for the performance shall be defined after the audition round.\n2. Minimum time to be performed for audition is 2 minutes. \n3. A rule book after the auditions shall be circulated. ",
+    "venue": "Front lawn",
+    "totalwinners": 2,
+    "type": "SOLO",
+    "maxparticipants": 1500,
+    "title": "Sing your heart out, you may choose one song, or sing medleys. It is preferred you sing on karaoke track. However if you want accompanists, maximum two accompanists will be permitted."
+  },
+  {
+    "event_type": "CULTURAL",
+    "event_coordinator": [
+      {
+        "name": "Gitel Panwar",
+        "phoneno": "9313497469"
+      },
+      {
+        "name": "Mihir Chavda",
+        "phoneno": "9408872393"
+      }
+    ],
+    "category": "CULTURAL",
+    "name": "Instrumental",
+    "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/Instrumental.JPG",
+    "date": "13-12-2023",
+    "time": "18:00",
+    "price": 50,
+    "description": "Bring out your best performance - dance, sing, act and make the stage your spotlight.\nRound 1: auditions.\nRound 2: Stage performance \n1. Minimum and maximum time limit for the performance shall be defined after the audition round.\n2. Minimum time to be performed for audition is 2 minutes. \n3. A rule book after the auditions shall be circulated. ",
+    "venue": "Front lawn",
+    "totalwinners": 2,
+    "type": "SOLO",
+    "maxparticipants": 1500,
+    "title": "Show the best instrument you can play. Drums, guitar, flute, keyboard, harmonium, tabla etc. You will have to bring your own instrument."
+  },
+  {
+    "event_type": "CULTURAL",
+    "event_coordinator": [
+        {
+            "name": "Gitel Panwar",
+            "phoneno": "9313497469"
+        },
+        {
+            "name": "Mihir Chavda",
+            "phoneno": "9408872393"
+        }
+    ],
+    "category": "CULTURAL",
+    "name": "Group Song",
+    "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/techy_ludo.jpeg",
+    "date": "13-12-2023",
+    "time": "18:00",
+    "price": 100,
+    "description": "Bring out your best performance - dance, sing, act and make the stage your spotlight.\nRound 1: auditions.\nRound 2: Stage performance \n1.Minimum and maximum time limit for the performance shall be defined after the audition round.\n2.Minimum time to be performed for audition is 2 minutes. \n3.A rule book after the auditions shall be circulated.",
+    "venue": "Front lawn",
+    "totalwinners": 2,
+    "type": "GROUP",
+    "maxparticipants": 1000,
+    "min_members": 2,
+    "max_members": 6,
+    "title": "Entertain the audience with your best performance. Any dance style allowed- folk, Bollywood, semiclassical, do what your heart says. Minimum 2 and maximum 10 participants are allowed in a group."
+  },
+
+  {
+    "event_type": "CULTURAL",
+    "event_coordinator": [
+        {
+            "name": "Gitel Panwar",
+            "phoneno": "9313497469"
+        },
+        {
+            "name": "Mihir Chavda",
+            "phoneno": "9408872393"
+        }
+    ],
+    "category": "CULTURAL",
+    "name": "Group Dance",
+    "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/Group_Dance.JPG",
+    "date": "13-12-2023",
+    "time": "18:00",
+    "price": 100,
+    "description": "Bring out your best performance - dance, sing, act and make the stage your spotlight. \nRound 1: auditions.\nRound 2: Stage performance \n1. Minimum and maximum time limit for the performance shall be defined after the audition round.\n2. Minimum time to be performed for audition is 2 minutes. \n3. A rule book after the auditions shall be circulated.",
+    "venue": "Front lawn",
+    "totalwinners": 2,
+    "type": "GROUP",
+    "maxparticipants": 1000,
+    "min_members": 2,
+    "max_members": 10,
+    "title": "Entertain the audience with your best performance. Any dance style allowed- folk, Bollywood, semiclassical, do what your heart says. Minimum 2 and maximum 10 participants are allowed in a group."
+  },
+  
+  {
+    "event_type": "CULTURAL",
+    "event_coordinator": [
+        {
+            "name": "Gitel Panwar",
+            "phoneno": "9313497469"
+        },
+        {
+            "name": "Mihir Chavda",
+            "phoneno": "9408872393"
+        }
+    ],
+    "category": "CULTURAL",
+    "name": "Scene-e-magic",
+    "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/cinemagic.jpg",
+    "date": "13-12-2023",
+    "time": "18:00",
+    "price": 100,
+    "description": "Bring out your best performance - dance, sing, act and make the stage your spotlight. \nRound 1: auditions.\nRound 2: Stage performance \n1. Minimum and maximum time limit for the performance shall be defined after the audition round.\n2. Minimum time to be performed for audition is 2 minutes. \n3. A rule book after the auditions shall be circulated.",
+    "venue": "Front lawn",
+    "totalwinners": 2,
+    "type": "GROUP",
+    "maxparticipants": 1000,
+    "min_members": 2,
+    "max_members": 5,
+    "title": "Give your own dialogues to a movie scene and show your creativity. Minimum 2 and maximum 5 participants are allowed in the group. Do not use vulgar dialogues."
+  }
+]
