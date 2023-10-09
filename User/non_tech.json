@@ -1,0 +1,217 @@
+[
+    {
+        "event_type": "NORMAL",
+        "event_coordinator": [
+            {
+                "name": "Akshit Rana",
+                "phoneno": "9664536159"
+            },
+            {
+                "name": "Kathan Patel",
+                "phoneno": "6352524488"
+            }
+        ],
+        "category": "NonTech",
+        "name": "Valclassico 2.0 (BGMI)",
+        "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/bgmi.jpg",
+        "date": "14-12-2023",
+        "time": "15:00",
+        "price": 200,
+        "description": "Get ready for an exciting gaming adventure filled with laughter, thrills, and victorious moments. But before you jump into the gaming arena, let's go over some important guidelines to ensure a fair and enjoyable competition.\nRules:\n1.Emulators are not allowed; players caught using emulators will be removed from the room and considered to have forfeited the match.\n2.Hacking, scripting, or cheating in any form is strictly forbidden and will result in immediate forfeit on the first offense and account ban on the second offense.\n3.Teaming or cooperating with opponents is not allowed; violators will be considered to have forfeited the match.\n4.Players are responsible for their own devices and internet connections; disconnections or device crashes will result in forfeiting the match.\n5.No rematch will be given in case of teamers or hackers; the result will be adjusted accordingly.\n6.In the event of a hacker/cheater getting qualified, necessary proofs will be requested by the Admin Team from the suspected player and the accusers. If found guilty, the player will be banned, and the slot will remain empty.\n\nRequirements:\n1.An Internet connection from the college is not required; players can use their own connections.",
+        "venue": "Classroom",
+        "totalwinners": 1,
+        "type": "GROUP",
+        "min_members":4,
+        "max_members":4,
+        "maxparticipants":100,
+        "title": "Welcome to 'Battlegrounds at GCET', a world where gaming skills and camaraderie take centre stage."
+    },
+
+    {
+        "event_type": "NORMAL",
+        "event_coordinator": [
+            {
+                "name": "Rudra Bhatt",
+                "phoneno": "7600929340"
+            },
+            {
+                "name": "Harmandeep Singh Bunet",
+                "phoneno": "9825126395"
+            }
+        ],
+        "category": "NonTech",
+        "name": "Valclassico 2.0 (Valorant)",
+        "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/Valorant.png",
+        "date": "14-12-2023",
+        "time": "15:00",
+        "price": 100,
+        "description": "Get ready to experience intense battles and showcase your Valorant skills. Before you dive into the tournament, let's go over some crucial guidelines to ensure a fair and exciting competition.\n\nRules:-\n1.Each player is allowed only one active Valorant account with accurate and up-to-date information. Sharing or using someone else's account is strictly prohibited and can result in suspension.\n2.Teams must consist of a minimum of 5 players with an additional substitute player.\n3.Substitutes can only be added before the tournament begins and must not be part of another team.\n4.Players can represent only one team in the same tournament.\n5.Both team captains must submit screenshots of match results within 15 minutes, failure to provide screenshots may result in disqualification.\n6.Cheating, exploiting bugs, or using third-party applications for an unfair advantage are strictly forbidden.\n7.Respect, integrity, and appropriate behaviour are expected from all participants.\n8.Discriminatory language and inappropriate conduct are not tolerated.",
+        "venue": "SFL4",
+        "totalwinners": 1,
+        "type": "GROUP",
+        "min_members":5,
+        "max_members":6,
+        "maxparticipants":16,
+        "title": "Welcome to GCET's Ultimate Valorant Extravaganza, where gaming enthusiasts come together for an electrifying gaming competition."
+    },
+
+    {
+        "event_type": "NORMAL",
+        "event_coordinator": [
+            {
+                "name": "Navpreet Singh",
+                "phoneno": "7227082556"
+            },
+            {
+                "name": "Vrajal Mehta",
+                "phoneno": "6353291582"
+            }
+        ],
+        "category": "NonTech",
+        "name": "Wicket Warriors",
+        "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/box_cricket.jpg",
+        "date": "15-12-2023",
+        "time": "9:00",
+        "price": 280,
+        "description": "Get ready to step onto the cricket pitch like never before! GCET proudly presents the 'Box Cricket Bonanza', a high-octane cricket tournament that's all about fun, teamwork, and fierce competition. Whether you're a seasoned cricket enthusiast or just looking to enjoy some casual play, this event guarantees an unforgettable day of sporting action.\n\nRules and Regulations:\n1.Each team must consist of 7 players.\n2.Matches will be played within a box.\n3.Umpires will ensure fair play and enforce the rules throughout the tournament.",
+        "venue": "Basketball court",
+        "totalwinners": 2,
+        "type": "GROUP",
+        "min_members":7,
+        "max_members":7,
+        "maxparticipants":16,
+        "title": "A friendly banter of non-stop cricketing action within confined space promising electrifying moments and spirited competition."
+    },
+
+    {
+        "event_type": "NORMAL",
+        "event_coordinator": [
+            {
+                "name": "",
+                "phoneno": ""
+            },
+            {
+                "name": "",
+                "phoneno": ""
+            }
+        ],
+        "category": "NonTech",
+        "name": "The survival",
+        "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/survival+surge.jpg",
+        "date": "14-12-2023",
+        "time": "9:00",
+        "price": 60,
+        "description": "Round 1:\nThe round is divided into 7 tasks where one needs to get a colour cloth to free their partner.\nTask-1:- Hit the bottle using tennis ball.\nTask-2:- Catch the balls while jumping over bamboos.\nTask-3:- Pick a sponge using your mouth.\nTask-4:- Go around the stumps.\nTask-5 Drop the ball in the bucket according to gate number.\nTask-6 Open the gate and find the key.\nTask-7 Unlock the partner and take colour cloth.\n\nRound 2:\nThe round is divided into 7 tasks.\nTask-1 Solve the puzzles.\nTask-2 Arrange the bottles using balloon.\nTask-3 Arrange various spellings.\nTask-4 Teams will need to pass small thermocol in between the bottles.\nTask-5 Go around the stumps and drop the ball.\nTask-6 Combine task with your partner.\nTask-7 Arrange the stones using different glasses.",
+        "venue": "Parking area",
+        "totalwinners": 1,
+        "type": "GROUP",
+        "min_members":3,
+        "max_members":3,
+        "maxparticipants":100,
+        "title": "In the Maze of Might and Mind, Only the Clever and Agile Emerge Supreme traversing the physical labyrinths of unmatched challenges. And to the Victor Go the Spoils!"
+    },
+
+    {
+        "event_type": "NORMAL",
+        "event_coordinator": [
+            {
+                "name": "Parth Rajput",
+                "phoneno": "7383930395"
+            },
+            {
+                "name": "Masoom Patel",
+                "phoneno": "9664994899"
+            }
+        ],
+        "category": "NonTech",
+        "name": "AD -wiz",
+        "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/ad_viz.jpg",
+        "date": "13-12-2023",
+        "time": "11:00",
+        "price": 20,
+        "description": "AD-VIZ is a non-technical event that revolves around the recognition of well-known brands. It's a game designed to test your team's knowledge of various brands and assess your creativity in producing advertisements for merchandise, shoes, or other products. Get ready to showcase your marketing and advertising skills in an exciting competition.",
+        "venue": "A118",
+        "totalwinners": 2,
+        "type": "SOLO",
+        "maxparticipants": 10000,
+        "title": "Thrives to challenge your knowledge of popular brands and your ability to craft compelling advertisements for various products."
+      },
+      
+      {
+        "event_type": "NORMAL",
+        "event_coordinator": [
+            {
+                "name": "Darsh bhatt",
+                "phoneno": "6358859356"
+            },
+            {
+                "name": "Abhishek parekh",
+                "phoneno": "9313063224"
+            }
+        ],
+        "category": "NonTech",
+        "name": "Karting Carnival",
+        "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/go_karting.jpeg",
+        "date": "14-12-2023",
+        "time": "9:00",
+        "price": 100,
+        "description": "In the grand theatre of motorsports, where roaring engines and the screech of tires reign supreme, gliding mere inches from the ground in nimble. It's a realm where both seasoned racers and enthusiastic newcomers can chase horizons. It's not just a race; it's a pulse-pounding ballet on wheels! Karting Carnival, hosted by the Mechanical Engineering department at GCET, offers an adrenaline-pumping racing experience for participants of all skill levels. \nLaps per Participant: Each participant will have the exciting opportunity to complete three laps, offering a thrilling and engaging experience.\nRules: Simultaneous braking and accelerating result in disqualification.",
+        "venue": "Auditorium Parking",
+        "totalwinners": 2,
+        "type": "SOLO",
+        "maxparticipants": 10000,
+        "title": "The Karting Carnival where speed and excitement converge for a day of thrilling competition, welcoming racers of all levels to vie for victory"
+      },
+      
+      {
+        "event_type": "NORMAL",
+        "event_coordinator": [
+            {
+                "name": "Dev latia",
+                "phoneno": "8140844555"
+            },
+            {
+                "name": "Dhaval bhalgamadiya",
+                "phoneno": "6355096060"
+            }
+        ],
+        "category": "NonTech",
+        "name": "Techy Ludo",
+        "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/techy_ludo.jpeg",
+        "date": "15-12-2023",
+        "time": "10:00",
+        "price": 50,
+        "description": " Techy Ladder is a classic board game with a knowledge challenge. Players aim to move their game pieces from the start square to the finish square. When bitten by snakes, players face elimination but can return by answering quiz questions. Correct answers let you continue, while incorrect answers mean starting over.\nFour players will participate simultaneously.\nTypes of Quiz Questions:\n1.General knowledge.\n2.Sports.\n3.Political issues.\nThe game follows the standard rules of a traditional snake and ladder game.",
+        "venue": "Chemical open area",
+        "totalwinners": 2,
+        "type": "SOLO",
+        "maxparticipants": 15,
+        "title": "Enter a fantastical universe where the line between player and pawn blurs, where every move is felt in real-time, the world of Humanized Board Games."
+      },
+      
+      {
+        "event_type": "NORMAL",
+        "event_coordinator": [
+            {
+                "name": "Pushti desai ",
+                "phoneno": "9512266044"
+            },
+            {
+                "name": "vinit goyal",
+                "phoneno": "9998037842"
+            }
+        ],
+        "category": "NonTech",
+        "name": "Food Fiesta",
+        "image": "https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/food_fiesta.jpgg",
+        "date": "13-12-2023",
+        "time": "14:00",
+        "price": 40,
+        "description": "Round 1: Food Quiz\nIn the first round of Food Fiesta, it's time to put your food knowledge to the test. Gather\nyour team and prepare to answer questions that span the globe of gastronomy. From\nobscure ingredients to culinary history, this round will challenge your food IQ. Only\nthose with a true passion for food will emerge victorious!\nRound 2: Treasure Hunt for Ingredients\nThe second round of Food Fiesta will have you channeling your inner detective as you\nembark on a culinary treasure hunt like no other. Armed with clues and a keen sense of\nadventure, you'll scour the event area in search of hidden ingredients. These ingredients\nare the keys to your culinary masterpiece in the final round, so every find counts. Get\nready to rummage, strategize, and work together with your team to uncover the hidden\nculinary treasures.\nRound 3: Culinary Challenge - Cook Without Gas\nThe grand finale of Food Fiesta is a culinary challenge that will test your creativity and\nresourcefulness. With the ingredients you've collected in the previous round, you'll have\nto prepare a delicious dish without using gas or traditional stovetops! Harness your inner\nchef and let your culinary imagination run wild as you figure out innovative ways to\nprepare your dish. Can you impress the judges and create a culinary masterpiece under\nthese unique constraints? ",
+        "venue": "Audi front lawn",
+        "totalwinners": 2,
+        "type": "SOLO",
+        "maxparticipants": 25,
+        "title": "Prepare yourself for an unparalleled gastronomic journey at the Food Fiesta – an epicurean spectacle designed to tantalize your taste buds, pique your culinary expertise, and engage your culinary prowess!"
+      }
+]   

@@ -59,7 +59,7 @@ router.route("/events/user/:uid").get(authmiddleware, getUserEvents); //get even
 
 //normal -> check for clashing
 router.route("/normal/list").get(authmiddleware,getList) //For drop down when selecting team mates, ?enrolment=&eid=
-//making sure that the student only participates in either  valorant or bgmi
+//making sure that the student only participates in either valorant or bgmi
 router.route("/normal/participate/solo").post(authmiddleware, participateNormalSolo); //[req.body = {uid:user id,eid:event_Id}] call this api when proceed to pay button is clicked , this will return clashing events if the events are clashing with previously bought events else will create the order
 router.route("/normal/participate/group").post(authmiddleware,participateNormalGroup) //req.body = {eid:event id , uid:user id}
 router.route("/normal/submit/group").post(authmiddleware,submitNormalGroup) //req.body = {eid:event id, team_name:,uid:user id,members:[ids]}
