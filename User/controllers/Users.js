@@ -36,14 +36,15 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
   });
 
   for (let i = 0; i < userEvents.length; i++) {
-    let evt;
-    switch (userEvents[i].category) {
-      case "NORMAL":
-        evt = await Event.findOne({ _id: userEvents[i].eventid, type: "SOLO" });
-        if (evt) events.push(evt);
-        break;
+    if (userEvents[i].category === "NORMAL") {
+      let evt = await Event.findOne({
+        _id: userEvents[i].eventid,
+        type: "SOLO",
+      });
+      if (evt) events.push(evt);
     }
   }
+
   for (let i = 0; i < userCombos.length; i++) {
     let combo_events = userCombos[i].event;
     for (let j = 0; j < combo_events.length; j++) {
@@ -70,13 +71,13 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
     const event_time = event.time;
     const event_name = event.name;
     if (event_day in result) {
-      if (event_time.substring(2, 4) === "00") {
-        result[event_day][Number(event_time.substring(0, 2)) - 1].push(
-          event_name
-        );
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
-      } else {
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
+      //3 hour clashing check
+      let x =Number(event_time.substring(0,2));
+      let count = 0;
+      for(x;x<=19;x++){
+        if(count==3) break;
+        result[event_day][x].push(event_name);
+        count++;
       }
     } else {
       const time_div = {
@@ -94,16 +95,16 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
         19: [],
       };
       result[event_day] = time_div;
-      if (event_time.substring(2, 4) === "00") {
-        result[event_day][Number(event_time.substring(0, 2)) - 1].push(
-          event_name
-        );
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
-      } else {
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
+      let x =Number(event_time.substring(0,2));
+      let count = 0;
+      for(x;x<=19;x++){
+        if(count==3) break;
+        result[event_day][x].push(event_name);
+        count++;
       }
     }
   }
+
   for (var day in result) {
     let time = result[day];
     for (let t in time) {
