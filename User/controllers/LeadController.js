@@ -273,6 +273,7 @@ const verifiedOfflineEvent = async (req, res) => {
   } else if (name == "EVENT") {
     const d = new Date();
     let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+    console.log(date)
     let userevent;
     try {
       const res = await generateReceipt(_id, "userevent");
