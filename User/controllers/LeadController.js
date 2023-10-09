@@ -271,6 +271,7 @@ const verifiedOfflineEvent = async (req, res) => {
       { new: true, runValidators: true }
     );
   } else if (name == "EVENT") {
+    
     let userevent = await UserEvent.findOne({_id})
     let points = 0;
     if (userevent.category == "NORMAL") {
