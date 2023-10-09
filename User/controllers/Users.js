@@ -1486,7 +1486,7 @@ const participateNormalGroup = async (req, res) => {
     for (let evid in user_teams) {
       if (user_teams[evid].type === "NORMAL") {
         const temp = await Event.findOne({ _id: evid });
-        if (temp.name === "BGMI" && event.name === "Valorant") {
+        if (temp.name === "Valclassico 2.0 (Valorant)" && event.name === "Valclassico 2.0 (BGMI)") {
           res.status(StatusCodes.OK).json({
             res: "success",
             flag: false,
@@ -1494,7 +1494,7 @@ const participateNormalGroup = async (req, res) => {
           });
           return;
         }
-        if (temp.name === "Valorant" && event.name === "BGMI") {
+        if (temp.name === "Valclassico 2.0 (BGMI)" && event.name === "Valclassico 2.0 (Valorant)") {
           res.status(StatusCodes.OK).json({
             res: "success",
             flag: false,

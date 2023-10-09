@@ -88,9 +88,8 @@ const generateReceipt = async (orderId, type)=>{
   let amount;
   let date;
   let event_type ;
-  const invoice_num = await Invoice.find({});
+  var invoice_num = await Invoice.find({});
   let invoice_number = invoice_num[0].number;
-  const update_invoice = await Invoice.findOneAndUpdate({_id:invoice_num[0]._id},{number:invoice_num[0].number+1});
   if (type === "combo") {
     const combo = await Combos.findOne({ _id: orderId });
     transId = combo.transId;
@@ -274,6 +273,7 @@ const generateReceipt = async (orderId, type)=>{
       fs.unlink(`./receipts/${invoice_number}.pdf`,(err)=>{
         if(err) console.log(err);
       })
+      const update_invoice = await Invoice.findOneAndUpdate({_id:invoice_num[0]._id},{number:invoice_num[0].number+1});
       return url;
     }
     catch(err){

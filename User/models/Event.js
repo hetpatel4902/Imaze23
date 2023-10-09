@@ -1,7 +1,12 @@
+const { boolean } = require('joi')
 const mongoose = require('mongoose')
 require('dotenv').config()
 
 const EventSchema = new mongoose.Schema({
+  isDiploma:{
+    type:Boolean,
+    default:false
+  },
   category:{
     type:String,
     enum:["Tech","NonTech","Workshop"],
