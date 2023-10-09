@@ -228,9 +228,10 @@ const verifiedOfflineEvent = async (req, res) => {
   if (name == "COMBO") {
     const d = new Date();
     let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+    let response = ''
     try {
       const res = await generateReceipt(_id, "combo");
-      const response = await Combos.findOneAndUpdate(
+      response = await Combos.findOneAndUpdate(
         { _id },
         { payment_status: "COMPLETED", date, receipt_url: res },
         { new: true, runValidators: true }
