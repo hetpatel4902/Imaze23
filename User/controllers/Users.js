@@ -3,7 +3,7 @@ const Event = require("../models/Event");
 const StaticCombo = require("../models/StaticCombo");
 const UserEvent = require("../models/UserEvent");
 const Combo = require("../models/Combos");
-const Sponser = require("../models/Sponser")
+const Sponser = require("../models/Sponser");
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors/index");
 const fs = require("fs");
@@ -27,7 +27,7 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
   }
   const userEvents = await UserEvent.find({
     userId: uid,
-    category: ["NORMAL", "FLAGSHIP"],
+    category: "NORMAL",
     payment_status: ["COMPLETED", "INCOMPLETE"],
   });
   const userCombos = await Combo.find({
@@ -36,21 +36,15 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
   });
 
   for (let i = 0; i < userEvents.length; i++) {
-    let evt;
-    switch (userEvents[i].category) {
-      case "NORMAL":
-        evt = await Event.findOne({ _id: userEvents[i].eventid, type: "SOLO" });
-        if (evt) events.push(evt);
-        break;
-      case "FLAGSHIP":
-        evt = await FlagshipEvents.findOne({
-          _id: userEvents[i].eventid,
-          type: "SOLO",
-        });
-        if (evt) events.push(evt);
-        break;
+    if (userEvents[i].category === "NORMAL") {
+      let evt = await Event.findOne({
+        _id: userEvents[i].eventid,
+        type: "SOLO",
+      });
+      if (evt) events.push(evt);
     }
   }
+
   for (let i = 0; i < userCombos.length; i++) {
     let combo_events = userCombos[i].event;
     for (let j = 0; j < combo_events.length; j++) {
@@ -68,10 +62,6 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
       const temp = await Event.findOne({ _id: evid });
       events.push(temp);
     }
-    if (user_teams[evid].type === "FLAGSHIP") {
-      const temp = await FlagshipEvents.findOne({ _id: evid });
-      events.push(temp);
-    }
   }
 
   for (let i = 0; i < events.length; i++) {
@@ -81,13 +71,13 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
     const event_time = event.time;
     const event_name = event.name;
     if (event_day in result) {
-      if (event_time.substring(2, 4) === "00") {
-        result[event_day][Number(event_time.substring(0, 2)) - 1].push(
-          event_name
-        );
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
-      } else {
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
+      //3 hour clashing check
+      let x =Number(event_time.substring(0,2));
+      let count = 0;
+      for(x;x<=19;x++){
+        if(count==3) break;
+        result[event_day][x].push(event_name);
+        count++;
       }
     } else {
       const time_div = {
@@ -105,16 +95,16 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
         19: [],
       };
       result[event_day] = time_div;
-      if (event_time.substring(2, 4) === "00") {
-        result[event_day][Number(event_time.substring(0, 2)) - 1].push(
-          event_name
-        );
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
-      } else {
-        result[event_day][Number(event_time.substring(0, 2))].push(event_name);
+      let x =Number(event_time.substring(0,2));
+      let count = 0;
+      for(x;x<=19;x++){
+        if(count==3) break;
+        result[event_day][x].push(event_name);
+        count++;
       }
     }
   }
+
   for (var day in result) {
     let time = result[day];
     for (let t in time) {
@@ -237,15 +227,15 @@ const getUserEvents = async (req, res) => {
     switch (pendingEvents[i].category) {
       case "NORMAL":
         event = await Event.findOne({ _id: pendingEvents[i].eventid });
-        individual.push({event,cashotp:pendingEvents[i].cashotp});
+        individual.push({ event, cashotp: pendingEvents[i].cashotp });
         break;
       case "CULTURAL":
         event = await Cultural.findOne({ _id: pendingEvents[i].eventid });
-        individual.push({event,cashotp:pendingEvents[i].cashotp});
+        individual.push({ event, cashotp: pendingEvents[i].cashotp });
         break;
       case "FLAGSHIP":
         event = await FlagshipEvents.findOne({ _id: pendingEvents[i].eventid });
-        individual.push({event,cashotp:pendingEvents[i].cashotp});
+        individual.push({ event, cashotp: pendingEvents[i].cashotp });
         break;
     }
   }
@@ -260,7 +250,7 @@ const getUserEvents = async (req, res) => {
           type: "SOLO",
           _id: userEvents[i].eventid,
         });
-        if(event){
+        if (event) {
           solo_events.push(event);
         }
         break;
@@ -269,16 +259,16 @@ const getUserEvents = async (req, res) => {
           type: "SOLO",
           _id: userEvents[i].eventid,
         });
-        if(event){
+        if (event) {
           solo_events.push(event);
-        }        
+        }
         break;
       case "FLAGSHIP":
         event = await FlagshipEvents.findOne({
           type: "SOLO",
           _id: userEvents[i].eventid,
         });
-        if(event){
+        if (event) {
           solo_events.push(event);
         }
         break;
@@ -335,7 +325,7 @@ const getUserEvents = async (req, res) => {
         team_event.team_name = user_teams[teamevent].team_name;
         break;
     }
-    if(Object.keys(team_event).length !== 0){
+    if (Object.keys(team_event).length !== 0) {
       team_events.push(team_event);
     }
   }
@@ -389,11 +379,11 @@ const checkCombo = async (req, res) => {
       .status(StatusCodes.OK)
       .json({ res: "success", flag: true, data: create_combo });
   } else {
-    res.status(StatusCodes.OK).json({ res: "success", flag:false, data });
+    res.status(StatusCodes.OK).json({ res: "success", flag: false, data });
   }
 };
 const participateNormalSolo = async (req, res) => {
-  const { uid, eid,price } = req.body;
+  const { uid, eid, price } = req.body;
   const event = await Event.findOne({ _id: eid });
 
   const { flag, data } = await isClashing(uid, event, false);
@@ -430,24 +420,23 @@ const buttonVisibility = async (req, res) => {
           res.status(StatusCodes.OK).json({ res: "failed", data: false });
         }
       }
-      if(event.type === "GROUP"){
+      if (event.type === "GROUP") {
         const attendees = event.attendance;
-        for(let team in attendees){
-          if(attendees[team].team_leader === uid){
-            res.status(StatusCodes.OK).json({res:"success",data:true});
+        for (let team in attendees) {
+          if (attendees[team].team_leader === uid) {
+            res.status(StatusCodes.OK).json({ res: "success", data: true });
             return;
-          }
-          else{
-            if(attendees[team].members.includes(uid)){
-              res.status(StatusCodes.OK).json({res:"success",data:true});
+          } else {
+            if (attendees[team].members.includes(uid)) {
+              res.status(StatusCodes.OK).json({ res: "success", data: true });
               return;
             }
           }
         }
-        res.status(StatusCodes.OK).json({res:"failed",data:false});
+        res.status(StatusCodes.OK).json({ res: "failed", data: false });
       }
       break;
-    
+
     case "FLAGSHIP":
       event = await FlagshipEvents.findOne({ _id: eid });
       if (event.type === "SOLO") {
@@ -460,24 +449,23 @@ const buttonVisibility = async (req, res) => {
           return;
         }
       }
-      if(event.type === "GROUP"){
+      if (event.type === "GROUP") {
         const attendees = event.attendance;
-        for(let team in attendees){
-          if(attendees[team].team_leader === uid){
-            res.status(StatusCodes.OK).json({res:"success",data:true});
+        for (let team in attendees) {
+          if (attendees[team].team_leader === uid) {
+            res.status(StatusCodes.OK).json({ res: "success", data: true });
             return;
-          }
-          else{
-            if(attendees[team].members.includes(uid)){
-              res.status(StatusCodes.OK).json({res:"success",data:true});
+          } else {
+            if (attendees[team].members.includes(uid)) {
+              res.status(StatusCodes.OK).json({ res: "success", data: true });
               return;
             }
           }
         }
-        res.status(StatusCodes.OK).json({res:"failed",data:false});
+        res.status(StatusCodes.OK).json({ res: "failed", data: false });
       }
       break;
-    
+
     case "CULTURAL":
       event = await Cultural.findOne({ _id: eid });
       if (event.type === "SOLO") {
@@ -490,24 +478,22 @@ const buttonVisibility = async (req, res) => {
           return;
         }
       }
-      if(event.type === "GROUP"){
+      if (event.type === "GROUP") {
         const attendees = event.participants;
-        for(let team in attendees){
-          if(attendees[team].team_leader === uid){
-            res.status(StatusCodes.OK).json({res:"success",data:true});
+        for (let team in attendees) {
+          if (attendees[team].team_leader === uid) {
+            res.status(StatusCodes.OK).json({ res: "success", data: true });
             return;
-          }
-          else{
-            if(attendees[team].members.includes(uid)){
-              res.status(StatusCodes.OK).json({res:"success",data:true});
+          } else {
+            if (attendees[team].members.includes(uid)) {
+              res.status(StatusCodes.OK).json({ res: "success", data: true });
               return;
             }
           }
         }
-        res.status(StatusCodes.OK).json({res:"failed",data:false});
+        res.status(StatusCodes.OK).json({ res: "failed", data: false });
       }
       break;
-
   }
 };
 const getCertificate = async (req, res) => {
@@ -577,9 +563,7 @@ const getCertificate = async (req, res) => {
   // Create a document
   const doc = new pdfkit();
   doc.pipe(
-    fs.createWriteStream(
-      `./certificates/${user.name}-${event.name}.pdf`
-    )
+    fs.createWriteStream(`./certificates/${user.name}-${event.name}.pdf`)
   );
   doc.image(`./templates/${image_url}.jpg`, 0, 0, { width: 620, height: 800 });
   const angle = Math.PI * 28.7;
@@ -598,17 +582,22 @@ const getCertificate = async (req, res) => {
     });
   }
   doc.end();
-  setTimeout(async() => {
-    try{
-      var file = fs.createReadStream(`./certificates/${user.name}-${event.name}.pdf`);
-      let url = await s3.uploadPdf(`${user.name}-${event.name}.pdf`,file,"certificate");
-      fs.unlink(`./certificates/${user.name}-${event.name}.pdf`,(err)=>{
-        if(err) console.log(err);
-      })
-      res.status(StatusCodes.OK).json({res:"success",data:url});
-    }
-    catch(err){
-      console.log("certificate upload error",err);
+  setTimeout(async () => {
+    try {
+      var file = fs.createReadStream(
+        `./certificates/${user.name}-${event.name}.pdf`
+      );
+      let url = await s3.uploadPdf(
+        `${user.name}-${event.name}.pdf`,
+        file,
+        "certificate"
+      );
+      fs.unlink(`./certificates/${user.name}-${event.name}.pdf`, (err) => {
+        if (err) console.log(err);
+      });
+      res.status(StatusCodes.OK).json({ res: "success", data: url });
+    } catch (err) {
+      console.log("certificate upload error", err);
       throw new BadRequestError("could not generate certificate");
     }
   }, 1000);
@@ -639,8 +628,8 @@ const validateUserOtp = async (req, res) => {
     throw new BadRequestError("Please provide otp in the body");
   } else {
     const user = await User.findOne({ email: email });
-    if (user.otp !== otp) {
-      res.status(StatusCodes.OK).json({ res: "failed", data: "Invalid otp" });
+    if (String(otp) !== String(user.otp)) {
+      throw new BadRequestError("Invalid otp");
     } else {
       res.status(StatusCodes.OK).json({ res: "success", data: "valid otp" });
     }
@@ -681,15 +670,15 @@ const getPaymentHistory = async (req, res) => {
     switch (userEvents[i].category) {
       case "NORMAL":
         event = await Event.findOne({ _id: userEvents[i].eventid });
-        individual_events.push({event,receipt:userEvents[i].receipt_url});
+        individual_events.push({ event, receipt: userEvents[i].receipt_url });
         break;
       case "FLAGSHIP":
         event = await FlagshipEvents.findOne({ _id: userEvents[i].eventid });
-        individual_events.push({event,receipt:userEvents[i].receipt_url});
+        individual_events.push({ event, receipt: userEvents[i].receipt_url });
         break;
       case "CULTURAL":
         event = await Cultural.findOne({ _id: userEvents[i].eventid });
-        individual_events.push({event,receipt:userEvents[i].receipt_url});
+        individual_events.push({ event, receipt: userEvents[i].receipt_url });
         break;
     }
   }
@@ -1194,7 +1183,7 @@ const getList = async (req, res) => {
 
 //cultural
 const participateSolo = async (req, res) => {
-  const { eid, uid,price } = req.body;
+  const { eid, uid, price } = req.body;
   const event = await Cultural.findOne({ _id: eid });
   const participants = event.participants;
   let flag = true;
@@ -1243,28 +1232,21 @@ const participateCulturalGroup = async (req, res) => {
 const participateFlagshipGroup = async (req, res) => {
   const { uid, eid } = req.body;
   const user = await User.findOne({ _id: uid });
-  const event = await FlagshipEvents.findOne({ _id: eid });
-
-  const { flag, data } = await isClashing(uid, event, false);
-  if (flag) {
-    res.status(StatusCodes.OK).json({ res: "success", flag: false, data });
+  const user_teams = user.teams;
+  if (eid in user_teams) {
+    res.status(StatusCodes.OK).json({
+      res: "success",
+      flag: false,
+      data: "You are already in a team",
+      team: user_teams[eid],
+    });
   } else {
-    const user_teams = user.teams;
-    if (eid in user_teams) {
-      res.status(StatusCodes.OK).json({
-        res: "success",
-        flag: false,
-        data: "You are already in a team",
-        team: user_teams[eid],
-      });
-    } else {
-      res.status(StatusCodes.OK).json({ res: "success", flag: true });
-    }
+    res.status(StatusCodes.OK).json({ res: "success", flag: true });
   }
 };
 
 const submitGroup = async (req, res) => {
-  const { uid, team_name, eid, members,price } = req.body;
+  const { uid, team_name, eid, members, price } = req.body;
   const event = await Cultural.findOne({ _id: eid });
   const participants = event.participants;
   let team_name_flag = false;
@@ -1340,8 +1322,16 @@ const submitGroup = async (req, res) => {
 
 //flagship
 const submitFlagship = async (req, res) => {
-  let { uid, team_name, eid, members, leader_ID, poster_url, project_title,price } =
-    req.body;
+  let {
+    uid,
+    team_name,
+    eid,
+    members,
+    leader_ID,
+    poster_url,
+    project_title,
+    price,
+  } = req.body;
   const event = await FlagshipEvents.findOne({ _id: eid });
   const participants = event.participants;
   let team_name_flag = false;
@@ -1393,7 +1383,7 @@ const submitFlagship = async (req, res) => {
   } else {
     let obj;
     try {
-      if(poster_url && leader_ID){
+      if (poster_url && leader_ID) {
         poster_url = await s3.uploadImage(
           team_name + "-poster",
           poster_url,
@@ -1404,7 +1394,7 @@ const submitFlagship = async (req, res) => {
           leader_ID,
           "team"
         );
-         obj = {
+        obj = {
           team_name: team_name,
           team_leader: uid,
           members: members,
@@ -1413,8 +1403,7 @@ const submitFlagship = async (req, res) => {
           project_title,
           type: "FLAGSHIP",
         };
-      }
-      else{
+      } else {
         obj = {
           team_name: team_name,
           team_leader: uid,
@@ -1461,30 +1450,24 @@ const registerSoloFlagship = async (req, res) => {
     date,
     payment_status: "COMPLETED",
     payment_mode: "OFFLINE",
-    category:"FLAGSHIP"
+    category: "FLAGSHIP",
   });
   res.status(StatusCodes.OK).json({ res: "success", data: create_event });
 };
 
 const participateFlagshipSolo = async (req, res) => {
-  const { uid, eid,price } = req.body;
-  const event = await FlagshipEvents.findOne({ _id: eid });
-  const { flag, data } = await isClashing(uid, event, false);
-  if (flag) {
-    res.status(StatusCodes.OK).json({ res: "success", flag: false, data });
-  } else {
-    const user_event = await UserEvent.create({
-      userId: uid,
-      eventid: eid,
-      payment_status: "NEW",
-      payment_mode: "OFFLINE",
-      category: "FLAGSHIP",
-      price: price,
-    });
-    res
-      .status(StatusCodes.OK)
-      .json({ res: "success", flag: true, data: user_event });
-  }
+  const { uid, eid, price } = req.body;
+  const user_event = await UserEvent.create({
+    userId: uid,
+    eventid: eid,
+    payment_status: "NEW",
+    payment_mode: "OFFLINE",
+    category: "FLAGSHIP",
+    price: price,
+  });
+  res
+    .status(StatusCodes.OK)
+    .json({ res: "success", flag: true, data: user_event });
 };
 
 const participateNormalGroup = async (req, res) => {
@@ -1534,7 +1517,7 @@ const participateNormalGroup = async (req, res) => {
   }
 };
 const submitNormalGroup = async (req, res) => {
-  const { eid, team_name, uid, members,price } = req.body;
+  const { eid, team_name, uid, members, price } = req.body;
   const event = await Event.findOne({ _id: eid });
   const participants = event.participants;
   //checking for same team name
@@ -1569,37 +1552,41 @@ const submitNormalGroup = async (req, res) => {
     .json({ res: "success", flag: true, data: create_event });
 };
 
-const uploadSponser = async(req,res)=>{
-  const {img} = req.body;
-  try{
-    let url = await s3.uploadImage(Math.floor(Math.random()*100),img,"sponser");
-    const sponsor = await Sponser.create({url});
-    res.status(StatusCodes.OK).json({res:"success",data:sponsor})
+const uploadSponser = async (req, res) => {
+  const { img } = req.body;
+  try {
+    let url = await s3.uploadImage(
+      Math.floor(Math.random() * 100),
+      img,
+      "sponser"
+    );
+    const sponsor = await Sponser.create({ url });
+    res.status(StatusCodes.OK).json({ res: "success", data: sponsor });
+  } catch (err) {
+    console.log("sponser image", err);
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ res: "failed", data: "could not upload" });
   }
-  catch(err){
-    console.log("sponser image",err);
-    res.status(StatusCodes.BAD_REQUEST).json({res:"failed",data:"could not upload"})
-  }
-}
+};
 
-const getsponser = async(req,res)=>{
+const getsponser = async (req, res) => {
   const sponsors = await Sponser.find({});
-  if(!sponsors){
-    throw new BadRequestError("no sponsors")
+  if (!sponsors) {
+    throw new BadRequestError("no sponsors");
   }
-  res.status(StatusCodes.OK).json({res:"success",data:sponsors})
-}
+  res.status(StatusCodes.OK).json({ res: "success", data: sponsors });
+};
 
-const test = async(req,res)=>{
-  const {orderId,type} = req.query;
-  let result = s3.generateReceipt(orderId,type);
-  if(result){
+const test = async (req, res) => {
+  const { orderId, type } = req.query;
+  let result = s3.generateReceipt(orderId, type);
+  if (result) {
+    res.status(200).json("success");
+  } else {
     res.status(200).json("success");
   }
-  else{
-    res.status(200).json("success")
-  }
-}
+};
 
 module.exports = {
   test,
@@ -1631,5 +1618,5 @@ module.exports = {
   participateNormalGroup,
   submitNormalGroup,
   uploadSponser,
-  getsponser
+  getsponser,
 };

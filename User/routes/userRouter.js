@@ -47,20 +47,19 @@ router.route("/login").post(loginUsers);
 router.route("/register").post(registerUsers);
 router.route("/forgotpassword").patch(forgotPasswordUsers);
 
-router.route("/receipt").get(test);
 //sponser
 router.route("/sponser").get(authmiddleware,getsponser);
 router.route("/sponser").post(authmiddleware,uploadSponser);
 
 //events 
-router.route("/events").get(authmiddleware, getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
-router.route("/events/category").get(authmiddleware, getEventsCategorized); //get categorized events
-router.route("/events/:eid").get(authmiddleware, getOneEvent); //get event details [:eid = event id] [?type=NORMAL/FLAGSHIP/CULTURAL]
+router.route("/events").get(getAllEvents); //1.all the events[without search and fields] 2.search filter[?search=tech] 3.sort filter [?sort=noOfParticipants] 4.specific fields[?fields=name,venue...]
+router.route("/events/category").get( getEventsCategorized); //get categorized events
+router.route("/events/:eid").get( getOneEvent); //get event details [:eid = event id] [?type=NORMAL/FLAGSHIP/CULTURAL]
 router.route("/events/user/:uid").get(authmiddleware, getUserEvents); //get events bought by the user, both combos and individual events [:uid = user id]
 
 //normal -> check for clashing
 router.route("/normal/list").get(authmiddleware,getList) //For drop down when selecting team mates, ?enrolment=&eid=
-//making sure that the student only participates in either  valorant or bgmi
+//making sure that the student only participates in either valorant or bgmi
 router.route("/normal/participate/solo").post(authmiddleware, participateNormalSolo); //[req.body = {uid:user id,eid:event_Id}] call this api when proceed to pay button is clicked , this will return clashing events if the events are clashing with previously bought events else will create the order
 router.route("/normal/participate/group").post(authmiddleware,participateNormalGroup) //req.body = {eid:event id , uid:user id}
 router.route("/normal/submit/group").post(authmiddleware,submitNormalGroup) //req.body = {eid:event id, team_name:,uid:user id,members:[ids]}
