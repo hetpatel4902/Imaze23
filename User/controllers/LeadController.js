@@ -226,18 +226,7 @@ const verifiedOfflineEvent = async (req, res) => {
   const { name, _id } = req.body;
   let points = 0;
   if (name == "COMBO") {
-    const d = new Date();
-    let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-    try {
-      const res = await generateReceipt(_id, "combo");
-      const response = await Combos.findOneAndUpdate(
-        { _id },
-        { payment_status: "COMPLETED", date, receipt_url: res },
-        { new: true, runValidators: true }
-      );
-    } catch (err) {
-      throw new BadRequestError("could not upload receipt");
-    }
+    let response = await Combo.findOne({_id})
     for (let i = 0; i < response.event.length; ++i) {
       const eventdetails = await Event.findOne({ _id: response.event[i] });
       if (eventdetails.isAvailable == false) {
@@ -262,6 +251,18 @@ const verifiedOfflineEvent = async (req, res) => {
         { new: true, runValidators: true }
       );
     }
+    const d = new Date();
+    let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+    try {
+      const res = await generateReceipt(_id, "combo");
+      const response = await Combos.findOneAndUpdate(
+        { _id },
+        { payment_status: "COMPLETED", date, receipt_url: res },
+        { new: true, runValidators: true }
+      );
+    } catch (err) {
+      throw new BadRequestError("could not upload receipt");
+    }
     const userdetails = await User.findOne({ _id: response.userId });
     points += userdetails.coins;
     const user = await User.findOneAndUpdate(
@@ -270,20 +271,7 @@ const verifiedOfflineEvent = async (req, res) => {
       { new: true, runValidators: true }
     );
   } else if (name == "EVENT") {
-    const d = new Date();
-    let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-    console.log(date)
-    let userevent;
-    try {
-      const res = await generateReceipt(_id, "userevent");
-      userevent = await UserEvent.findOneAndUpdate(
-        { _id },
-        { payment_status: "COMPLETED", date, receipt_url: res },
-        { new: true, runValidators: true }
-      );
-    } catch (err) {
-      throw new BadRequestError("could not upload receipt");
-    }
+    let userevent = await UserEvent.findOne({_id})
     let points = 0;
     if (userevent.category == "NORMAL") {
       const eventdetails = await Event.findOne({ _id: userevent.eventid });
@@ -566,6 +554,19 @@ const verifiedOfflineEvent = async (req, res) => {
           { new: true, runValidators: true }
         );
       }
+    }
+    const d = new Date();
+    let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+    console.log(date)
+    try {
+      const res = await generateReceipt(_id, "userevent");
+      userevent = await UserEvent.findOneAndUpdate(
+        { _id },
+        { payment_status: "COMPLETED", date, receipt_url: res },
+        { new: true, runValidators: true }
+      );
+    } catch (err) {
+      throw new BadRequestError("could not upload receipt");
     }
     
   }
