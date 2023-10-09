@@ -299,7 +299,7 @@ const verifiedOfflineEvent = async (req, res) => {
       }
       if (eventdetails.type == "SOLO") {
         for (let i = 0; i < eventdetails.participants.length; ++i) {
-          if (eventdetails.participants[i] == userevent.userId) {
+          if (String(eventdetails.participants[i]) == String(userevent.userId)) {
             throw new BadRequestError(
               "This participant is already registered in this event"
             );
@@ -447,7 +447,7 @@ const verifiedOfflineEvent = async (req, res) => {
         );
       } else {
         for (let i = 0; i < flagship.participants.length; ++i) {
-          if (flagship.participants[i] == userevent.userId) {
+          if (String(flagship.participants[i]) == String(userevent.userId)) {
             throw new BadRequestError(
               "This participant is already registered in this event"
             );
@@ -539,7 +539,7 @@ const verifiedOfflineEvent = async (req, res) => {
         );
       } else {
         for (let i = 0; i < cultural.participants.length; ++i) {
-          if (cultural.participants[i] == userevent.userId) {
+          if (String(cultural.participants[i]) == String(userevent.userId)) {
             throw new BadRequestError(
               "This participant is already registered in this event"
             );
