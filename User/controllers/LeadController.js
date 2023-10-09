@@ -226,7 +226,7 @@ const verifiedOfflineEvent = async (req, res) => {
   const { name, _id } = req.body;
   let points = 0;
   if (name == "COMBO") {
-    let response = await Combo.findOne({_id})
+    let response = await Combos.findOne({_id})
     for (let i = 0; i < response.event.length; ++i) {
       const eventdetails = await Event.findOne({ _id: response.event[i] });
       if (eventdetails.isAvailable == false) {
