@@ -1172,12 +1172,17 @@ const purchaseToken = async (req, res) => {
 
 const getList = async (req, res) => {
   const { enrolment, eid } = req.query;
+  let userid = req.user;
+  console.log(userid)
   let allUsers = await User.find({
     enrolment: { $regex: enrolment, $options: "i" },
   });
   allUsers = allUsers.filter((user) => {
     return !(eid in user.teams);
   });
+  allUsers = allUsers.filter((user)=>{
+    return userid !== user._id;
+  })
   res
     .status(StatusCodes.OK)
     .json({ res: "success", nhits: allUsers.length, data: allUsers });
@@ -1459,17 +1464,24 @@ const registerSoloFlagship = async (req, res) => {
 
 const participateFlagshipSolo = async (req, res) => {
   const { uid, eid, price } = req.body;
-  const user_event = await UserEvent.create({
-    userId: uid,
-    eventid: eid,
-    payment_status: "NEW",
-    payment_mode: "OFFLINE",
-    category: "FLAGSHIP",
-    price: price,
-  });
-  res
-    .status(StatusCodes.OK)
-    .json({ res: "success", flag: true, data: user_event });
+  const same_event = await UserEvent.findOne({userId:uid,payment_status:"INCOMPLETE",eventid:eid});
+  if(same_event){
+    res.status(StatusCodes.OK).json({res:"success",flag:false,data:"Events are clashing "})
+  }
+  else{
+    const user_event = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      payment_status: "NEW",
+      payment_mode: "OFFLINE",
+      category: "FLAGSHIP",
+      price: price,
+    });
+    res
+      .status(StatusCodes.OK)
+      .json({ res: "success", flag: true, data: user_event });
+
+  }
 };
 
 const participateNormalGroup = async (req, res) => {
