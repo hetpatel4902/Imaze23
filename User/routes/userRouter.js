@@ -107,6 +107,4 @@ router.route("/:uid/payment/history").get(authmiddleware, getPaymentHistory); //
 router.route("/:uid/payment/offline").post(authmiddleware, payOffline); //call this api to generate otp for offline purchase [req.body={orderId:userEventId or comboId, isCombo:true/false}]
 router.route("/:uid/payment/online").post(authmiddleware, payOnline); //call this api after paying online and send the transaction id [req.body = {orderId:userEventId or comboId,transId:'',transUrl:'',isCombo:true/false}]
 
-//announcement
-
 module.exports = router;
