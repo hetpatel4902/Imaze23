@@ -1854,7 +1854,8 @@ const getPaymentsOnRegularBasisExcel = async (req, res) => {
   let obj = {};
   for (let i = 0; i < userevent.length; ++i) {
     obj = {};
-    const user = await User.findOne({ _id: userevent[i].userId });
+    if(userevent[i].payment_mode == 'ONLINE' || (userevent[i].payment_mode=='OFFLINE' && userevent[i].payment_status=='COMPLETED')){
+      const user = await User.findOne({ _id: userevent[i].userId });
     let event = {};
     if (userevent[i].category == "NORMAL") {
       event = await Event.findOne({ _id: userevent[i].eventid });
@@ -1876,12 +1877,14 @@ const getPaymentsOnRegularBasisExcel = async (req, res) => {
       obj.transactionid = userevent[i]?.transId;
     }
     arr.push(obj);
+    }
   }
   const combos = await Combos.find({ date });
   let event = "";
   for (let i = 0; i < combos.length; ++i) {
     obj = {};
-    event = "";
+    if(combos[i].payment_mode == 'ONLINE' || (combos[i].payment_mode=='OFFLINE' && combos[i].payment_status=='COMPLETED')){
+      event = "";
     for (let j = 0; j < combos[i].event.length; ++j) {
       const events = await Event.findOne({ _id: combos[i].event[j] });
       event += events.name;
@@ -1903,6 +1906,8 @@ const getPaymentsOnRegularBasisExcel = async (req, res) => {
       obj.transactionid = combos[i]?.transId;
     }
     arr.push(obj);
+    }
+    
   }
   const wb = new xl.Workbook();
   const ws = wb.addWorksheet(`${date} transactions`);
