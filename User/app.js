@@ -2,7 +2,11 @@ require("dotenv").config();
 require("express-async-errors");
 
 const express = require("express");
+const cluster = require("cluster");
+const os = require("os");
 const app = express();
+
+let numcpus = os.cpus().length;
 
 // extra security packages
 const helmet = require("helmet");
@@ -37,14 +41,6 @@ app.use(cors());
 app.use(xss());
 
 //routes user
-app.get("/clean",async(req,res)=>{
-  // const upd = await Event.updateMany({},{participants:[],noOfParticipants:0});
-  // const flags = await FlagshipEvents.updateMany({},{participants:[],noOfParticipants:0});
-  // const cul = await Cultural.updateMany({},{participants:[],noOfParticipants:0});
-
-  const us = await Users.deleteMany({email:{$ne:"cosmoetic011@gmail.com"}});
-  res.status(200).json({res:us.length});
-})
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/lead", leadRoute);
 app.use(notFoundMiddleware);
@@ -55,9 +51,17 @@ const port = process.env.PORT || 8000;
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
-    app.listen(port, () =>
-      console.log(`Server is listening on port ${port}...`)
-    );
+    if(cluster.isMaster){
+      for(let i =0;i<numcpus;i++){
+        cluster.fork();
+      }
+    }
+    else{
+      app.listen(port, () =>
+        console.log(`${process.pid} Server is listening on port ${port}...`)
+      );
+
+    }
   } catch (error) {
     console.log(error);
   }
