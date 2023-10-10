@@ -1181,7 +1181,7 @@ const getList = async (req, res) => {
     return !(eid in user.teams);
   });
   allUsers = allUsers.filter((user)=>{
-    return userId !== user._id;
+    return userId !== String(user._id);
   })
   res
     .status(StatusCodes.OK)
@@ -1441,25 +1441,33 @@ const submitFlagship = async (req, res) => {
 };
 const registerSoloFlagship = async (req, res) => {
   const { uid, eid } = req.body;
-  const event = await FlagshipEvents.findOne({ _id: eid });
-  event.participants.push(uid);
-  const upd = await FlagshipEvents.findOneAndUpdate(
-    { _id: eid },
-    { participants: event.participants },
-    { new: true }
-  );
-  const d = new Date();
-  let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-  const create_event = await UserEvent.create({
-    userId: uid,
-    eventid: eid,
-    price: 0,
-    date,
-    payment_status: "COMPLETED",
-    payment_mode: "OFFLINE",
-    category: "FLAGSHIP",
-  });
-  res.status(StatusCodes.OK).json({ res: "success", data: create_event });
+  const userevent = await UserEvent.findOne({_userId:uid,eventid:eid});
+  if(userevent){
+    res.status(StatusCodes.OK).json({res:"success",flag:false});
+    return;
+  }
+  else{
+    const event = await FlagshipEvents.findOne({ _id: eid });
+    event.participants.push(uid);
+    const upd = await FlagshipEvents.findOneAndUpdate(
+      { _id: eid },
+      { participants: event.participants ,noOfParticipants:event.noOfParticipants+1},
+      { new: true }
+    );
+    const d = new Date();
+    let date = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+    const create_event = await UserEvent.create({
+      userId: uid,
+      eventid: eid,
+      price: 0,
+      date,
+      payment_status: "COMPLETED",
+      payment_mode: "OFFLINE",
+      category: "FLAGSHIP",
+    });
+    res.status(StatusCodes.OK).json({ res: "success",flag:true, data: create_event });
+
+  }
 };
 
 const participateFlagshipSolo = async (req, res) => {
