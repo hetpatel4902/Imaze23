@@ -4,19 +4,24 @@ import axios from 'axios';
 import EventComponent from '../../components/HomeScreenComponent/EventComponent';
 import {useAuthContext} from '../../src/Context/AuthContext';
 import {USER_IP} from '@env';
+import PartySprayLoader from '../../components/PartySprayLoader';
 const CulturalEvents = () => {
   const {tokens} = useAuthContext();
   const [event, setEvent] = useState([]);
+  const [loginPending, setLoginPending] = useState(false);
+
   useEffect(() => {
     events();
   }, []);
   const events = async () => {
+    setLoginPending(true);
     const response = await axios.get(
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
     console.log(response.data);
     setEvent(response.data.data.CULTURAL);
+    setLoginPending(false);
   };
   const scrollY = new Animated.Value(0);
 
@@ -80,7 +85,7 @@ const CulturalEvents = () => {
           Cultural Events 🎉
         </Text> */}
         <FlatList
-          style={{marginBottom: 30, marginTop: 5}}
+          style={{marginBottom: 70, marginTop: 5}}
           data={event}
           renderItem={({item}) => (
             <EventComponent tech={item} type={'CULTURAL'} />
@@ -89,6 +94,7 @@ const CulturalEvents = () => {
           showsVerticalScrollIndicator={false}
         />
       </ScrollView>
+      {loginPending ? <PartySprayLoader /> : null}
     </>
   );
 };

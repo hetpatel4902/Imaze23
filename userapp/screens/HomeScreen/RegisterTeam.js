@@ -139,7 +139,7 @@ const RegisterTeam = () => {
   const scrollViewRef = useRef(null);
   const [show, setShow] = useState(false);
   const [projectTitle, setProjectTitle] = useState('');
-
+  const [onSubmit, setOnSubmit] = useState(false);
   const openIdImagePicker = async () => {
     // console.log(image);
     const options = {
@@ -231,6 +231,7 @@ const RegisterTeam = () => {
     //   //   transUrl: 'data:image/jpeg;base64' + image,
     //   isCombo: false,
     // });
+    setOnSubmit(true);
     const res = await axios.post(
       `http://${USER_IP}/api/v1/user/${users}/payment/online`,
       {
@@ -244,6 +245,7 @@ const RegisterTeam = () => {
     // console.log('hello');
     // console.log(res.data.res);
     if (res.data.res == 'success') {
+      setOnSubmit(false);
       setModal(false);
       setModal1(false);
       showToastWithGravityAndOffset(
@@ -282,7 +284,7 @@ const RegisterTeam = () => {
     );
     setModal1(false);
     showToastWithGravityAndOffset('Show this otp at registration desk.');
-    // navigation.navigate('MyEvents');
+    navigation.navigate('MyEvents');
   };
 
   const addMember = () => {
@@ -294,8 +296,10 @@ const RegisterTeam = () => {
     //   // Scroll to the calculated position with animation
     //   scrollViewRef.current.scrollTo({y: scrollToY, animated: true});
     // }
-    if (selectedUsers.length >= eventDetail?.max_members) {
-      Alert.alert(`You can only select maximum ${eventDetail?.max_members}.`);
+    if (selectedUsers.length >= eventDetail?.max_members - 1) {
+      Alert.alert(
+        `You can only select maximum ${eventDetail?.max_members} including you.`,
+      );
     } else {
       setShowSearch(true);
     }
@@ -352,8 +356,9 @@ const RegisterTeam = () => {
   const registerTeam = async () => {
     // console.log(eventDetail);
     if (eventDetail?.event_type == 'CULTURAL') {
-      if (selectedUsers.length < 1) {
-        Alert.alert('Add atleast 1 member.');
+      console.log(eventDetail?.min_members);
+      if (selectedUsers.length < eventDetail?.min_members - 1) {
+        Alert.alert(`Add atleast ${eventDetail?.min_members - 1} member.`);
       } else if (name == '') {
         Alert.alert('Team name is necessary');
       } else {
@@ -368,7 +373,7 @@ const RegisterTeam = () => {
             price:
               details?.university == 'CVMU'
                 ? eventDetail?.price
-                : eventDetail?.price + eventDetail.price * 0.18,
+                : Math.ceil(eventDetail?.price + eventDetail?.price * 0.18),
           },
           {headers: {Authorization: `Bearer ${tokens}`}},
         );
@@ -380,8 +385,8 @@ const RegisterTeam = () => {
       }
     } else if (eventDetail?.event_type == 'NORMAL') {
       // console.log('hi');
-      if (selectedUsers.length < 1) {
-        Alert.alert('Add atleast 1 member.');
+      if (selectedUsers.length < eventDetail?.min_members - 1) {
+        Alert.alert(`Add atleast ${eventDetail?.min_members - 1} member.`);
       } else if (name == '') {
         Alert.alert('Team name is necessary');
       } else {
@@ -396,7 +401,7 @@ const RegisterTeam = () => {
             price:
               details?.university == 'CVMU'
                 ? eventDetail?.price
-                : eventDetail?.price + eventDetail.price * 0.18,
+                : Math.ceil(eventDetail?.price + eventDetail?.price * 0.18),
           },
           {headers: {Authorization: `Bearer ${tokens}`}},
         );
@@ -408,8 +413,8 @@ const RegisterTeam = () => {
       }
     } else if (eventDetail?.event_type == 'FLAGSHIP') {
       if (eventDetail?.category == 'Ideathon') {
-        if (selectedUsers.length < 1) {
-          Alert.alert('Add atleast 1 member.');
+        if (selectedUsers.length < eventDetail?.min_members - 1) {
+          Alert.alert(`Add atleast ${eventDetail?.min_members - 1} member.`);
         } else if (name == '') {
           Alert.alert('Team name is necessary.');
         } else if (idCardImage == null) {
@@ -433,7 +438,7 @@ const RegisterTeam = () => {
               price:
                 details?.university == 'CVMU'
                   ? eventDetail?.price
-                  : eventDetail?.price + eventDetail.price * 0.18,
+                  : Math.ceil(eventDetail?.price + eventDetail?.price * 0.18),
             },
             {headers: {Authorization: `Bearer ${tokens}`}},
           );
@@ -444,8 +449,8 @@ const RegisterTeam = () => {
           }
         }
       } else if (eventDetail?.category == 'ITK_toyothon') {
-        if (selectedUsers.length < 1) {
-          Alert.alert('Add atleast 1 member.');
+        if (selectedUsers.length < eventDetail?.min_members - 1) {
+          Alert.alert(`Add atleast ${eventDetail?.min_members - 1} member.`);
         } else if (name == '') {
           Alert.alert('Team name is necessary');
         } else {
@@ -464,7 +469,7 @@ const RegisterTeam = () => {
               price:
                 details?.university == 'CVMU'
                   ? eventDetail?.price
-                  : eventDetail?.price + eventDetail.price * 0.18,
+                  : Math.ceil(eventDetail?.price + eventDetail?.price * 0.18),
             },
             {headers: {Authorization: `Bearer ${tokens}`}},
           );
@@ -969,7 +974,9 @@ const RegisterTeam = () => {
                   {'\u20B9'}{' '}
                   {details?.university == 'CVMU'
                     ? eventDetail?.price
-                    : eventDetail?.price + eventDetail.price * 0.18}{' '}
+                    : Math.ceil(
+                        eventDetail?.price + eventDetail?.price * 0.18,
+                      )}{' '}
                 </Text>
                 <Text
                   style={{
@@ -1098,6 +1105,7 @@ const RegisterTeam = () => {
               </View>
               <Pressable
                 onPress={onlineTransaction}
+                disabled={onSubmit}
                 style={{
                   shadowColor: '#ff9600',
                   shadowOffset: {
@@ -1115,6 +1123,7 @@ const RegisterTeam = () => {
                   borderRadius: 13,
                   maxWidth: width,
                   width: width - 46,
+                  opacity: onSubmit ? 0.7 : 1,
                 }}>
                 <Text
                   style={{
@@ -1123,7 +1132,7 @@ const RegisterTeam = () => {
                     fontFamily: 'Poppins-SemiBold',
                     fontSize: 15,
                   }}>
-                  Submit
+                  {onSubmit ? `Processing...` : `Submit`}
                 </Text>
               </Pressable>
               <View style={{height: 40}}></View>
@@ -1227,6 +1236,7 @@ const RegisterTeam = () => {
               </View>
               <Pressable
                 onPress={payOnline}
+                // disabled={onSubmit}
                 style={{
                   shadowColor: '#ff9600',
                   // shadowColor: '#19347d',
@@ -1245,6 +1255,7 @@ const RegisterTeam = () => {
                   paddingVertical: 10,
                   borderRadius: 13,
                   maxWidth: width,
+                  // opacity: onSubmit ? 0.6 : 1,
                   // paddingHorizontal: width / 2 - 64,
                   width: width - 46,
                 }}>

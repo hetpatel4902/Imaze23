@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Animated,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -24,6 +25,11 @@ const ComboScreen = () => {
 
   return (
     <>
+      <StatusBar
+        animated={true}
+        backgroundColor={'#1655BC'}
+        barStyle={'light-content'}
+      />
       <Animated.View
         style={{
           position: 'absolute',

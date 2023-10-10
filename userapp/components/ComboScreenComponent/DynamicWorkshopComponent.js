@@ -4,8 +4,13 @@ import {useAuthContext} from '../../src/Context/AuthContext';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {USER_IP} from '@env';
+import axios from 'axios';
+import PartySprayLoader from '../PartySprayLoader';
+// import {useAuthContext} from '../../src/Context/AuthContext';
 const DynamicWorkshopComponent = ({tech}) => {
   const navigation = useNavigation();
+  const {users, tokens} = useAuthContext();
+  const [loginPending, setLoginPending] = useState(false);
 
   const onPress = () => {
     navigation.navigate('EventDetailScreen', {
@@ -19,6 +24,8 @@ const DynamicWorkshopComponent = ({tech}) => {
     useAuthContext();
   const [selected, setSelected] = useState(false);
   const [done, setDone] = useState(false);
+  const [details, setDetails] = useState(null);
+
   let Arr = workshopArr;
 
   useEffect(() => {
@@ -64,80 +71,100 @@ const DynamicWorkshopComponent = ({tech}) => {
     fun();
     check();
   };
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
+  const fetchUserDetail = async () => {
+    setLoginPending(true);
+    const response = await axios.get(`http://${USER_IP}/api/v1/user/${users}`, {
+      headers: {Authorization: `Bearer ${tokens}`},
+    });
+    // console.log(response.data.data);
+    setDetails(response.data.data);
+    setLoginPending(false);
+  };
   return (
-    <Pressable
-      onPress={onPress}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 2,
-        borderRadius: 20,
-        padding: 10,
-        paddingHorizontal: selected ? 15 : 10,
-        borderWidth: selected ? 1 : 0,
-        borderColor: selected ? '#1655BC' : '#ffffff',
-      }}>
-      <View
-        style={{
-          flex: selected ? 1.15 : 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          // backgroundColor: 'blue',
-          // height: 55,
-          // width: 55,
-          // backgroundColor: 'black',
-          // borderRadius: 27,
-        }}>
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Image
-            source={{uri: tech?.image}}
+    <>
+      <View>
+        {((details?.year == 'diploma' && tech?.isDiploma) ||
+          !tech?.isDiploma) && (
+          <Pressable
+            onPress={onPress}
             style={{
-              height: 60,
-              width: 60,
-              borderRadius: 30,
-              // backgroundColor: 'black',
-            }}
-          />
-        </View>
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 2,
+              borderRadius: 20,
+              padding: 10,
+              paddingHorizontal: selected ? 15 : 10,
+              borderWidth: selected ? 1 : 0,
+              borderColor: selected ? '#1655BC' : '#ffffff',
+            }}>
+            <View
+              style={{
+                flex: selected ? 1.15 : 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                // backgroundColor: 'blue',
+                // height: 55,
+                // width: 55,
+                // backgroundColor: 'black',
+                // borderRadius: 27,
+              }}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={{uri: tech?.image}}
+                  style={{
+                    height: 60,
+                    width: 60,
+                    borderRadius: 30,
+                    // backgroundColor: 'black',
+                  }}
+                />
+              </View>
+            </View>
+            <View style={styles.nameView}>
+              <Text style={styles.name}>{tech.name}</Text>
+              <View style={styles.subContainer}>
+                <Text style={styles.priceText}>Rs.{tech?.price} </Text>
+              </View>
+              <View>
+                <Text style={styles.participants}>
+                  {participants.length} participants
+                </Text>
+              </View>
+            </View>
+            <Pressable
+              style={{
+                backgroundColor: selected ? 'red' : '#1655BC',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 3.5,
+                borderRadius: 18,
+                shadowColor: '#1655BC',
+                shadowOffset: {
+                  width: 0,
+                  height: 7,
+                },
+                shadowOpacity: 0.41,
+                shadowRadius: 9.11,
+                elevation: 14,
+                paddingHorizontal: 13,
+              }}
+              onPress={onClick}>
+              <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
+                {selected ? 'Discard' : 'Select'}
+              </Text>
+            </Pressable>
+          </Pressable>
+        )}
       </View>
-      <View style={styles.nameView}>
-        <Text style={styles.name}>{tech.name}</Text>
-        <View style={styles.subContainer}>
-          <Text style={styles.priceText}>Rs.{tech?.price} </Text>
-        </View>
-        <View>
-          <Text style={styles.participants}>
-            {participants.length} participants
-          </Text>
-        </View>
-      </View>
-      <Pressable
-        style={{
-          backgroundColor: selected ? 'red' : '#1655BC',
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingVertical: 3.5,
-          borderRadius: 18,
-          shadowColor: '#1655BC',
-          shadowOffset: {
-            width: 0,
-            height: 7,
-          },
-          shadowOpacity: 0.41,
-          shadowRadius: 9.11,
-          elevation: 14,
-          paddingHorizontal: 13,
-        }}
-        onPress={onClick}>
-        <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
-          {selected ? 'Discard' : 'Select'}
-        </Text>
-      </Pressable>
-    </Pressable>
+      {/* {loginPending ? <PartySprayLoader /> : null} */}
+    </>
   );
 };
 

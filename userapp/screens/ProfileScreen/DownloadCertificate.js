@@ -188,9 +188,10 @@ const DownloadCertificate = () => {
         )}
 
         {event?.combos?.length == 0 &&
-          event?.individual_events?.length == 0 && (
+          event?.individual_events?.length == 0 &&
+          team?.purchased?.team_events?.length == 0 && (
             <>
-              <Image
+              {/* <Image
                 source={require('../../data/cartEmpty.jpg')}
                 style={{
                   height: 400,
@@ -199,7 +200,7 @@ const DownloadCertificate = () => {
                   alignSelf: 'center',
                   justifyContent: 'center',
                 }}
-              />
+              /> */}
               <Text
                 style={{
                   fontFamily: 'Poppins-Medium',
@@ -207,7 +208,7 @@ const DownloadCertificate = () => {
                   color: '#191919',
                   textAlign: 'center',
                 }}>
-                You have not bought any event
+                Attend event to get certificate
               </Text>
             </>
           )}

@@ -1,12 +1,28 @@
 import {View, Text, ScrollView, Image, Pressable} from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {USER_IP} from '@env';
+import {useAuthContext} from '../../src/Context/AuthContext';
+import axios from 'axios';
 const FamousEventsComponent = ({tech}) => {
   const participants = tech?.participants;
   const navigation = useNavigation();
+  const [details, setDetails] = useState(null);
+  const {users, tokens} = useAuthContext();
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
 
+  const fetchUserDetail = async () => {
+    //  setLoginPending(true);
+    const response = await axios.get(`http://${USER_IP}/api/v1/user/${users}`, {
+      headers: {Authorization: `Bearer ${tokens}`},
+    });
+    // console.log(response.data.data);
+    setDetails(response.data.data);
+    //  setLoginPending(false);
+  };
   const onPress = () => {
     // console.warn(tech._id);
     // console.log(tech);
@@ -97,8 +113,8 @@ const FamousEventsComponent = ({tech}) => {
           style={{
             fontFamily: 'Poppins-Regular',
             fontSize: 11,
-            marginTop: -5,
-            color: 'grey',
+            marginTop: -3,
+            color: 'gray',
             // alignSelf: 'center',
           }}>
           {tech?.category}
@@ -142,7 +158,7 @@ const FamousEventsComponent = ({tech}) => {
           </View>
         </View>
       </View>
-      <View style={{flex: 1, justifyContent: 'center'}}>
+      <View style={{flex: 1.1, justifyContent: 'center'}}>
         <View
           style={{
             backgroundColor: '#1655BC',
@@ -161,7 +177,10 @@ const FamousEventsComponent = ({tech}) => {
               fontFamily: 'Poppins-Medium',
               fontSize: 12,
             }}>
-            Rs.{tech?.price}
+            Rs.{' '}
+            {details?.university == 'CVMU'
+              ? tech?.price
+              : Math.ceil(tech?.price + tech?.price * 0.18)}
           </Text>
         </View>
       </View>

@@ -61,8 +61,7 @@ const BottomTabNav = () => {
         component={HomeStack}
         name="Home"
         options={{
-          // unmountOnBlur: true,
-
+          unmountOnBlur: true,
           headerShown: false,
           tabBarLabelStyle: {
             marginTop: -8,

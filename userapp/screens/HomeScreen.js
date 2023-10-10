@@ -11,8 +11,9 @@ import {
   TextInput,
   ImageBackground,
   useWindowDimensions,
+  RefreshControl,
 } from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import Entypo from 'react-native-vector-icons/Entypo';
 
@@ -40,6 +41,16 @@ const HomeScreen = () => {
   const {name, loading, setLoading} = useAuthContext();
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // fetchDetail();
+    fetchUserDetail();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
   useEffect(() => {
     const scrollInterval = setInterval(() => {
       // Calculate the next index to scroll to
@@ -92,7 +103,7 @@ const HomeScreen = () => {
     {
       redirect: 'NonTechEvents',
       // image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/nontech.png`,
-      image: require('../data/nontech.jpg'),
+      image: require('../data/nontech1.jpg'),
       name: 'Non-Tech Events',
       colors: ['#EEFDFD', '#C8FBF2', '#C7E1FC', '#C1D4FF'],
     },
@@ -123,16 +134,30 @@ const HomeScreen = () => {
     {
       // redirect: 'EventDetailScreen',
       redirect: 'EventDetailScreen',
-      eventId: '6519b0bbf1a6ee373c2e6216',
+      eventId: '6523a1f091a32b481c59bcac',
       type: 'FLAGSHIP',
       image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/happystreet.png`,
-      name: 'Happy Street',
+      name: '  Nukkad Carnival',
       colors: ['#B1802F', '#D0B144', '#ECE4AE', '#C19B45'],
     },
     {
-      redirect: 'Itk',
+      redirect: 'EventDetailScreen',
+      eventId: '6523a1dd91a32b481c59bca5',
+      type: 'FLAGSHIP',
       image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/itk.png`,
       name: 'Indian Traditional Knowledge',
+      colors: ['#B1802F', '#D0B144', '#ECE4AE', '#C19B45'],
+    },
+    {
+      redirect: 'Toyathon',
+      image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/Toyathon.png`,
+      name: 'Toyathon',
+      colors: ['#B1802F', '#D0B144', '#ECE4AE', '#C19B45'],
+    },
+    {
+      redirect: 'SocialActivity',
+      image: `https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/SocialActivity.png`,
+      name: 'Social Activity',
       colors: ['#B1802F', '#D0B144', '#ECE4AE', '#C19B45'],
     },
   ];
@@ -200,7 +225,7 @@ const HomeScreen = () => {
       // Retrieve data from AsyncStorage
       let trial = await AsyncStorage.getItem('userDetail');
       json = JSON.parse(trial);
-      console.log('yo json here:', json);
+      // console.log('yo json here:', json);
 
       // Call fetchUserDetail after retrieving data
       await fetchUserDetail();
@@ -251,11 +276,11 @@ const HomeScreen = () => {
   return (
     <>
       {/* <Text>HomeScreen</Text> */}
-      {/* <StatusBar
+      <StatusBar
         animated={true}
-        backgroundColor={'#000000'}
+        backgroundColor={'#1655BC'}
         barStyle={'light-content'}
-      /> */}
+      />
       {/* <View
           style={{
             // position: 'sticky',
@@ -385,7 +410,9 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll} // Attach the scroll event handler
         scrollEventThrottle={16} // Adjust the throttle value as needed
-      >
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View
           style={{
             borderBottomRightRadius: 100,
@@ -575,7 +602,7 @@ const HomeScreen = () => {
               ref={flatListRef}
               data={data}
               horizontal
-              style={{marginBottom: -5, marginVertical: 5, marginLeft: 0}}
+              style={{marginBottom: 5, marginVertical: 5, marginLeft: 0}}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               renderItem={({item}) => <MainEventComponent tech={item} />}
@@ -608,7 +635,7 @@ const HomeScreen = () => {
               data={flagshipData}
               horizontal
               style={{
-                marginBottom: 0,
+                marginBottom: -5,
                 marginVertical: 5,
                 // paddingHorizontal: 25,
               }}

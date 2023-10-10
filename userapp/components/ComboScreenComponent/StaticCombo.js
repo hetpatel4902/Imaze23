@@ -30,7 +30,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 
-const StaticCombo = ({data, pending, bought}) => {
+const StaticCombo = ({data, pending, bought, index}) => {
   const width = Dimensions.get('screen').width;
   const [events, setEvents] = useState(data?.events);
   const {tokens, users} = useAuthContext();
@@ -160,6 +160,20 @@ const StaticCombo = ({data, pending, bought}) => {
     };
     await checkEvent();
   };
+  const [details, setDetails] = useState(null);
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
+
+  const fetchUserDetail = async () => {
+    // setLoginPending(true);
+    const response = await axios.get(`http://${USER_IP}/api/v1/user/${users}`, {
+      headers: {Authorization: `Bearer ${tokens}`},
+    });
+    // console.log(response.data.data);
+    setDetails(response.data.data);
+    // setLoginPending(false);
+  };
   return (
     <>
       <View
@@ -183,14 +197,16 @@ const StaticCombo = ({data, pending, bought}) => {
         }}>
         <Text
           style={{
-            fontFamily: 'Poppins-Medium',
+            fontFamily: 'Poppins-SemiBold',
             color: '#232323',
-            fontSize: 14,
+            fontSize: 15,
+            textAlign: 'center',
+            marginTop: 15,
           }}>
-          {data?.name}
+          Combo {index + 1}
         </Text>
         <FlatList
-          style={{}}
+          style={{marginBottom: 0}}
           data={events}
           renderItem={({item}) => <ComboDetail info={item} />}
           keyExtractor={item => item._id}
@@ -202,6 +218,7 @@ const StaticCombo = ({data, pending, bought}) => {
             alignItems: 'center',
             justifyContent: 'space-around',
             marginTop: 10,
+            marginBottom: 10,
           }}>
           <Text
             style={{
@@ -210,7 +227,10 @@ const StaticCombo = ({data, pending, bought}) => {
               fontFamily: 'Poppins-Medium',
               fontSize: 15,
             }}>
-            Rs. {data.price}
+            Rs.{' '}
+            {details?.university == 'CVMU'
+              ? data?.price
+              : Math.ceil(data?.price + data?.price * 0.18)}
           </Text>
           {/* {pending && ( */}
           {!bought && (

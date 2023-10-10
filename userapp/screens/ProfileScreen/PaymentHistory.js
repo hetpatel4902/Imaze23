@@ -141,7 +141,7 @@ const PaymentHistory = () => {
         {event?.combos?.length == 0 &&
           event?.individual_events?.length == 0 && (
             <>
-              <Image
+              {/* <Image
                 source={require('../../data/cartEmpty.jpg')}
                 style={{
                   height: 400,
@@ -150,7 +150,7 @@ const PaymentHistory = () => {
                   alignSelf: 'center',
                   justifyContent: 'center',
                 }}
-              />
+              /> */}
               <Text
                 style={{
                   fontFamily: 'Poppins-Medium',

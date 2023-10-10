@@ -85,9 +85,11 @@ const StaticComboScreen = () => {
           Static Combos
         </Text> */}
         <FlatList
-          style={{marginBottom: 30}}
+          style={{marginBottom: 100}}
           data={combo}
-          renderItem={({item}) => <StaticCombo data={item} pending={false} />}
+          renderItem={({item, index}) => (
+            <StaticCombo data={item} pending={false} index={index} />
+          )}
           keyExtractor={item => item._id}
           showsVerticalScrollIndicator={false}
         />

@@ -130,9 +130,7 @@ const SignUpScreen = () => {
               enrolment.length != 7 &&
               enrolment.length != 8
             ) {
-              Alert.alert(
-                `Please Your Enrolment No. doesn't matches with College`,
-              );
+              Alert.alert(`Your Enrolment No. doesn't matches with College`);
             } else if (
               year == '2' &&
               college == 'GCET' &&
@@ -140,34 +138,26 @@ const SignUpScreen = () => {
               enrolment.length != 8 &&
               enrolment.length != 9
             ) {
-              Alert.alert(
-                `Please Your Enrolment No. doesn't matches with College`,
-              );
+              Alert.alert(`Your Enrolment No. doesn't matches with College`);
             } else if (
               year == 'DIPLOMA' &&
               college == 'GCET' &&
               enrolment.length != 8
             ) {
-              Alert.alert(
-                `Please Your Enrolment No. doesn't matches with College`,
-              );
+              Alert.alert(`Your Enrolment No. doesn't matches with College`);
             } else if (
               (year == 3 || year == 4) &&
               college == 'GCET' &&
               enrolment.length != 14
             ) {
-              Alert.alert(
-                `Please Your Enrolment No. doesn't matches with College`,
-              );
+              Alert.alert(`Your Enrolment No. doesn't matches with College`);
             } else {
               if (
                 enrolment.length == 14 &&
                 (enrolment[8] != 5 || enrolment[9] != 0) &&
                 college == 'GCET'
               ) {
-                Alert.alert(
-                  `Please Your Enrolment No. doesn't matches with College`,
-                );
+                Alert.alert(`Your Enrolment No. doesn't matches with College`);
               } else {
                 console.log({
                   name: name,
@@ -215,7 +205,7 @@ const SignUpScreen = () => {
             //         // identity['college'] = 'GCET';
             //         if (college != 'GCET') {
             //           Alert.alert(
-            //             `Please Your Enrolment No. doesn't matches with College`,
+            //             `Your Enrolment No. doesn't matches with College`,
             //           );
             //           setLoadingPending(false);
             //         } else {
@@ -258,7 +248,7 @@ const SignUpScreen = () => {
             //         // identity['college'] = 'NONGCET';
             //         if (college == 'GCET') {
             //           Alert.alert(
-            //             `Please Your Enrolment No. doesn't matches with College`,
+            //             `Your Enrolment No. doesn't matches with College`,
             //           );
             //           setLoadingPending(false);
             //         } else {

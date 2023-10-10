@@ -6,6 +6,7 @@ import {
   Pressable,
   useWindowDimensions,
   ToastAndroid,
+  Image,
   Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -58,6 +59,7 @@ const BuyTokenScreen = () => {
     // navigation.goBack();
   };
   const buyConcert = async () => {
+    console.log(detail?.tokens);
     if (detail?.coins < 100) {
       Alert.alert(`You don't have sufficient balance.`);
     } else {
@@ -122,7 +124,7 @@ const BuyTokenScreen = () => {
             fontSize: 15,
             marginTop: 5,
           }}>
-          Current Coins: {detail?.coins}
+          Coins: {detail?.coins}
         </Text>
         <Text
           style={{
@@ -131,9 +133,9 @@ const BuyTokenScreen = () => {
             fontSize: 15,
             marginTop: 5,
           }}>
-          Current Tokens: {detail?.tokens}
+          Tokens: {detail?.tokens}
         </Text>
-        {detail?.college == 'GCET' && (
+        {/* {detail?.college == 'GCET' && (
           <Text
             style={{
               fontFamily: 'Poppins-Medium',
@@ -143,6 +145,94 @@ const BuyTokenScreen = () => {
             }}>
             Concert Pass: {detail?.concertToken}
           </Text>
+        )} */}
+
+        {detail?.college == 'GCET' && (
+          <View>
+            {/* <View
+              style={{
+                backgroundColor: 'gray',
+                height: 0.8,
+                marginTop: 35,
+              }}></View> */}
+            <Text
+              style={{
+                fontFamily: 'Poppins-SemiBold',
+                color: '#1655BC',
+                fontSize: 16,
+                marginTop: 30,
+              }}>
+              Concert Pass
+            </Text>
+            {detail?.concertToken == 0 && (
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Medium',
+                  color: '#000000',
+                  fontSize: 13,
+                  marginTop: 1,
+                }}>
+                (Cost of Pass = 100 coins)
+              </Text>
+            )}
+            <Image
+              source={require('../../data/ac.jpg')}
+              style={{
+                height: 200,
+                width: 310,
+                borderRadius: 20,
+                resizeMode: 'contain',
+                alignSelf: 'center',
+                marginTop: 10,
+                opacity: detail?.concertToken ? 1 : 0.3,
+                backgroundColor: 'black',
+              }}
+            />
+            {detail?.concertToken == 0 && (
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  color: '#505050',
+                  fontSize: 13,
+                  marginTop: 10,
+                }}>
+                *Buy this pass to attend Concert
+              </Text>
+            )}
+            {detail?.concertToken == 0 && (
+              <Pressable
+                onPress={buyConcert}
+                style={{
+                  shadowColor: '#ff9600',
+                  shadowOffset: {
+                    width: 0,
+                    height: 7,
+                  },
+                  shadowOpacity: 0.41,
+                  shadowRadius: 9.11,
+                  elevation: 8,
+                  alignContent: 'center',
+                  alignSelf: 'center',
+                  marginTop: 20,
+                  backgroundColor: '#ff9600',
+                  paddingVertical: 8,
+                  borderRadius: 13,
+                  maxWidth: width,
+                  width: width - 46,
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    color: 'white',
+                    alignSelf: 'center',
+                    fontFamily: 'Poppins-SemiBold',
+                    fontSize: 15,
+                  }}>
+                  Buy Concert Pass
+                </Text>
+              </Pressable>
+            )}
+          </View>
         )}
         <View>
           <Text
@@ -152,8 +242,27 @@ const BuyTokenScreen = () => {
               fontSize: 16,
               marginTop: 30,
             }}>
-            Buy Token (Cost of 1 token is 20 coins):
+            Token
           </Text>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Medium',
+              color: '#000000',
+              fontSize: 13,
+              marginTop: 1,
+            }}>
+            (Cost of 1 Token = 20 coins)
+          </Text>
+          {/* <Text
+            style={{
+              fontFamily: 'Poppins-Regular',
+              color: '#505050',
+              fontSize: 13,
+              marginTop: 10,
+            }}>
+            *Use this token to play Nukkad Carnival events
+          </Text> */}
+          {/* {detail?.tokens == 0 && ( */}
           <Text
             style={{
               fontFamily: 'Poppins-Regular',
@@ -161,8 +270,24 @@ const BuyTokenScreen = () => {
               fontSize: 13,
               marginTop: 10,
             }}>
-            *Use this token to play Happy Street events
+            *Use this token to play Nukkad Carnival events
           </Text>
+          {/* )} */}
+          <Image
+            source={{
+              uri: 'https://imaze-bucket.s3.ap-south-1.amazonaws.com/imaze_static_images/nukkadtoken1.jpg',
+            }}
+            style={{
+              height: 200,
+              width: 310,
+              borderRadius: 20,
+              resizeMode: 'contain',
+              alignSelf: 'center',
+              marginTop: 10,
+              opacity: detail?.tokens > 0 ? 1 : 0.3,
+              backgroundColor: 'black',
+            }}
+          />
           <Pressable
             onPress={buytoken}
             style={{
@@ -182,6 +307,7 @@ const BuyTokenScreen = () => {
               borderRadius: 13,
               maxWidth: width,
               width: width - 46,
+              marginBottom: 100,
             }}>
             <Text
               style={{
@@ -194,65 +320,6 @@ const BuyTokenScreen = () => {
             </Text>
           </Pressable>
         </View>
-
-        {detail?.concertToken == 0 && detail?.college == 'GCET' && (
-          <View>
-            <View
-              style={{
-                backgroundColor: 'gray',
-                height: 0.8,
-                marginTop: 35,
-              }}></View>
-            <Text
-              style={{
-                fontFamily: 'Poppins-SemiBold',
-                color: '#1655BC',
-                fontSize: 16,
-                marginTop: 30,
-              }}>
-              Buy Concert Pass (Cost of Pass is 100 coins):
-            </Text>
-            <Text
-              style={{
-                fontFamily: 'Poppins-Regular',
-                color: '#505050',
-                fontSize: 13,
-                marginTop: 10,
-              }}>
-              *Buy this pass to attend Concert
-            </Text>
-            <Pressable
-              onPress={buyConcert}
-              style={{
-                shadowColor: '#ff9600',
-                shadowOffset: {
-                  width: 0,
-                  height: 7,
-                },
-                shadowOpacity: 0.41,
-                shadowRadius: 9.11,
-                elevation: 8,
-                alignContent: 'center',
-                alignSelf: 'center',
-                marginTop: 25,
-                backgroundColor: '#ff9600',
-                paddingVertical: 8,
-                borderRadius: 13,
-                maxWidth: width,
-                width: width - 46,
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  alignSelf: 'center',
-                  fontFamily: 'Poppins-SemiBold',
-                  fontSize: 15,
-                }}>
-                Buy Concert Pass
-              </Text>
-            </Pressable>
-          </View>
-        )}
       </ScrollView>
     </>
   );

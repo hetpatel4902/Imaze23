@@ -67,6 +67,20 @@ const DynamicComboScreen = () => {
       50,
     );
   };
+  const [details, setDetails] = useState('');
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
+
+  const fetchUserDetail = async () => {
+    // setLoginPending(true);
+    const response = await axios.get(`http://${USER_IP}/api/v1/user/${users}`, {
+      headers: {Authorization: `Bearer ${tokens}`},
+    });
+    // console.log(response.data.data);
+    setDetails(response.data.data);
+    // setLoginPending(false);
+  };
   const onlineTransaction = async () => {
     // console.log({
     //   orderId: checkDetail?.data._id,
@@ -122,7 +136,12 @@ const DynamicComboScreen = () => {
       // console.log('event_id:', varr);
       const response = await axios.post(
         `http://${USER_IP}/api/v1/user/combos/${users}/check`,
-        {events: varr, combotype: 'DYNAMIC', price: 200},
+        {
+          events: varr,
+          combotype: 'DYNAMIC',
+          price:
+            details?.university == 'CVMU' ? 200 : Math.ceil(200 + 200 * 0.18),
+        },
         {headers: {Authorization: `Bearer ${tokens}`}},
       );
       console.log(response.data);
@@ -451,7 +470,10 @@ const DynamicComboScreen = () => {
                   textAlign: 'center',
                   marginTop: 6,
                 }}>
-                {'\u20B9'} 200
+                {'\u20B9'}{' '}
+                {details?.university == 'CVMU'
+                  ? 200
+                  : Math.ceil(200 + 200 * 0.18)}
                 {'  '}
               </Text>
               <Text

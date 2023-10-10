@@ -1,64 +1,110 @@
 import {View, Text, Pressable, Image, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {USER_IP} from '@env';
+import axios from 'axios';
+import {useAuthContext} from './../../src/Context/AuthContext';
 const EventComponent = ({tech, type}) => {
   const navigation = useNavigation();
+  const [details, setDetails] = useState(null);
+  const {users, tokens} = useAuthContext();
 
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
   const onPress = () => {
     // console.log(tech);
     navigation.navigate('EventDetailScreen', {eventId: tech._id, type: type});
   };
+  const fetchUserDetail = async () => {
+    // setLoginPending(true);
+    const response = await axios.get(`http://${USER_IP}/api/v1/user/${users}`, {
+      headers: {Authorization: `Bearer ${tokens}`},
+    });
+    // console.log(response.data.data);
+    setDetails(response.data.data);
+    // setLoginPending(false);
+  };
 
   const participants = tech?.participants;
   return (
-    <Pressable onPress={onPress} style={styles.mainView}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Image
-            source={{uri: tech?.image}}
+    <View>
+      {((details?.year == 'diploma' && tech?.isDiploma) ||
+        !tech?.isDiploma) && (
+        <Pressable onPress={onPress} style={styles.mainView}>
+          <View
             style={{
-              height: 60,
-              width: 60,
-              borderRadius: 30,
-              backgroundColor: 'black',
-            }}
-          />
-        </View>
-      </View>
-      <View style={styles.nameView}>
-        <Text style={styles.name}>{tech.name}</Text>
-        <View style={styles.container}>
-          <MaterialCommunityIcons
-            name="calendar-week"
-            size={16}
-            color={'#000000'}
-          />
-          <View style={styles.subContainer}>
-            <Text style={styles.subContainerDate}>{tech?.date} </Text>
-            <Text style={styles.subContainerTime}>({tech?.time})</Text>
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={{uri: tech?.image}}
+                style={{
+                  height: 60,
+                  width: 60,
+                  borderRadius: 30,
+                  backgroundColor: '#f2f2f2',
+                }}
+              />
+            </View>
           </View>
-        </View>
-        <View>
-          <Text style={styles.participants}>
-            {participants.length} participants
-          </Text>
-        </View>
-      </View>
-      <View style={styles.priceContainer}>
-        <Text style={styles.priceContainerText}>Rs.{tech?.price}</Text>
-      </View>
-    </Pressable>
+          <View style={styles.nameView}>
+            <Text style={styles.name}>{tech.name}</Text>
+            <View style={styles.container}>
+              <MaterialCommunityIcons
+                name="calendar-week"
+                size={16}
+                color={'#000000'}
+              />
+              <View style={styles.subContainer}>
+                <Text style={styles.subContainerDate}>{tech?.date} </Text>
+                <Text style={styles.subContainerTime}>({tech?.time})</Text>
+              </View>
+            </View>
+            <View>
+              <Text style={styles.participants}>
+                {tech?.type == 'GROUP' ? 'Group Event' : 'Solo Event'}
+              </Text>
+            </View>
+          </View>
+          {tech?.price != -1 && (
+            <View style={styles.priceContainer}>
+              <Text style={styles.priceContainerText}>
+                {`${tech?.price}` == 0
+                  ? 'Free'
+                  : `Rs.${
+                      details?.university == 'CVMU'
+                        ? tech?.price
+                        : Math.ceil(tech?.price + tech?.price * 0.18)
+                    }`}
+              </Text>
+            </View>
+          )}
+          {tech?.price == -1 && (
+            <View
+              style={{
+                backgroundColor: 'white',
+                alignItems: 'center',
+                flex: 1,
+                justifyContent: 'center',
+                paddingVertical: 3.5,
+                borderRadius: 18,
+              }}>
+              <Text style={styles.priceContainerText}>
+                {/* {`${tech?.price}` == 0 ? 'Free' : `Rs.${tech?.price}`} */}
+              </Text>
+            </View>
+          )}
+        </Pressable>
+      )}
+    </View>
   );
 };
 
@@ -114,7 +160,7 @@ const styles = StyleSheet.create({
   priceContainer: {
     backgroundColor: '#1655BC',
     alignItems: 'center',
-    flex: 1,
+    flex: 1.1,
     justifyContent: 'center',
     paddingVertical: 3.5,
     borderRadius: 18,

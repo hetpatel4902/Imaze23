@@ -67,80 +67,84 @@ const DynamicNonTechEventComponent = ({tech}) => {
     check();
   };
   return (
-    <Pressable
-      onPress={onPress}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 2,
-        borderRadius: 20,
-        padding: 10,
-        paddingHorizontal: selected ? 15 : 10,
-        borderWidth: selected ? 1 : 0,
-        borderColor: selected ? '#1655BC' : '#ffffff',
-        // marginBottom: -10,
-      }}>
-      <View
-        style={{
-          flex: selected ? 1.15 : 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          // backgroundColor: 'blue',
-          // height: 55,
-          // width: 55,
-          // backgroundColor: 'black',
-          // borderRadius: 27,
-        }}>
-        <View
+    <View>
+      {tech?.type == 'SOLO' && (
+        <Pressable
+          onPress={onPress}
           style={{
+            flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'center',
+            marginVertical: 2,
+            borderRadius: 20,
+            padding: 10,
+            paddingHorizontal: selected ? 15 : 10,
+            borderWidth: selected ? 1 : 0,
+            borderColor: selected ? '#1655BC' : '#ffffff',
+            // marginBottom: -10,
           }}>
-          <Image
-            source={{uri: tech?.image}}
+          <View
             style={{
-              height: 60,
-              width: 60,
-              borderRadius: 30,
-              backgroundColor: 'black',
+              flex: selected ? 1.15 : 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              // backgroundColor: 'blue',
+              // height: 55,
+              // width: 55,
+              // backgroundColor: 'black',
+              // borderRadius: 27,
+            }}>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={{uri: tech?.image}}
+                style={{
+                  height: 60,
+                  width: 60,
+                  borderRadius: 30,
+                  backgroundColor: 'black',
+                }}
+              />
+            </View>
+          </View>
+          <View style={styles.nameView}>
+            <Text style={styles.name}>{tech.name}</Text>
+            <View style={styles.subContainer}>
+              <Text style={styles.priceText}>Rs.{tech?.price} </Text>
+            </View>
+            <View>
+              <Text style={styles.participants}>
+                {participants.length} participants
+              </Text>
+            </View>
+          </View>
+          <Pressable
+            style={{
+              backgroundColor: selected ? 'red' : '#1655BC',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingVertical: 3.5,
+              borderRadius: 18,
+              shadowColor: '#1655BC',
+              shadowOffset: {
+                width: 0,
+                height: 7,
+              },
+              shadowOpacity: 0.41,
+              shadowRadius: 9.11,
+              elevation: 14,
+              paddingHorizontal: 13,
             }}
-          />
-        </View>
-      </View>
-      <View style={styles.nameView}>
-        <Text style={styles.name}>{tech.name}</Text>
-        <View style={styles.subContainer}>
-          <Text style={styles.priceText}>Rs.{tech?.price} </Text>
-        </View>
-        <View>
-          <Text style={styles.participants}>
-            {participants.length} participants
-          </Text>
-        </View>
-      </View>
-      <Pressable
-        style={{
-          backgroundColor: selected ? 'red' : '#1655BC',
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingVertical: 3.5,
-          borderRadius: 18,
-          shadowColor: '#1655BC',
-          shadowOffset: {
-            width: 0,
-            height: 7,
-          },
-          shadowOpacity: 0.41,
-          shadowRadius: 9.11,
-          elevation: 14,
-          paddingHorizontal: 13,
-        }}
-        onPress={onClick}>
-        <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
-          {selected ? 'Discard' : 'Select'}
-        </Text>
-      </Pressable>
-    </Pressable>
+            onPress={onClick}>
+            <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
+              {selected ? 'Discard' : 'Select'}
+            </Text>
+          </Pressable>
+        </Pressable>
+      )}
+    </View>
   );
 };
 
