@@ -1441,7 +1441,7 @@ const submitFlagship = async (req, res) => {
 };
 const registerSoloFlagship = async (req, res) => {
   const { uid, eid } = req.body;
-  const userevent = await UserEvent.findOne({_userId:uid,eventid:eid});
+  const userevent = await UserEvent.findOne({userId:uid,eventid:eid});
   if(userevent){
     res.status(StatusCodes.OK).json({res:"success",flag:false});
     return;
