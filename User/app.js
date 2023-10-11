@@ -32,6 +32,7 @@ const Event = require("./models/Event");
 const FlagshipEvents = require("./models/FlagshipEvents");
 const Cultural = require("./models/Cultural");
 const Users = require("./models/Users");
+const { StatusCodes } = require("http-status-codes");
 
 
 app.use(express.static(`${__dirname}/public`));

@@ -1149,7 +1149,7 @@ const purchaseToken = async (req, res) => {
     throw new BadRequestError("User does not exists!");
   } else {
     const balance = user.coins;
-    const buy = Concert * 100 + HappyStreet * 20;
+    const buy = Concert * 150 + HappyStreet * 25;
     if (balance - buy < 0) {
       res
         .status(StatusCodes.OK)
