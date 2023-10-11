@@ -17,8 +17,8 @@ const MainEventComponent = ({tech}) => {
       <LinearGradient
         colors={tech?.colors}
         style={{
-          height: 140,
-          width: 110,
+          height: 150,
+          width: 120,
           borderRadius: 20,
           shadowColor: '#000000',
           shadowOffset: {
@@ -40,8 +40,8 @@ const MainEventComponent = ({tech}) => {
           source={tech.image}
           // source={require('../../data/')}
           style={{
-            height: 140,
-            width: 110,
+            height: 155,
+            width: 120,
             alignSelf: 'center',
             // marginBottom: 25,
             // marginTop: 30,
@@ -54,9 +54,9 @@ const MainEventComponent = ({tech}) => {
           numberOfLines={1}
           style={{
             fontFamily: 'Poppins-Medium',
-            fontSize: 12,
+            fontSize: 11.6,
             color: '#191919',
-            marginTop: -120,
+            marginTop: -128,
             alignSelf: 'center',
           }}>
           {tech?.name}

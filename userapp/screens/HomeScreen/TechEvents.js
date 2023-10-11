@@ -13,20 +13,25 @@ import EventComponent from '../../components/HomeScreenComponent/EventComponent'
 import {USER_IP} from '@env';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import PartySprayLoader from '../../components/PartySprayLoader';
 const TechEvents = () => {
   const {tokens} = useAuthContext();
   const [event, setEvent] = useState([]);
   const navigation = useNavigation();
+  const [loginPending, setLoginPending] = useState(false);
+
   useEffect(() => {
     events();
   }, []);
   const events = async () => {
+    setLoginPending(true);
     const response = await axios.get(
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
     console.log(response.data.data.Tech);
     setEvent(response.data.data.Tech);
+    setLoginPending(false);
   };
   const scrollY = new Animated.Value(0);
 
@@ -103,7 +108,7 @@ const TechEvents = () => {
           </Text> */}
         </View>
         <FlatList
-          style={{marginBottom: 30, marginTop: 5, marginHorizontal: 5}}
+          style={{marginBottom: 70, marginTop: 5, marginHorizontal: 5}}
           data={event}
           renderItem={({item}) => (
             <EventComponent tech={item} type={'NORMAL'} />
@@ -112,6 +117,7 @@ const TechEvents = () => {
           showsVerticalScrollIndicator={false}
         />
       </ScrollView>
+      {loginPending ? <PartySprayLoader /> : null}
     </>
   );
 };

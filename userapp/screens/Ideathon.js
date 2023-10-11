@@ -14,20 +14,25 @@ import EventComponent from '../components/HomeScreenComponent/EventComponent';
 import {USER_IP} from '@env';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import PartySprayLoader from '../components/PartySprayLoader';
 const Ideathon = () => {
   const {tokens} = useAuthContext();
   const [event, setEvent] = useState([]);
   const navigation = useNavigation();
+  const [loginPending, setLoginPending] = useState(false);
+
   useEffect(() => {
     events();
   }, []);
   const events = async () => {
+    setLoginPending(true);
     const response = await axios.get(
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
     console.log(response.data.data.Ideathon);
     setEvent(response.data.data.Ideathon);
+    setLoginPending(false);
   };
   const scrollY = new Animated.Value(0);
 
@@ -113,6 +118,7 @@ const Ideathon = () => {
           showsVerticalScrollIndicator={false}
         />
       </ScrollView>
+      {loginPending ? <PartySprayLoader /> : null}
     </>
   );
 };

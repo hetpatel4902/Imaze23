@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   Animated,
+  StatusBar,
 } from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import {useAuthContext} from '../src/Context/AuthContext';
@@ -48,6 +49,11 @@ const MyEvents = () => {
 
   return (
     <>
+      <StatusBar
+        animated={true}
+        backgroundColor={'#1655BC'}
+        barStyle={'light-content'}
+      />
       <Animated.View
         style={{
           position: 'absolute',
@@ -161,28 +167,17 @@ const MyEvents = () => {
         )}
         {/* {event?.purchased?.length == 0 && */}
         {event?.pending?.individual?.length == 0 &&
-          event?.pending?.combos?.length == 0 && (
-            <>
-              <Image
-                source={require('../data/cartEmpty.jpg')}
-                style={{
-                  height: 400,
-                  width: 400,
-                  resizeMode: 'contain',
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Medium',
-                  fontSize: 17,
-                  color: '#191919',
-                  textAlign: 'center',
-                }}>
-                Your Cart is Empty
-              </Text>
-            </>
+          event?.pending?.combos?.length == 0 &&
+          event?.purchased?.team_events?.length == 0 && (
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                fontSize: 17,
+                color: '#191919',
+                textAlign: 'center',
+              }}>
+              Your cart is empty
+            </Text>
           )}
       </ScrollView>
       {loading ? <SearchLoader /> : null}

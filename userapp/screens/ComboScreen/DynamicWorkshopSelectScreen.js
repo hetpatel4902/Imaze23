@@ -40,7 +40,7 @@ const DynamicWorkshopSelectScreen = () => {
             fontSize: 17,
             marginLeft: 5,
           }}>
-          Workshops 🎉
+          Workshops
         </Text>
       </View>
       <Text style={styles.subTitle}>*Note: You can select only 1 Workshop</Text>

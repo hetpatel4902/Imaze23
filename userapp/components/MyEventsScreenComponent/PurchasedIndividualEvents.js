@@ -62,7 +62,7 @@ const PurchasedIndividualEvents = ({tech, certificate}) => {
               {'\u20B9'}{' '}
               {details?.university == 'CVMU'
                 ? tech?.event?.price
-                : tech?.event?.price + tech?.event?.price * 0.18}
+                : Math.ceil(tech?.event?.price + tech?.event?.price * 0.18)}
             </Text>
           </View>
         )}

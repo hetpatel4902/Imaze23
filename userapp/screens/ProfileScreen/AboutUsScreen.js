@@ -138,7 +138,7 @@ const AboutUsScreen = () => {
           elevation: 7,
         }}>
         <Image
-          source={require('../../data/Pratham.jpg')}
+          source={require('../../data/Pratham1.jpeg')}
           style={{
             height: 310,
             width: '100%',

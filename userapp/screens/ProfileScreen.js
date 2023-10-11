@@ -55,6 +55,7 @@ import {
   Linking,
   Dimensions,
   Animated,
+  StatusBar,
 } from 'react-native';
 import {useEffect, useState, useCallback} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -138,6 +139,11 @@ export default function ProfileScreen() {
   // };
   return (
     <>
+      <StatusBar
+        animated={true}
+        backgroundColor={'#1655BC'}
+        barStyle={'light-content'}
+      />
       <Animated.View
         style={{
           position: 'absolute',

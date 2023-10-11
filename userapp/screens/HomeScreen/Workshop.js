@@ -4,13 +4,17 @@ import axios from 'axios';
 import {useAuthContext} from '../../src/Context/AuthContext';
 import EventComponent from '../../components/HomeScreenComponent/EventComponent';
 import {USER_IP} from '@env';
+import PartySprayLoader from '../../components/PartySprayLoader';
 const Workshop = () => {
   const {tokens} = useAuthContext();
   const [event, setEvent] = useState([]);
+  const [loginPending, setLoginPending] = useState(false);
+
   useEffect(() => {
     events();
   }, []);
   const events = async () => {
+    setLoginPending(true);
     const response = await axios.get(
       `http://${USER_IP}/api/v1/user/events/category`,
       {headers: {Authorization: `Bearer ${tokens}`}},
@@ -18,6 +22,7 @@ const Workshop = () => {
     // console.log(response.data.data.Tech);
     console.log(response.data.data);
     setEvent(response.data.data.Workshop);
+    setLoginPending(false);
   };
   const scrollY = new Animated.Value(0);
 
@@ -81,7 +86,7 @@ const Workshop = () => {
           Workshop 🎉
         </Text> */}
         <FlatList
-          style={{marginBottom: 30, marginTop: 5}}
+          style={{marginBottom: 70, marginTop: 5}}
           data={event}
           renderItem={({item}) => (
             <EventComponent tech={item} type={'NORMAL'} />
@@ -90,6 +95,7 @@ const Workshop = () => {
           showsVerticalScrollIndicator={false}
         />
       </ScrollView>
+      {loginPending ? <PartySprayLoader /> : null}
     </>
   );
 };

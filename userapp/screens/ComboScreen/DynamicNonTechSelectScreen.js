@@ -42,7 +42,7 @@ const DynamicNonTechSelectScreen = () => {
             marginLeft: 5,
             // textAlign: 'center',
           }}>
-          Non-Tech Events 🎉
+          Non-Tech Events
         </Text>
       </View>
       <Text style={styles.subTitle}>
