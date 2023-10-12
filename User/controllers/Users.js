@@ -791,6 +791,7 @@ const payOnline = async (req, res) => {
       }
     );
     res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
+    return ;
   } else {
     //check the category of the event, add participants , increase number of participants, check isAvailable,add coins to all the members if group event
 
