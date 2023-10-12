@@ -43,7 +43,15 @@ const uploadImage = async (id, imageBase64Data,type) => {
   const base64ImageData = imageBase64Data; // Replace with your actual Base64 data
 
   // Decode the Base64 data (remove the data:image/jpeg;base64, prefix)
-  const base64Image = base64ImageData.replace(/^data:image\/\w+;base64,/, "");
+  let base64Image = base64ImageData.split('base64');
+  if(base64Image.length ==1){
+    base64Image = base64Image[0];
+  }
+  if(base64Image.length == 2){
+    base64Image = base64Image[1];
+  }
+  
+  // const base64Image = base64ImageData.replace(/^data:image\/\w+;base64,/, "");
   const params = {
     Bucket: `imaze-bucket`,
     Key: `user-${type}/${id}.jpg`,
