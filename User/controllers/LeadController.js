@@ -1574,15 +1574,16 @@ const declineOnlinePayment = async (req, res) => {
   let points = 0;
   if (name == "COMBO") {
     const response = await Combos.findOneAndDelete({ _id });
+    points=200
     for (let i = 0; i < response.event.length; ++i) {
       const eventdetails = await Event.findOne({ _id: response.event[i] });
-      if (eventdetails.category == "Tech") {
-        points += 60;
-      } else if (eventdetails.category == "NonTech") {
-        points += 40;
-      } else if (eventdetails.category == "Workshop") {
-        points += 80;
-      }
+      // if (eventdetails.category == "Tech") {
+      //   points += 60;
+      // } else if (eventdetails.category == "NonTech") {
+      //   points += 40;
+      // } else if (eventdetails.category == "Workshop") {
+      //   points += 80;
+      // }
       let index = eventdetails.participants.indexOf(response.userId);
       if (index != -1) {
         eventdetails.participants.splice(index, 1); // remove 1 element from index
