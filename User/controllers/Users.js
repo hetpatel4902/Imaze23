@@ -769,7 +769,6 @@ const payOnline = async (req, res) => {
       { new: true }
     );
     const combo_events = combo.event;
-    let add_coins = 0;
     for (let i = 0; i < combo_events.length; i++) {
       const temp = await Event.findOne({ _id: combo_events[i] });
       //add participant, increase no of participants, check is available , add coins
@@ -783,23 +782,12 @@ const payOnline = async (req, res) => {
         { temp },
         { new: true }
       );
-      switch (temp.category) {
-        case "Tech":
-          add_coins += 60;
-          break;
-        case "NonTech":
-          add_coins += 40;
-          break;
-        case "Workshop":
-          add_coins += 80;
-          break;
-      }
     }
     const student = await User.findOne({ _id: uid });
     const upd_student = await User.findOneAndUpdate(
       { _id: uid },
       {
-        coins: student.coins + add_coins,
+        coins: student.coins + 200,
       }
     );
     res.status(StatusCodes.OK).json({ res: "success", data: upd_student });
