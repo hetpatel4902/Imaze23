@@ -779,7 +779,9 @@ const payOnline = async (req, res) => {
       }
       const upd = await Event.findOneAndUpdate(
         { _id: combo_events[i] },
-        { temp },
+        { noOfParticipants:temp.noOfParticipants,
+          participants:temp.participants,
+        isAvailable:temp.isAvailable },
         { new: true }
       );
     }
