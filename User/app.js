@@ -53,7 +53,7 @@ const start = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
     if(cluster.isMaster){
-      for(let i =0;i<numcpus;i++){
+      for(let i =0;i<8;i++){
         cluster.fork();
       }
     }
