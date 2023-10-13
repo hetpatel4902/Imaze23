@@ -228,11 +228,14 @@ const verifiedOfflineEvent = async (req, res) => {
   if (name == "COMBO") {
     points=200;
     let response = await Combos.findOne({_id})
-    for (let i = 0; i < response.event.length; ++i) {
+    for(let i=0;i<response.event.length;++i){
       const eventdetails = await Event.findOne({ _id: response.event[i] });
       if (eventdetails.isAvailable == false) {
-        throw new BadRequestError("This event is full");
+        throw new BadRequestError("Any One event from the combo is full");
       }
+    }
+    for (let i = 0; i < response.event.length; ++i) {
+      const eventdetails = await Event.findOne({ _id: response.event[i] });
       // if (eventdetails.category == "Tech") {
       //   points += 60;
       // } else if (eventdetails.category == "NonTech") {
