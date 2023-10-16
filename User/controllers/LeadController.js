@@ -1848,6 +1848,9 @@ const getPaymentsOnRegularBasisExcel = async (req, res) => {
     "Event",
     "Enrollment",
     "Phone number",
+    "Branch",
+    "Year",
+    "College",
     "Email",
     "Price",
     "Payment_mode",
@@ -1873,6 +1876,9 @@ const getPaymentsOnRegularBasisExcel = async (req, res) => {
     obj.event = event?.name;
     obj.enrollment = user?.enrolment;
     obj.phoneno = user?.phonenumber;
+    obj.branch = user?.branch;
+    obj.year = user?.year;
+    obj.college = user?.college
     obj.email = user?.email;
     obj.price = userevent[i]?.price;
     obj.payment_mode = userevent[i]?.payment_mode;
@@ -1902,6 +1908,9 @@ const getPaymentsOnRegularBasisExcel = async (req, res) => {
     obj.event = event;
     obj.enrollment = user?.enrolment;
     obj.phoneno = user?.phonenumber;
+    obj.branch = user?.branch;
+    obj.year = user?.year;
+    obj.college = user?.college
     obj.email = user?.email;
     (obj.price = combos[i]?.price),
       (obj.payment_mode = combos[i]?.payment_mode);
