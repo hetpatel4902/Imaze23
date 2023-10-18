@@ -17,6 +17,7 @@ const { uploadImageToS3, generateReceipt } = require("../utils/s3");
 const fs = require("fs");
 const Flagship = require("../models/FlagshipEvents");
 const Cultural = require("../models/Cultural");
+const StaticCombos = require('../models/StaticCombo')
 const stream = require("stream");
 
 const eventFetch = async (req, res) => {
@@ -248,6 +249,15 @@ const verifiedOfflineEvent = async (req, res) => {
       eventdetails.noOfParticipants += 1;
       if (eventdetails.noOfParticipants >= eventdetails.maxparticipants) {
         eventdetails.isAvailable = false;
+        const static_combo = await StaticCombos.find({})
+        for(let l=0;l<static_combo.length;++l){
+          for(let m=0;m<static_combo[l].events.length;++m){
+            if(String(static_combo[l].events[m]) == String(response.event[i])){
+              const del = await StaticCombos.findOneAndDelete({_id:static_combo[l]._id})
+              break;
+            }
+          }
+        }
       }
       const event = await Event.findOneAndUpdate(
         { _id: response.event[i] },
@@ -1553,6 +1563,48 @@ const acceptOnlinePayment = async (req, res) => {
         { _id: eid },
         { receipt_url: response, payment_status: "COMPLETED" }
       );
+      if(upd.category == 'NORMAL'){
+        const event = await Event.findOne({_id:upd.eventid})
+        if(event.isAvailable == false){
+          const static_combo = await StaticCombos.find({})
+        for(let l=0;l<static_combo.length;++l){
+          for(let m=0;m<static_combo[l].events.length;++m){
+            if(String(static_combo[l].events[m]) == String(event._id)){
+              const del = await StaticCombos.findOneAndDelete({_id:static_combo[l]._id})
+              break;
+            }
+          }
+        }
+        }
+      }
+      else if(upd.category == 'CULTURAL'){
+        const cultural = await Cultural.findOne({_id:upd.eventid})
+        if(cultural.isAvailable == false){
+          const static_combo = await StaticCombos.find({})
+        for(let l=0;l<static_combo.length;++l){
+          for(let m=0;m<static_combo[l].events.length;++m){
+            if(String(static_combo[l].events[m]) == String(cultural._id)){
+              const del = await StaticCombos.findOneAndDelete({_id:static_combo[l]._id})
+              break;
+            }
+          }
+        }
+        }
+      }
+      else if(upd.category == 'FLAGSHIP'){
+        const flagship = await Flagship.findOne({_id:upd.eventid})
+        if(flagship.isAvailable == false){
+          const static_combo = await StaticCombos.find({})
+        for(let l=0;l<static_combo.length;++l){
+          for(let m=0;m<static_combo[l].events.length;++m){
+            if(String(static_combo[l].events[m]) == String(flagship._id)){
+              const del = await StaticCombos.findOneAndDelete({_id:static_combo[l]._id})
+              break;
+            }
+          }
+        }
+        }
+      }
     } catch (err) {
       throw new BadRequestError("Could not generate receipt");
     }
@@ -1565,6 +1617,19 @@ const acceptOnlinePayment = async (req, res) => {
         { _id: eid },
         { receipt_url: response, payment_status: "COMPLETED" }
       );
+      for(let i=0;i<upd.events.length;++i){
+        if(upd.events[i].isAvailable == false){
+          const static_combo = await StaticCombos.find({})
+        for(let l=0;l<static_combo.length;++l){
+          for(let m=0;m<static_combo[l].events.length;++m){
+            if(String(static_combo[l].events[m]) == String(upd.events[i])){
+              const del = await StaticCombos.findOneAndDelete({_id:static_combo[l]._id})
+              break;
+            }
+          }
+        }
+        }
+      }
     } catch (err) {
       throw new BadRequestError("Could not generate receipt");
     }
