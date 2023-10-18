@@ -100,7 +100,6 @@ const generateReceipt = async (orderId, type)=>{
   let invoice_number = invoice_num[0].number;
   if (type === "combo") {
     const combo = await Combos.findOne({ _id: orderId });
-    transId = combo.transId;
     event_ids = combo.event;
     userId = combo.userId;
     amount = combo.price;

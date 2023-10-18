@@ -123,9 +123,9 @@ const isClashing = async (uid, current_event, isCombo, comevents) => {
 //events
 const getAllEvents = async (req, res) => {
   const { search, sort } = req.query;
-  var events = await Event.find({});
-  var cultural = await Cultural.find({});
-  var flagship = await FlagshipEvents.find({});
+  var events = await Event.find({isAvailable:true});
+  var cultural = await Cultural.find({isAvailable:true});
+  var flagship = await FlagshipEvents.find({isAvailable:true});
   var allevents = [...events, ...cultural, ...flagship];
   if (search) {
     events = await Event.find({
@@ -151,9 +151,9 @@ const getAllEvents = async (req, res) => {
 };
 const getEventsCategorized = async (req, res) => {
   var findEl = "category";
-  var events = await Event.find({});
-  var cultural = await Cultural.find({});
-  var flagship = await FlagshipEvents.find({});
+  var events = await Event.find({isAvailable:true});
+  var cultural = await Cultural.find({isAvailable:true});
+  var flagship = await FlagshipEvents.find({isAvailable:true});
   var allevents = [...events, ...cultural, ...flagship];
   var groupby = function (xs, key) {
     return xs.reduce(function (rv, x) {
