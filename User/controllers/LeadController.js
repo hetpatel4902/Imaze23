@@ -320,8 +320,8 @@ const verifiedOfflineEvent = async (req, res) => {
           { new: true, runValidators: true }
         );
         const user = await User.findOne({ _id: userevent.userId });
-        points += user?.coins ?? 0;
-        user.coins = points;
+        // points += user?.coins ?? 0;
+        user.coins += points;
         const updateduser = await User.findOneAndUpdate(
           { _id: userevent.userId },
           user,
@@ -351,8 +351,8 @@ const verifiedOfflineEvent = async (req, res) => {
             throw new BadRequestError("Players are repeated");
           }
         }
-        points += leader?.coins ?? 0;
-        leader.coins = points;
+        // points += leader?.coins ?? 0;
+        leader.coins += points;
         leader.teams[userevent.eventid] = userevent.team;
         const updated_leader = await User.findOneAndUpdate(
           { _id: userevent.team["team_leader"] },
@@ -364,8 +364,8 @@ const verifiedOfflineEvent = async (req, res) => {
           const member = await User.findOne({
             _id: userevent.team["members"][i],
           });
-          points += member?.coins ?? 0;
-          member.coins = points;
+          // points += member?.coins ?? 0;
+          member.coins += points;
           member.teams[userevent.eventid] = userevent.team;
           const updated_leader = await User.findOneAndUpdate(
             { _id: userevent.team["members"][i] },
@@ -415,8 +415,8 @@ const verifiedOfflineEvent = async (req, res) => {
             throw new BadRequestError("Players are repeated");
           }
         }
-        points += leader?.coins ?? 0;
-        leader.coins = points;
+        // points += leader?.coins ?? 0;
+        leader.coins += points;
         leader.teams[userevent.eventid] = userevent.team;
         const updated_leader = await User.findOneAndUpdate(
           { _id: userevent.team["team_leader"] },
@@ -428,8 +428,8 @@ const verifiedOfflineEvent = async (req, res) => {
           const member = await User.findOne({
             _id: userevent.team["members"][i],
           });
-          points += member?.coins ?? 0;
-          member.coins = points;
+          // points += member?.coins ?? 0;
+          member.coins += points;
           member.teams[userevent.eventid] = userevent.team;
           const updated_leader = await User.findOneAndUpdate(
             { _id: userevent.team["members"][i] },
@@ -468,8 +468,8 @@ const verifiedOfflineEvent = async (req, res) => {
           { new: true, runValidators: true }
         );
         const user = await User.findOne({ _id: userevent.userId });
-        points += user?.coins ?? 0;
-        user.coins = points;
+        // points += user?.coins ?? 0;
+        user.coins += points;
         const updateduser = await User.findOneAndUpdate(
           { _id: userevent.userId },
           user,
@@ -507,8 +507,8 @@ const verifiedOfflineEvent = async (req, res) => {
             throw new BadRequestError("Players are repeated");
           }
         }
-        points += leader?.coins ?? 0;
-        leader.coins = points;
+        // points += leader?.coins ?? 0;
+        leader.coins += points;
         leader.teams[userevent.eventid] = userevent.team;
         const updated_leader = await User.findOneAndUpdate(
           { _id: userevent.team["team_leader"] },
@@ -520,8 +520,8 @@ const verifiedOfflineEvent = async (req, res) => {
           const member = await User.findOne({
             _id: userevent.team["members"][i],
           });
-          points += member?.coins ?? 0;
-          member.coins = points;
+          // points += member?.coins ?? 0;
+          member.coins += points;
           member.teams[userevent.eventid] = userevent.team;
           const updated_leader = await User.findOneAndUpdate(
             { _id: userevent.team["members"][i] },
@@ -561,8 +561,8 @@ const verifiedOfflineEvent = async (req, res) => {
         );
         console.log(updatedevent);
         const user = await User.findOne({ _id: userevent.userId });
-        points += user?.coins ?? 0;
-        user.coins = points;
+        // points += user?.coins ?? 0;
+        user.coins += points;
         const updateduser = await User.findOneAndUpdate(
           { _id: userevent.userId },
           user,
