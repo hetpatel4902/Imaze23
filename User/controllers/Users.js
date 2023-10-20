@@ -129,12 +129,15 @@ const getAllEvents = async (req, res) => {
   var allevents = [...events, ...cultural, ...flagship];
   if (search) {
     events = await Event.find({
+      isAvailable:true,
       name: { $regex: search, $options: "i" },
     });
     cultural = await Cultural.find({
+      isAvailable:true,
       name: { $regex: search, $options: "i" },
     });
     flagship = await FlagshipEvents.find({
+      isAvailable:true,
       name: { $regex: search, $options: "i" },
     });
     allevents = [...events, ...cultural, ...flagship];
