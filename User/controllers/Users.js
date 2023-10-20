@@ -314,6 +314,7 @@ const getUserEvents = async (req, res) => {
   var team_events = [];
   const user = await User.findOne({ _id: uid });
   const user_teams = user.teams;
+  console.log(user_teams);
   for (let teamevent in user_teams) {
     let team_event = {};
     switch (user_teams[teamevent].type) {
@@ -1504,7 +1505,7 @@ const participateNormalGroup = async (req, res) => {
         const temp = await Event.findOne({ _id: evid });
         if (
           temp.name === "Valclassico 2.0 (Valorant)" &&
-          event.name === "Valclassico 2.0 (BGMI)"
+          event.name === "Battlegrounds at GCET"
         ) {
           res.status(StatusCodes.OK).json({
             res: "success",
@@ -1514,7 +1515,7 @@ const participateNormalGroup = async (req, res) => {
           return;
         }
         if (
-          temp.name === "Valclassico 2.0 (BGMI)" &&
+          temp.name === "Battlegrounds at GCET" &&
           event.name === "Valclassico 2.0 (Valorant)"
         ) {
           res.status(StatusCodes.OK).json({
@@ -1559,6 +1560,7 @@ const submitNormalGroup = async (req, res) => {
     team_name: team_name,
     team_leader: uid,
     members: members,
+    type:"NORMAL"
   };
   const create_event = await UserEvent.create({
     userId: uid,
