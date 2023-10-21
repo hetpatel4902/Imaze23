@@ -321,7 +321,6 @@ const getUserEvents = async (req, res) => {
       case "NORMAL":
         team_event.event = await Event.findOne({ _id: teamevent });
         team_event.team_name = user_teams[teamevent].team_name;
-        team_events.push(team_event);
         break;
       case "FLAGSHIP":
         team_event.event = await FlagshipEvents.findOne({ _id: teamevent });

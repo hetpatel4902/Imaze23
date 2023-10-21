@@ -42,6 +42,7 @@ app.use(cors());
 app.use(xss());
 
 //routes user
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/lead", leadRoute);
 app.use(notFoundMiddleware);
