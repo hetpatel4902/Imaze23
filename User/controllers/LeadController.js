@@ -1623,7 +1623,7 @@ const acceptOnlinePayment = async (req, res) => {
           const static_combo = await StaticCombos.find({})
         for(let l=0;l<static_combo.length;++l){
           for(let m=0;m<static_combo[l].events.length;++m){
-            if(String(static_combo[l].events[m]) == String(upd.events[i]._id)){
+            if(String(static_combo[l].events[m]) == String(upd.events[i])){
               const del = await StaticCombos.findOneAndDelete({_id:static_combo[l]._id})
               break;
             }
