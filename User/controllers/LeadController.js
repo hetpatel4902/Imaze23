@@ -391,6 +391,9 @@ const verifiedOfflineEvent = async (req, res) => {
         throw new BadRequestError("This event is full");
       }
       points = 80;
+      if(flagship.category == 'Ideathon'){
+        points = 150
+      }
       if (flagship.type == "GROUP") {
         //for leader
         for (let i = 0; i < flagship.participants.length; ++i) {

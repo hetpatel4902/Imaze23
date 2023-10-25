@@ -976,6 +976,8 @@ const payOnline = async (req, res) => {
             break;
 
           case "GROUP":
+            let adding_coins = 80;
+            if(flagship_event.category === "Ideathon") adding_coins = 150;
             const team = evt.team;
             //adding participants to the event
             flagship_event.participants.push(team);
@@ -998,7 +1000,7 @@ const payOnline = async (req, res) => {
             team_obj[evt.eventid] = evt.team;
             const upd_group_student = await User.findOneAndUpdate(
               { _id: uid },
-              { coins: group_student.coins + 80, teams: team_obj },
+              { coins: group_student.coins + adding_coins, teams: team_obj },
               { new: true }
             );
             //team members
@@ -1010,7 +1012,7 @@ const payOnline = async (req, res) => {
               team_obj[evt.eventid] = evt.team;
               const upd_group_student = await User.findOneAndUpdate(
                 { _id: team.members[i] },
-                { coins: group_student.coins + 80, teams: team_obj },
+                { coins: group_student.coins + adding_coins, teams: team_obj },
                 { new: true }
               );
             }
