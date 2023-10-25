@@ -1609,6 +1609,7 @@ const acceptOnlinePayment = async (req, res) => {
         }
       }
     } catch (err) {
+      console.log(err)
       throw new BadRequestError("Could not generate receipt");
     }
   }
@@ -1620,12 +1621,12 @@ const acceptOnlinePayment = async (req, res) => {
         { _id: eid },
         { receipt_url: response, payment_status: "COMPLETED" }
       );
-      for(let i=0;i<upd.events.length;++i){
-        if(upd.events[i].isAvailable == false){
+      for(let i=0;i<upd.event.length;++i){
+        if(upd.event[i].isAvailable == false){
           const static_combo = await StaticCombos.find({})
         for(let l=0;l<static_combo.length;++l){
           for(let m=0;m<static_combo[l].events.length;++m){
-            if(String(static_combo[l].events[m]) == String(upd.events[i])){
+            if(String(static_combo[l].events[m]) == String(upd.event[i])){
               const del = await StaticCombos.findOneAndDelete({_id:static_combo[l]._id})
               break;
             }
@@ -1634,6 +1635,7 @@ const acceptOnlinePayment = async (req, res) => {
         }
       }
     } catch (err) {
+      console.log(err)
       throw new BadRequestError("Could not generate receipt");
     }
   }
