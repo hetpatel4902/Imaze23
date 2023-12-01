@@ -20,11 +20,18 @@ import axios from 'axios';
 // import {useAuthContext} from '../src/Context/AuthContext';
 import {useAuthContext} from '../../src/Context/AuthContext';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {USER_IP, COLOR} from '@env';
 
 const UpdateProfile = () => {
   const {height, width} = useWindowDimensions();
   const {users, tokens, loginPending, setLoginPending} = useAuthContext();
+  const [one, setOne] = useState(false);
+  const [two, setTwo] = useState(false);
+  const [three, setThree] = useState(false);
+  const [four, setFour] = useState(false);
+  const [diploma, setDiploma] = useState(false);
+  const [year, setYear] = useState('');
   // const {control, handleSubmit, watch} = useForm();
   // const pwd = watch('password');
   const navigation = useNavigation();
@@ -54,6 +61,18 @@ const UpdateProfile = () => {
         // console.log(response.data.data);
         setName(response.data.data.name);
         setEmail(response.data.data.email);
+        setYear(response.data.data.year);
+        if (response.data.data.year == '1') {
+          setOne(true);
+        } else if (response.data.data.year == '2') {
+          setTwo(true);
+        } else if (response.data.data.year == '3') {
+          setThree(true);
+        } else if (response.data.data.year == '4') {
+          setFour(true);
+        } else {
+          setDiploma(true);
+        }
         setDetails(response.data.data);
         setLoginPending(false);
         // };
@@ -75,6 +94,7 @@ const UpdateProfile = () => {
           {
             name: name,
             email: email,
+            year: year,
           },
           {
             headers: {
@@ -204,6 +224,196 @@ const UpdateProfile = () => {
               marginBottom: 10,
             }}
           />
+          <View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 15,
+              }}>
+              <Entypo
+                name="calendar"
+                size={20}
+                color={'#757575'}
+                style={{marginRight: 3}}
+              />
+              <Text
+                style={{
+                  paddingHorizontal: 10,
+                  // paddingBottom: 9,
+                  fontSize: 13,
+                  fontFamily: 'Poppins-Medium',
+                  color: 'grey',
+                  marginLeft: 4,
+                  flex: 1,
+                }}>
+                Select Year:
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginHorizontal: 15,
+                marginTop: 10,
+                marginBottom: 8,
+              }}>
+              <Pressable
+                style={{
+                  width: 45,
+                  marginHorizontal: 5,
+                  backgroundColor: one ? '#1655BC' : '#edeef0',
+                  height: 30,
+                  alignItems: 'center',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  borderWidth: one ? 0.5 : 0,
+                  borderColor: one ? '#1655BC' : 'white',
+                }}
+                onPress={() => {
+                  setOne(true);
+                  setTwo(false);
+                  setThree(false);
+                  setFour(false);
+                  setDiploma(false);
+                  // setMess(false);
+                  setYear('1');
+                }}>
+                <Text
+                  style={{
+                    color: one ? '#ffffff' : '#191919',
+                    fontFamily: 'Poppins-Regular',
+                    fontSize: 12,
+                    marginTop: 3,
+                  }}>
+                  1
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setTwo(true);
+                  setOne(false);
+                  setThree(false);
+                  setFour(false);
+                  setDiploma(false);
+                  setYear('2');
+                }}
+                style={{
+                  width: 45,
+                  marginHorizontal: 5,
+                  backgroundColor: two ? '#1655BC' : '#edeef0',
+                  height: 30,
+                  alignItems: 'center',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  borderWidth: two ? 0.5 : 0,
+                  borderColor: two ? '#1655BC' : 'white',
+                }}>
+                <Text
+                  style={{
+                    color: two ? '#ffffff' : '#191919',
+                    fontFamily: 'Poppins-Regular',
+                    fontSize: 12,
+                    marginTop: 3,
+                  }}>
+                  2
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setThree(true);
+                  setOne(false);
+                  setTwo(false);
+                  setFour(false);
+                  setDiploma(false);
+                  setYear('3');
+                }}
+                style={{
+                  width: 45,
+                  marginHorizontal: 5,
+                  backgroundColor: three ? '#1655BC' : '#edeef0',
+                  height: 30,
+                  alignItems: 'center',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  borderWidth: three ? 0.5 : 0,
+                  borderColor: three ? '#1655BC' : 'white',
+                  // marginBottom: 40,
+                }}>
+                <Text
+                  style={{
+                    color: three ? '#ffffff' : '#191919',
+                    fontFamily: 'Poppins-Regular',
+                    fontSize: 12,
+                    marginTop: 3,
+                  }}>
+                  3
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setFour(true);
+                  setOne(false);
+                  setTwo(false);
+                  setThree(false);
+                  setDiploma(false);
+                  setYear('4');
+                }}
+                style={{
+                  width: 45,
+                  marginHorizontal: 5,
+                  backgroundColor: four ? '#1655BC' : '#edeef0',
+                  height: 30,
+                  alignItems: 'center',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  borderWidth: four ? 0.5 : 0,
+                  borderColor: four ? '#1655BC' : 'white',
+                  // marginBottom: 40,
+                }}>
+                <Text
+                  style={{
+                    color: four ? '#ffffff' : '#191919',
+                    fontFamily: 'Poppins-Regular',
+                    fontSize: 12,
+                    marginTop: 3,
+                  }}>
+                  4
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setFour(false);
+                  setOne(false);
+                  setTwo(false);
+                  setThree(false);
+                  setDiploma(true);
+                  setYear('DIPLOMA');
+                }}
+                style={{
+                  width: 65,
+                  marginHorizontal: 5,
+                  backgroundColor: diploma ? '#1655BC' : '#edeef0',
+                  height: 30,
+                  alignItems: 'center',
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  borderWidth: diploma ? 0.5 : 0,
+                  borderColor: diploma ? '#1655BC' : 'white',
+                  // marginBottom: 40,
+                }}>
+                <Text
+                  style={{
+                    color: diploma ? 'white' : '#191919',
+                    fontFamily: 'Poppins-Regular',
+                    fontSize: 12,
+                    marginTop: 3,
+                  }}>
+                  Diploma
+                </Text>
+              </Pressable>
+            </View>
+          </View>
           <Pressable
             onPress={onUpdatePressed}
             style={{

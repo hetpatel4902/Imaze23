@@ -345,7 +345,7 @@ const HomeScreen = () => {
           zIndex: 1,
           // backgroundColor: '#fafcff',
           backgroundColor: '#1655BC',
-          height: 70,
+          height: 65,
           alignSelf: 'center',
           borderBottomRightRadius: 25,
           borderBottomLeftRadius: 25,
@@ -417,7 +417,7 @@ const HomeScreen = () => {
           style={{
             borderBottomRightRadius: 100,
             backgroundColor: '#1655BC',
-            height: 175.9,
+            height: 164.2,
           }}>
           <View
             style={{
@@ -430,32 +430,33 @@ const HomeScreen = () => {
             }}>
             <View
               style={{
-                marginHorizontal: 22,
+                marginHorizontal: 30,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 backgroundColor: '#fffced',
                 borderRadius: 15,
                 padding: 1,
-                paddingHorizontal: 15,
+                paddingHorizontal: 18,
+                paddingLeft: 25,
                 // width: 200,
-                shadowColor: 'grey',
-                shadowOffset: {
-                  width: 0,
-                  height: 7,
-                },
-                shadowOpacity: 0.41,
-                shadowRadius: 9.11,
-                elevation: 7,
-                marginTop: 50,
+                // shadowColor: 'grey',
+                // shadowOffset: {
+                //   width: 0,
+                //   height: 7,
+                // },
+                // shadowOpacity: 0.41,
+                // shadowRadius: 9.11,
+                // elevation: 7,
+                marginTop: 45,
                 // borderBottomRightRadius: 10,
               }}>
-              <View style={{}}>
+              <View style={{marginTop: 2}}>
                 <Text
                   style={{
                     color: 'black',
                     fontFamily: 'Poppins-Medium',
-                    fontSize: 16,
+                    fontSize: 15,
                   }}>
                   Hey {names},
                 </Text>
@@ -472,18 +473,20 @@ const HomeScreen = () => {
                 </Text>
               </View>
 
-              <View
+              <Pressable
+                onPress={() => navigation.navigate('BuyTokenScreen')}
                 style={{
                   alignContent: 'center',
                   alignItems: 'center',
                   marginRight: 10,
+                  marginTop: 0,
                 }}>
                 {/* <FontAwesome5 name="coins" size={26} color={'#fad505'} /> */}
                 <View
                   style={{
-                    height: 45,
+                    height: 35,
                     width: 45,
-                    marginTop: 6,
+                    marginTop: 7,
                     borderRadius: 23,
                     backgroundColor: '#fffced',
                     alignContent: 'center',
@@ -507,7 +510,7 @@ const HomeScreen = () => {
                   }}>
                   {details?.coins} coins
                 </Text>
-              </View>
+              </Pressable>
             </View>
           </View>
         </View>
@@ -521,7 +524,8 @@ const HomeScreen = () => {
             backgroundColor: '#fafcff',
 
             // backgroundColor: 'blue',
-            marginTop: -20,
+            marginTop: -26,
+            marginLeft: 0,
             // borderTopRightRadius: 30,
           }}>
           <Pressable

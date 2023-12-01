@@ -237,7 +237,7 @@ const RegisterTeam = () => {
       {
         orderId: verify?.data._id,
         transId,
-        transUrl: 'data:image/jpeg;base64' + image,
+        transUrl: image,
         isCombo: false,
       },
       {headers: {Authorization: `Bearer ${tokens}`}},
@@ -419,8 +419,6 @@ const RegisterTeam = () => {
           Alert.alert('Team name is necessary.');
         } else if (idCardImage == null) {
           Alert.alert('Id card is necessary.');
-        } else if (posterImage == null) {
-          Alert.alert('Idea Poster is necessary.');
         } else if (projectTitle == null) {
           Alert.alert('Project title is necessary.');
         } else {
@@ -432,7 +430,7 @@ const RegisterTeam = () => {
               team_name: name,
               uid: users,
               members: userIds,
-              poster_url: posterImage,
+              // poster_url: posterImage,
               leader_ID: idCardImage,
               project_title: projectTitle,
               price:
@@ -655,17 +653,17 @@ const RegisterTeam = () => {
               </Pressable>
             </View>
           )}
-          {eventDetail?.category == 'Ideathon' && (
-            <View style={{marginTop: 20, marginBottom: 8}}>
-              <Text
+          {/* {eventDetail?.category == 'Ideathon' && ( */}
+          {/* <View style={{marginTop: 20, marginBottom: 8}}> */}
+          {/* <Text
                 style={{
                   fontFamily: 'Poppins-Medium',
                   fontSize: 14,
                   color: '#000000',
                 }}>
                 Upload Your Idea Poster:
-              </Text>
-              {posterImage && (
+              </Text> */}
+          {/* {posterImage && (
                 <Image
                   source={{uri: `data:image/jpeg;base64,${posterImage}`}}
                   style={{
@@ -675,8 +673,8 @@ const RegisterTeam = () => {
                     resizeMode: 'contain',
                   }}
                 />
-              )}
-              <Pressable
+              )} */}
+          {/* <Pressable
                 onPress={openPosterImagePicker}
                 style={{
                   height: 38,
@@ -704,9 +702,9 @@ const RegisterTeam = () => {
                   color={'white'}
                   style={{marginLeft: 8}}
                 />
-              </Pressable>
-            </View>
-          )}
+              </Pressable> */}
+          {/* </View> */}
+          {/* // )} */}
           {selectedUsers.length <= 0 && (
             <Text
               style={{

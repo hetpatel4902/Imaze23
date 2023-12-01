@@ -46,6 +46,17 @@ const ComboDetail = ({info}) => {
             }}>
             {info.name}
           </Text>
+          <View>
+            <Text
+              style={{
+                color: '#454545',
+                fontFamily: 'Poppins-Regular',
+                fontSize: 11,
+              }}
+              numberOfLines={1}>
+              {info?.description}
+            </Text>
+          </View>
           <Text
             style={{
               fontFamily: 'Poppins-Regular',
@@ -53,14 +64,6 @@ const ComboDetail = ({info}) => {
               fontSize: 11,
             }}>
             {info.category}
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'Poppins-Regular',
-              color: '#191919',
-              fontSize: 11,
-            }}>
-            {participants.length} participants
           </Text>
         </View>
         <Pressable

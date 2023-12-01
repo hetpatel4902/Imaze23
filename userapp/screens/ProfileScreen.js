@@ -284,7 +284,7 @@ export default function ProfileScreen() {
                 size={21}
                 color={'#1655BC'}
               />
-              <Text style={styles.textcolour}>About</Text>
+              <Text style={styles.textcolour}>About Developers</Text>
             </Pressable>
           </View>
 

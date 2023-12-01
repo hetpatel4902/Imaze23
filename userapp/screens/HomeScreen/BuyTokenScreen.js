@@ -43,7 +43,7 @@ const BuyTokenScreen = () => {
     setDetail(response.data.data);
   };
   const buytoken = async () => {
-    if (detail?.coins < 20) {
+    if (detail?.coins < 25) {
       Alert.alert(`You don't have sufficient balance.`);
     } else {
       const response = await axios.post(
@@ -60,7 +60,7 @@ const BuyTokenScreen = () => {
   };
   const buyConcert = async () => {
     console.log(detail?.tokens);
-    if (detail?.coins < 100) {
+    if (detail?.coins < 150) {
       Alert.alert(`You don't have sufficient balance.`);
     } else {
       const response = await axios.post(
@@ -172,7 +172,7 @@ const BuyTokenScreen = () => {
                   fontSize: 13,
                   marginTop: 1,
                 }}>
-                (Cost of Pass = 100 coins)
+                (Cost of Pass = 150 coins)
               </Text>
             )}
             <Image
@@ -251,7 +251,7 @@ const BuyTokenScreen = () => {
               fontSize: 13,
               marginTop: 1,
             }}>
-            (Cost of 1 Token = 20 coins)
+            (Cost of 1 Token = 25 coins)
           </Text>
           {/* <Text
             style={{

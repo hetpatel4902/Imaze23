@@ -23,14 +23,16 @@ const ForgotPasswordScreen = () => {
   const [check, setCheck] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
+  const emailC = email.split(' ')[0];
   const onSendPressed = async data => {
+    // console.log(emailC);
     setCheck(false);
     try {
       setLoading(true);
       console.log('hello');
       const response = await axios.patch(
         `http://${USER_IP}/api/v1/user/forgotpassword`,
-        {email: email},
+        {email: emailC},
       );
       if (response.data.otpsent) {
         navigation.navigate('ConfirmEmail', {email: email});
@@ -38,6 +40,7 @@ const ForgotPasswordScreen = () => {
       setLoading(false);
     } catch (err) {
       setCheck(true);
+      Alert.alert('Email not registered.');
       setLoading(false);
     }
   };

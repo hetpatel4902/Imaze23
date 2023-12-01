@@ -4,8 +4,12 @@ import {useAuthContext} from '../../src/Context/AuthContext';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {USER_IP} from '@env';
+import axios from 'axios';
+
 const DynamicTechEventComponent = ({tech}) => {
   const navigation = useNavigation();
+  const [details, setDetails] = useState(null);
+  const {users, tokens} = useAuthContext();
 
   const onPress = () => {
     navigation.navigate('EventDetailScreen', {
@@ -19,6 +23,18 @@ const DynamicTechEventComponent = ({tech}) => {
   const [selected, setSelected] = useState(false);
   const [done, setDone] = useState(false);
   let Arr = techArr;
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
+  const fetchUserDetail = async () => {
+    // setLoginPending(true);
+    const response = await axios.get(`http://${USER_IP}/api/v1/user/${users}`, {
+      headers: {Authorization: `Bearer ${tokens}`},
+    });
+    // console.log(response.data.data);
+    setDetails(response.data.data);
+    // setLoginPending(false);
+  };
 
   useEffect(() => {
     // func();
@@ -115,13 +131,20 @@ const DynamicTechEventComponent = ({tech}) => {
             </View>
           </View>
           <View style={styles.nameView}>
-            <Text style={styles.name}>{tech.name}</Text>
-            <View style={styles.subContainer}>
-              <Text style={styles.priceText}>Rs.{tech?.price} </Text>
-            </View>
+            <Text style={styles.name} numberOfLines={1}>
+              {tech.name}
+            </Text>
             <View>
-              <Text style={styles.participants}>
-                {participants.length} participants
+              <Text style={styles.participants} numberOfLines={1}>
+                {tech?.description}
+              </Text>
+            </View>
+            <View style={styles.subContainer}>
+              <Text style={styles.priceText}>
+                Rs.
+                {details?.university == 'CVMU'
+                  ? tech?.price
+                  : Math.ceil(tech?.price + tech?.price * 0.18)}
               </Text>
             </View>
           </View>
@@ -130,7 +153,7 @@ const DynamicTechEventComponent = ({tech}) => {
               backgroundColor: selected ? 'red' : '#1655BC',
               alignItems: 'center',
               justifyContent: 'center',
-              paddingVertical: 3.5,
+              paddingVertical: 3,
               borderRadius: 18,
               shadowColor: '#1655BC',
               shadowOffset: {
@@ -140,7 +163,7 @@ const DynamicTechEventComponent = ({tech}) => {
               shadowOpacity: 0.41,
               shadowRadius: 9.11,
               elevation: 14,
-              paddingHorizontal: 13,
+              paddingHorizontal: 11,
             }}
             onPress={onClick}>
             <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
@@ -161,15 +184,15 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
-    height: 66,
-    width: 66,
+    height: 58,
+    width: 58,
     borderRadius: 33,
   },
   nameView: {flex: 3, paddingHorizontal: 10},
   name: {
     color: 'black',
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: 13,
   },
   container: {
     flexDirection: 'row',
@@ -185,6 +208,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
     color: '#242424',
     fontSize: 12,
+    marginLeft: -4,
   },
   subContainerTime: {
     fontFamily: 'Poppins-Regular',
@@ -197,7 +221,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   selectContainer: {
-    backgroundColor: '#00e4ff',
+    backgroundColor: '#05fa9c',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 3.5,

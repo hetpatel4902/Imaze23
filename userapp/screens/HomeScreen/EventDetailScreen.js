@@ -71,8 +71,12 @@ const EventDetailScreen = () => {
       {eid: eventDetail?._id, uid: users},
       {headers: {Authorization: `Bearer ${tokens}`}},
     );
-    console.log(response.data);
-    showToastWithGravityAndOffset('Registered Successfully');
+    console.log(response.data.flag);
+    if (response.data.flag) {
+      await showToastWithGravityAndOffset('Registered Successfully');
+    } else {
+      Alert.alert('You have already registered for this event.');
+    }
     // console.log(response.data.flag);
     //   setVerifyGroup(response.data);
     // };
@@ -233,27 +237,33 @@ const EventDetailScreen = () => {
   const onlineTransaction = async () => {
     // console.log('transId:', transId);
     // console.log('transUrl:', image);
-    setOnSubmit(true);
-    const res = await axios.post(
-      `http://${USER_IP}/api/v1/user/${users}/payment/online`,
-      {
-        orderId: verify?.data._id,
-        transId,
-        transUrl: image,
-        isCombo: false,
-      },
-      {headers: {Authorization: `Bearer ${tokens}`}},
-    );
-    // console.log(res.data.res);
+    if (transId == '' || image == '') {
+      Alert.alert('Fill all the required details.');
+    } else {
+      // Alert.alert('Filling all the required details.');
 
-    if (res.data.res == 'success') {
-      setOnSubmit(false);
-      setModal(false);
-      setModal1(false);
-      showToastWithGravityAndOffset(
-        'Partially Registered,Your payment will be verified soon...',
+      setOnSubmit(true);
+      const res = await axios.post(
+        `http://${USER_IP}/api/v1/user/${users}/payment/online`,
+        {
+          orderId: verify?.data._id,
+          transId,
+          transUrl: image,
+          isCombo: false,
+        },
+        {headers: {Authorization: `Bearer ${tokens}`}},
       );
-      navigation.goBack();
+      // console.log(res.data.res);
+
+      if (res.data.res == 'success') {
+        setOnSubmit(false);
+        setModal(false);
+        setModal1(false);
+        showToastWithGravityAndOffset(
+          'Partially Registered,Your payment will be verified soon...',
+        );
+        navigation.goBack();
+      }
     }
   };
   const payOffline = async () => {
@@ -766,10 +776,26 @@ const EventDetailScreen = () => {
                   color: '#242424',
                   fontSize: 12,
                   marginBottom:
-                    eventDetail?.category == 'ITK_exhibition' ? 600 : 0,
+                    eventDetail?.category == 'ITK_exhibition' ||
+                    eventDetail?.name == 'Karting Carnival'
+                      ? 600
+                      : 0,
                 }}>
                 {eventDetail?.event_coordinator[1]?.name} (
                 {eventDetail?.event_coordinator[1]?.phoneno})
+              </Text>
+            )}
+            {eventDetail?.event_coordinator[2] && (
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  color: '#242424',
+                  fontSize: 12,
+                  marginBottom:
+                    eventDetail?.category == 'ITK_exhibition' ? 600 : 0,
+                }}>
+                {eventDetail?.event_coordinator[2]?.name} (
+                {eventDetail?.event_coordinator[2]?.phoneno})
               </Text>
             )}
           </View>
@@ -885,7 +911,7 @@ const EventDetailScreen = () => {
                 </Text>
               </Pressable>
             )}
-          {eventDetail?.price == 0 && (
+          {eventDetail?.price == 0 && !bought && eventDetail?.isAvailable && (
             <Pressable
               onPress={registerSa}
               // disabled={bought || pending}

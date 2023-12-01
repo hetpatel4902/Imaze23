@@ -38,8 +38,8 @@ const FlagshipEventComponent = ({tech}) => {
         style={{
           marginHorizontal: 8,
           marginBottom: 18,
-          width: 115,
-          height: 150,
+          width: 110,
+          height: 135,
           borderRadius: 20,
           overflow: 'hidden',
         }}>
@@ -62,7 +62,7 @@ const FlagshipEventComponent = ({tech}) => {
             width: 85,
             alignSelf: 'center',
             marginBottom: 7,
-            marginTop: 20,
+            marginTop: 12,
             resizeMode: 'contain',
             paddingHorizontal: 8,
           }}

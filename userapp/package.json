@@ -1,6 +1,6 @@
 {
   "name": "imaze",
-  "version": "1.0.7",
+  "version": "1.1.3",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

@@ -32,9 +32,40 @@ const SignInScreen = () => {
   const [password, setPassword] = useState('');
   const [hidePass, setHidePass] = useState(true);
   const [emailWrong, setEmailWrong] = useState(false);
+  // const value = changeText;
+  // const checkn = async () => {
+  //   let jso = JSON.stringify({
+  //     year: 2022,
+  //     month: 8,
+  //     date: 11,
+  //     hours: 6,
+  //     minutes: 0,
+  //     seconds: 0,
+  //     latitude: 17.38333,
+  //     longitude: 78.4666,
+  //     timezone: 5.5,
+  //     settings: {
+  //       observation_point: 'topocentric',
+  //       ayanamsha: 'lahiri',
+  //     },
+  //   });
+
+  //   const response = await axios.post(
+  //     `https://json.freeastrologyapi.com/planets`,
+  //     jso,
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'x-api-key': 'uq1o0mMViHZkv8OERVSH2NgzqYY08R067fXZD3vc',
+  //       },
+  //     },
+  //   );
+  //   console.log(response.data);
+  // };
   const onSignInPressed = async data => {
     setEmailWrong(false);
     if (!changeText || !password) {
+      // console.log(value);
       Alert.alert('Enter all required details.');
     } else {
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -50,8 +81,9 @@ const SignInScreen = () => {
               Accept: 'application/vnd.GitHub.v3+json',
             },
           });
+          // console.log(value);
           const response = await GitHubClient.post('/api/v1/user/login', {
-            email: changeText.toLowerCase(),
+            email: changeText,
             password: password,
           });
           // console.log(response.data);
@@ -182,8 +214,9 @@ const SignInScreen = () => {
             }}></TextInput>
           <FontAwesome5
             name={hidePass ? 'eye-slash' : 'eye'}
-            size={15}
+            size={17}
             color={'#454545'}
+            style={{margin: 5}}
             onPress={() => setHidePass(!hidePass)}
           />
         </View>

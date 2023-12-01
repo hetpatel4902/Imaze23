@@ -81,7 +81,7 @@ const PurchasedIndividualEvents = ({tech, certificate}) => {
         )}
       </View>
 
-      {!certificate && (
+      {!certificate && tech?.event?.price > 0 && (
         <Pressable
           onPress={downloadReceipt}
           style={{flex: 3, justifyContent: 'center', alignItems: 'center'}}>

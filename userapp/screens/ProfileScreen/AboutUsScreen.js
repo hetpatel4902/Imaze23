@@ -45,7 +45,7 @@ const AboutUsScreen = () => {
             marginTop: 3,
             // marginBottom: 10,
           }}>
-          About Us
+          About Developers
         </Text>
       </View>
       <View

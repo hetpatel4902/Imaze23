@@ -88,6 +88,7 @@ const SignUpScreen = () => {
   const [cl, setCl] = useState(false);
   const [me, setMe] = useState(false);
   const [mc, setMc] = useState(false);
+  const [other, setOther] = useState(false);
   const [college, setCollege] = useState('');
   const [one, setOne] = useState(false);
   const [two, setTwo] = useState(false);
@@ -1049,8 +1050,9 @@ const SignUpScreen = () => {
                 }}></TextInput>
               <FontAwesome5
                 name={hidePass ? 'eye-slash' : 'eye'}
-                size={15}
+                size={17}
                 color={'#454545'}
+                style={{margin: 5}}
                 onPress={() => setHidePass(!hidePass)}
               />
             </View>
@@ -1175,7 +1177,7 @@ const SignUpScreen = () => {
               style={{
                 backgroundColor: 'white',
                 padding: 20,
-                height: height - 160,
+                height: height - 110,
                 width: width - 40,
                 borderRadius: 20,
                 shadowColor: 'grey',
@@ -1209,7 +1211,7 @@ const SignUpScreen = () => {
                   Select Branch:
                 </Text>
               </View>
-              <View style={{marginTop: 15}}>
+              <View style={{marginTop: 15, alignSelf: 'center'}}>
                 <Pressable
                   onPress={() => {
                     setCp(true);
@@ -1222,6 +1224,7 @@ const SignUpScreen = () => {
                     setMe(false);
                     setEc(false);
                     setEe(false);
+                    setOther(false);
                     setBranch('CP');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset(
@@ -1260,6 +1263,7 @@ const SignUpScreen = () => {
                     setMc(false);
                     setMe(false);
                     setEc(false);
+                    setOther(false);
                     setEe(false);
                     setBranch('CSD');
                     setModalVisible(!modalVisible);
@@ -1300,6 +1304,7 @@ const SignUpScreen = () => {
                     setMe(false);
                     setEc(false);
                     setEe(false);
+                    setOther(false);
                     setBranch('IT');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset(
@@ -1339,6 +1344,7 @@ const SignUpScreen = () => {
                     setMe(false);
                     setEc(false);
                     setEe(false);
+                    setOther(false);
                     setBranch('IOT');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset(
@@ -1378,6 +1384,7 @@ const SignUpScreen = () => {
                     setMe(false);
                     setEc(false);
                     setEe(false);
+                    setOther(false);
                     setBranch('CH');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset(
@@ -1417,6 +1424,7 @@ const SignUpScreen = () => {
                     setMe(false);
                     setEc(false);
                     setEe(false);
+                    setOther(false);
                     setBranch('CL');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset('Civil Engineering Selected');
@@ -1454,6 +1462,7 @@ const SignUpScreen = () => {
                     setMe(false);
                     setEc(false);
                     setEe(false);
+                    setOther(false);
                     setBranch('MC');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset(
@@ -1493,6 +1502,7 @@ const SignUpScreen = () => {
                     setMe(true);
                     setEc(false);
                     setEe(false);
+                    setOther(false);
                     setBranch('ME');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset(
@@ -1532,6 +1542,7 @@ const SignUpScreen = () => {
                     setMe(false);
                     setEc(true);
                     setEe(false);
+                    setOther(false);
                     setBranch('EC');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset(
@@ -1571,6 +1582,7 @@ const SignUpScreen = () => {
                     setMe(false);
                     setEc(false);
                     setEe(true);
+                    setOther(false);
                     setBranch('EE');
                     setModalVisible(!modalVisible);
                     showToastWithGravityAndOffset(
@@ -1596,6 +1608,44 @@ const SignUpScreen = () => {
                       paddingVertical: 9,
                     }}>
                     Electrical Engineering
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    setCp(false);
+                    setCsd(false);
+                    setIt(false);
+                    setIot(false);
+                    setCh(false);
+                    setCl(false);
+                    setMc(false);
+                    setMe(false);
+                    setEc(false);
+                    setEe(false);
+                    setOther(true);
+                    setBranch('OTHER');
+                    setModalVisible(!modalVisible);
+                    showToastWithGravityAndOffset('Other Branch Selected');
+                  }}
+                  style={{
+                    width: 270,
+                    marginHorizontal: 6,
+                    backgroundColor: other ? '#1655BC' : '#edeef0',
+                    alignItems: 'center',
+                    borderRadius: 8,
+                    justifyContent: 'center',
+                    borderWidth: other ? 0.5 : 0,
+                    borderColor: other ? '#1655BC' : 'white',
+                    marginTop: 13,
+                  }}>
+                  <Text
+                    style={{
+                      color: other ? 'white' : '#191919',
+                      fontFamily: 'Poppins-Regular',
+                      fontSize: 12,
+                      paddingVertical: 9,
+                    }}>
+                    Other
                   </Text>
                 </Pressable>
               </View>

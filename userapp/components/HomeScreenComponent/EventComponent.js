@@ -30,7 +30,7 @@ const EventComponent = ({tech, type}) => {
   const participants = tech?.participants;
   return (
     <View>
-      {((details?.year == 'diploma' && tech?.isDiploma) ||
+      {((details?.year == 'DIPLOMA' && tech?.isDiploma) ||
         !tech?.isDiploma) && (
         <Pressable onPress={onPress} style={styles.mainView}>
           <View

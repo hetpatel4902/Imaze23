@@ -79,14 +79,14 @@ const DynamicWorkshopComponent = ({tech}) => {
     const response = await axios.get(`http://${USER_IP}/api/v1/user/${users}`, {
       headers: {Authorization: `Bearer ${tokens}`},
     });
-    // console.log(response.data.data);
+    console.log(response.data.data);
     setDetails(response.data.data);
     setLoginPending(false);
   };
   return (
     <>
       <View>
-        {((details?.year == 'diploma' && tech?.isDiploma) ||
+        {((details?.year == 'DIPLOMA' && tech?.isDiploma) ||
           !tech?.isDiploma) && (
           <Pressable
             onPress={onPress}
@@ -128,13 +128,20 @@ const DynamicWorkshopComponent = ({tech}) => {
               </View>
             </View>
             <View style={styles.nameView}>
-              <Text style={styles.name}>{tech.name}</Text>
-              <View style={styles.subContainer}>
-                <Text style={styles.priceText}>Rs.{tech?.price} </Text>
-              </View>
+              <Text style={styles.name} numberOfLines={1}>
+                {tech.name}
+              </Text>
               <View>
-                <Text style={styles.participants}>
-                  {participants.length} participants
+                <Text style={styles.participants} numberOfLines={1}>
+                  {tech?.description}
+                </Text>
+              </View>
+              <View style={styles.subContainer}>
+                <Text style={styles.priceText}>
+                  Rs.
+                  {details?.university == 'CVMU'
+                    ? tech?.price
+                    : Math.ceil(tech?.price + tech?.price * 0.18)}
                 </Text>
               </View>
             </View>
@@ -143,7 +150,7 @@ const DynamicWorkshopComponent = ({tech}) => {
                 backgroundColor: selected ? 'red' : '#1655BC',
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingVertical: 3.5,
+                paddingVertical: 3,
                 borderRadius: 18,
                 shadowColor: '#1655BC',
                 shadowOffset: {
@@ -153,7 +160,7 @@ const DynamicWorkshopComponent = ({tech}) => {
                 shadowOpacity: 0.41,
                 shadowRadius: 9.11,
                 elevation: 14,
-                paddingHorizontal: 13,
+                paddingHorizontal: 11,
               }}
               onPress={onClick}>
               <Text style={{color: 'white', fontFamily: 'Poppins-Medium'}}>
@@ -200,6 +207,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
     color: '#242424',
     fontSize: 12,
+    marginLeft: -4,
   },
   subContainerTime: {
     fontFamily: 'Poppins-Regular',

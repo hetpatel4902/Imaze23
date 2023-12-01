@@ -81,6 +81,7 @@ const DynamicComboScreen = () => {
     setDetails(response.data.data);
     // setLoginPending(false);
   };
+  const [onSubmit, setOnSubmit] = useState(false);
   const onlineTransaction = async () => {
     // console.log({
     //   orderId: checkDetail?.data._id,
@@ -88,26 +89,33 @@ const DynamicComboScreen = () => {
     //   transUrl: 'data:image/jpeg;base64' + image,
     //   isCombo: true,
     // });
-    const res = await axios.post(
-      `http://${USER_IP}/api/v1/user/${users}/payment/online`,
-      {
-        orderId: checkDetail?.data._id,
-        transId,
-        transUrl: 'data:image/jpeg;base64' + image,
-        isCombo: true,
-      },
-      {headers: {Authorization: `Bearer ${tokens}`}},
-    );
-    if (res.data.res == 'success') {
-      setModal(false);
-      setModal1(false);
-      showToastWithGravityAndOffset(
-        'Partially Registered,Your payment will be verified soon...',
-      );
-      navigation.goBack();
-      navigation.goBack();
+    if (transId == '' || image == '') {
+      Alert.alert('Fill all the required details.');
     } else {
-      Alert.alert('Payment failed');
+      setOnSubmit(true);
+      const res = await axios.post(
+        `http://${USER_IP}/api/v1/user/${users}/payment/online`,
+        {
+          orderId: checkDetail?.data._id,
+          transId,
+          transUrl: image,
+          isCombo: true,
+        },
+        {headers: {Authorization: `Bearer ${tokens}`}},
+      );
+      if (res.data.res == 'success') {
+        setOnSubmit(false);
+        setModal(false);
+        setModal1(false);
+        showToastWithGravityAndOffset(
+          'Partially Registered,Your payment will be verified soon...',
+        );
+        navigation.goBack();
+        navigation.goBack();
+      } else {
+        setOnSubmit(false);
+        Alert.alert('Payment failed');
+      }
     }
   };
 
@@ -602,6 +610,7 @@ const DynamicComboScreen = () => {
             </View>
             <Pressable
               onPress={onlineTransaction}
+              disabled={onSubmit}
               style={{
                 shadowColor: '#ff9600',
                 shadowOffset: {
@@ -619,6 +628,7 @@ const DynamicComboScreen = () => {
                 borderRadius: 13,
                 maxWidth: width,
                 width: width - 46,
+                opacity: onSubmit ? 0.7 : 1,
               }}>
               <Text
                 style={{
@@ -627,7 +637,7 @@ const DynamicComboScreen = () => {
                   fontFamily: 'Poppins-SemiBold',
                   fontSize: 15,
                 }}>
-                Submit
+                {onSubmit ? `Processing...` : `Submit`}
               </Text>
             </Pressable>
             <View style={{height: 40}}></View>

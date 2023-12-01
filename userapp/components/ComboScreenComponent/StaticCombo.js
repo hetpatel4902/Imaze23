@@ -40,6 +40,7 @@ const StaticCombo = ({data, pending, bought, index}) => {
   const [modal1, setModal1] = useState(null);
   const [image, setImage] = useState(null);
   const [transId, setTransId] = useState('');
+  const [onSubmit, setOnSubmit] = useState(false);
   const openImagePicker = async () => {
     // console.log(image);
     const options = {
@@ -80,24 +81,31 @@ const StaticCombo = ({data, pending, bought, index}) => {
     //   transUrl: 'data:image/jpeg;base64' + image,
     //   isCombo: true,
     // });
-    const res = await axios.post(
-      `http://${USER_IP}/api/v1/user/${users}/payment/online`,
-      {
-        orderId: checkDetail?.data._id,
-        transId,
-        transUrl: 'data:image/jpeg;base64' + image,
-        isCombo: true,
-      },
-      {headers: {Authorization: `Bearer ${tokens}`}},
-    );
-    if (res.data.res == 'success') {
-      setModal(false);
-      setModal1(false);
-      showToastWithGravityAndOffset(
-        'Partially Registered,Your payment will be verified soon...',
+    if (transId == '' || image == '') {
+      Alert.alert('Fill all the required details.');
+    } else {
+      setOnSubmit(true);
+
+      const res = await axios.post(
+        `http://${USER_IP}/api/v1/user/${users}/payment/online`,
+        {
+          orderId: checkDetail?.data._id,
+          transId,
+          transUrl: image,
+          isCombo: true,
+        },
+        {headers: {Authorization: `Bearer ${tokens}`}},
       );
-      navigation.goBack();
-      navigation.goBack();
+      if (res.data.res == 'success') {
+        setOnSubmit(false);
+        setModal(false);
+        setModal1(false);
+        showToastWithGravityAndOffset(
+          'Partially Registered,Your payment will be verified soon...',
+        );
+        navigation.goBack();
+        navigation.goBack();
+      }
     }
   };
 
@@ -489,6 +497,7 @@ const StaticCombo = ({data, pending, bought, index}) => {
             </View>
             <Pressable
               onPress={onlineTransaction}
+              disabled={onSubmit}
               style={{
                 shadowColor: '#ff9600',
                 shadowOffset: {
@@ -506,6 +515,7 @@ const StaticCombo = ({data, pending, bought, index}) => {
                 borderRadius: 13,
                 maxWidth: width,
                 width: width - 46,
+                opacity: onSubmit ? 0.7 : 1,
               }}>
               <Text
                 style={{
@@ -514,7 +524,7 @@ const StaticCombo = ({data, pending, bought, index}) => {
                   fontFamily: 'Poppins-SemiBold',
                   fontSize: 15,
                 }}>
-                Submit
+                {onSubmit ? `Processing...` : `Submit`}
               </Text>
             </Pressable>
             <View style={{height: 40}}></View>
