@@ -3,9 +3,10 @@ const router = express.Router()
 const authMiddleware = require('../middleware/authmiddleware')
 
 const {eventFetch,participantList,alreadyAttendedUser,updateAttendance,updateEvent,fetchLead,fetchWinners,updateWinners,searchUserEmail,showEventOfflineForUser,verifyEventOfflineOTP,showComboOfflineOTP,verifyComboOfflineOTP,eventParticipantExcel,eventAttendedExcel,verifiedOfflineEvent,rejectOfflineEvent,getIndividualCulturalEvent,getAllCulturalEvents,getCulturalParticipantExcel,getIdeathonEvents,getIndividualFlagshipEvent,getFlagshipAttendance,setFlagshipAttendance,getFlagshipParticipantExcel,getFlagshipAttendanceExcel,getToyothonEvents,getUserDetails,reduceToken,getAllIncompleteUsersOnline,acceptOnlinePayment,declineOnlinePayment,getPaymentsOnRegularBasisExcel,getFlagshipEvent} = require('../controllers/LeadController')
-const {loginLeads} = require('../controllers/Leads Auth')
+const {loginLeads,registerLeads} = require('../controllers/Leads Auth')
 
 //login
+router.route("/registerlead").post(registerLeads);
 router.route('/loginLeads').post(loginLeads)
 
 router.route('/eventFetch/:eid').get(authMiddleware,eventFetch)

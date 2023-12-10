@@ -517,52 +517,52 @@ const getCertificate = async (req, res) => {
       if (event.category === "Tech") {
         image_url = "Tech";
         t1_r = 280;
-        t1_c = 239;
+        t1_c = 235;
         t1_w = 445;
 
         t2_r = 265;
-        t2_c = 313;
+        t2_c = 310;
         t2_w = 365;
       }
       if (event.category === "NonTech") {
         image_url = "NonTech";
         t1_r = 280;
-        t1_c = 239;
+        t1_c = 235;
         t1_w = 445;
 
-        t2_r = 370;
-        t2_c = 309;
-        t2_w = 335;
+        t2_r = 300;
+        t2_c = 308;
+        t2_w = 345;
       }
       if (event.category === "Workshop") {
         image_url = "Workshop";
         t1_r = 280;
-        t1_c = 239;
+        t1_c = 235;
         t1_w = 445;
 
         t2_r = 227;
-        t2_c = 309;
+        t2_c = 305;
         t2_w = 445;
       }
       break;
     case "FLAGSHIP":
       event = await FlagshipEvents.findOne({ _id: eid });
-      image_url = "FLAGSHIP";
+      image_url = event.name;
       t1_r = 280;
-      t1_c = 239;
+      t1_c = 235;
       t1_w = 445;
-
-      t2_r = 265;
-      t2_c = 313;
-      t2_w = 365;
+      show_event_name = false;
       break;
     case "CULTURAL":
-      event = await Cultural.findOne({ _id: eid });
-      image_url = "CULTURAL";
-      t1_r = 280;
-      t1_c = 239;
-      t1_w = 430;
-      show_event_name = false;
+        event = await Cultural.findOne({ _id: eid });
+        image_url = "CULTURAL";
+        t1_r = 280;
+        t1_c = 235;
+        t1_w = 430;
+
+        t2_r = 255;
+        t2_c = 305;
+        t2_w = 365;
       break;
   }
 
