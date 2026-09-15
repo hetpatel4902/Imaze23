@@ -91,7 +91,7 @@ It provides:
 - Popular events
 - Navigation to other sections
 
-![Home Screen](screenshots/home.jpeg)
+<img src="screenshots/home.jpeg" width="250">
 
 ---
 
@@ -116,7 +116,7 @@ Examples include:
 - Pitch Power
 - Engineer's Premier League
 
-![Popular Events](screenshots/event-list.jpeg)
+<img src="screenshots/event-list.jpeg" width="250">
 
 ---
 
@@ -131,7 +131,7 @@ The application provides category-based discovery for areas such as:
 - Vocational events
 - Other fest activities
 
-![Event Categories](screenshots/home-categories.jpeg)
+<img src="screenshots/home-categories.jpeg" width="250">
 
 ---
 
@@ -147,7 +147,7 @@ Each listing provides:
 - Time
 - Registration price
 
-![Technical Events](screenshots/tech-events.jpeg)
+<img src="screenshots/tech-events.jpeg" width="250">
 
 ---
 
@@ -167,7 +167,7 @@ The details screen can include:
 - Registration requirements
 - Certificate information
 
-![Solo Event Details](screenshots/event-details.jpeg)
+<img src="screenshots/event-details.jpeg" width="250">
 
 ---
 
@@ -179,7 +179,7 @@ The application supports different participation models.
 
 Participants can directly purchase/register for individual events.
 
-![Solo Event](screenshots/solo-event.jpeg)
+<img src="screenshots/solo-event.jpeg" width="250">
 
 ## Group Events
 
@@ -190,7 +190,7 @@ Group events provide additional information such as:
 - Team registration
 - Event-specific requirements
 
-![Group Event](screenshots/group-event.jpeg)
+<img src="screenshots/group-event.jpeg" width="250">
 
 This allows the same application to support different event registration workflows.
 
@@ -208,7 +208,7 @@ For example:
 
 The token system can be used for activities such as the Nukkad Carnival.
 
-![Buy Tokens](screenshots/buy-tokens.jpeg)
+<img src="screenshots/buy-tokens.jpeg" width="250">
 
 ### Token Flow
 
@@ -237,7 +237,7 @@ The payment interface provides:
 - Transaction proof upload
 - Payment submission
 
-![Online Payment](screenshots/payment.jpeg)
+<img src="screenshots/payment.jpeg" width="250">
 
 ### Payment Verification Flow
 
@@ -278,7 +278,7 @@ It includes:
 - Play Store access
 - Logout
 
-![User Profile](screenshots/profile.jpeg)
+<img src="screenshots/profile.jpeg" width="250">
 
 ---
 
@@ -490,37 +490,23 @@ User App
 
 # 📸 Application Screenshots
 
-## Home
+<p align="center">
+  <img src="screenshots/home.jpeg" width="230">
+  <img src="screenshots/event-list.jpeg" width="230">
+  <img src="screenshots/tech-events.jpeg" width="230">
+</p>
 
-![Home](screenshots/home.jpeg)
+<p align="center">
+  <img src="screenshots/event-details.jpeg" width="230">
+  <img src="screenshots/group-event.jpeg" width="230">
+  <img src="screenshots/buy-tokens.jpeg" width="230">
+</p>
 
-## Event Discovery
-
-![Event Discovery](screenshots/event-list.jpeg)
-
-## Technical Events
-
-![Technical Events](screenshots/tech-events.jpeg)
-
-## Event Details
-
-![Event Details](screenshots/event-details.jpeg)
-
-## Group Event
-
-![Group Event](screenshots/group-event.jpeg)
-
-## Buy Tokens
-
-![Buy Tokens](screenshots/buy-tokens.jpeg)
-
-## Online Payment
-
-![Online Payment](screenshots/payment.jpeg)
-
-## User Profile
-
-![User Profile](screenshots/profile.jpeg)
+<p align="center">
+  <img src="screenshots/payment.jpeg" width="230">
+  <img src="screenshots/profile.jpeg" width="230">
+  <img src="screenshots/play-store.jpg" width="230">
+</p>
 
 ---
 
