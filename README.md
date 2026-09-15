@@ -11,8 +11,6 @@ The application provides students with a centralized platform to discover events
 
 ## 📱 Application Preview
 
-![IMAZE '23 App Preview](screenshots/app-overview.jpeg)
-
 The application was designed to provide a complete digital experience for participants, from discovering events to registration and post-event certificate access.
 
 ---
