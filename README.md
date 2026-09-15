@@ -11,7 +11,7 @@ The application provides students with a centralized platform to discover events
 
 ## 📱 Application Preview
 
-![IMAZE '23 App Preview](screenshots/app-overview.png)
+![IMAZE '23 App Preview](screenshots/app-overview.jpeg)
 
 The application was designed to provide a complete digital experience for participants, from discovering events to registration and post-event certificate access.
 
@@ -93,7 +93,7 @@ It provides:
 - Popular events
 - Navigation to other sections
 
-![Home Screen](screenshots/home.png)
+![Home Screen](screenshots/home.jpeg)
 
 ---
 
@@ -118,7 +118,7 @@ Examples include:
 - Pitch Power
 - Engineer's Premier League
 
-![Popular Events](screenshots/event-list.png)
+![Popular Events](screenshots/event-list.jpeg)
 
 ---
 
@@ -133,7 +133,7 @@ The application provides category-based discovery for areas such as:
 - Vocational events
 - Other fest activities
 
-![Event Categories](screenshots/home-categories.png)
+![Event Categories](screenshots/home-categories.jpeg)
 
 ---
 
@@ -149,7 +149,7 @@ Each listing provides:
 - Time
 - Registration price
 
-![Technical Events](screenshots/tech-events.png)
+![Technical Events](screenshots/tech-events.jpeg)
 
 ---
 
@@ -169,7 +169,7 @@ The details screen can include:
 - Registration requirements
 - Certificate information
 
-![Solo Event Details](screenshots/event-details.png)
+![Solo Event Details](screenshots/event-details.jpeg)
 
 ---
 
@@ -181,7 +181,7 @@ The application supports different participation models.
 
 Participants can directly purchase/register for individual events.
 
-![Solo Event](screenshots/solo-event.png)
+![Solo Event](screenshots/solo-event.jpeg)
 
 ## Group Events
 
@@ -192,7 +192,7 @@ Group events provide additional information such as:
 - Team registration
 - Event-specific requirements
 
-![Group Event](screenshots/group-event.png)
+![Group Event](screenshots/group-event.jpeg)
 
 This allows the same application to support different event registration workflows.
 
@@ -210,7 +210,7 @@ For example:
 
 The token system can be used for activities such as the Nukkad Carnival.
 
-![Buy Tokens](screenshots/buy-tokens.png)
+![Buy Tokens](screenshots/buy-tokens.jpeg)
 
 ### Token Flow
 
@@ -239,7 +239,7 @@ The payment interface provides:
 - Transaction proof upload
 - Payment submission
 
-![Online Payment](screenshots/payment.png)
+![Online Payment](screenshots/payment.jpeg)
 
 ### Payment Verification Flow
 
@@ -280,7 +280,7 @@ It includes:
 - Play Store access
 - Logout
 
-![User Profile](screenshots/profile.png)
+![User Profile](screenshots/profile.jpeg)
 
 ---
 
@@ -494,35 +494,35 @@ User App
 
 ## Home
 
-![Home](screenshots/home.png)
+![Home](screenshots/home.jpeg)
 
 ## Event Discovery
 
-![Event Discovery](screenshots/event-list.png)
+![Event Discovery](screenshots/event-list.jpeg)
 
 ## Technical Events
 
-![Technical Events](screenshots/tech-events.png)
+![Technical Events](screenshots/tech-events.jpeg)
 
 ## Event Details
 
-![Event Details](screenshots/event-details.png)
+![Event Details](screenshots/event-details.jpeg)
 
 ## Group Event
 
-![Group Event](screenshots/group-event.png)
+![Group Event](screenshots/group-event.jpeg)
 
 ## Buy Tokens
 
-![Buy Tokens](screenshots/buy-tokens.png)
+![Buy Tokens](screenshots/buy-tokens.jpeg)
 
 ## Online Payment
 
-![Online Payment](screenshots/payment.png)
+![Online Payment](screenshots/payment.jpeg)
 
 ## User Profile
 
-![User Profile](screenshots/profile.png)
+![User Profile](screenshots/profile.jpeg)
 
 ---
 
@@ -536,7 +536,7 @@ The published application reached:
 
 ### ⭐ 4.7★ Rating
 
-![Google Play Listing](screenshots/play-store.png)
+![Google Play Listing](screenshots/play-store.jpg)
 
 The Play Store listing provides evidence of the application's real-world deployment and user adoption during the event.
 
