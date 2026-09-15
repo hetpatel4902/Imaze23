@@ -520,7 +520,7 @@ The published application reached:
 
 ### ⭐ 4.7★ Rating
 
-![Google Play Listing](screenshots/play-store.jpg)
+<img src="screenshots/play-store.jpg" width="250">
 
 The Play Store listing provides evidence of the application's real-world deployment and user adoption during the event.
 
